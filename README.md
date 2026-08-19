@@ -29,7 +29,7 @@ const capabilities = await client.capabilities();
 
 ## Generated code
 
-This code is generated with Fern from the LoonFS OpenAPI spec (`docs/specs/openapi.json` in `github.com/loonfs/loonfs`). Regeneration runs from the `fern/` config in that repository (`scripts/generate-sdks.sh`). Do not edit generated files by hand.
+This code is generated with Fern from the LoonFS OpenAPI spec (`docs/specs/openapi.json` in `github.com/loonfs/loonfs`). Regeneration runs from the `sdk/fern/` config in that repository (`scripts/generate-sdks.sh`). Do not edit generated files by hand.
 
 ## License
 
