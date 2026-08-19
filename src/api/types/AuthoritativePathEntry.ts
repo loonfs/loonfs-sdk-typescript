@@ -3,16 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Authoritative metadata for one visible path.
+ * Metadata for one path returned by stat and directory-listing operations.
  *
- * This is the result shape for stat/list style reads. The entry kind carries
- * the file-only revision and content summary, so a directory cannot carry a
- * partial file payload. Attributes are likewise projected as one value or
- * omitted as one value, while serializing as prefixed sibling fields.
- * The attribute revision is read independently — clients feed it to
- * `expected_attributes_revision_no` on the next write without touching the
- * values — so this is a prefixed-sibling projection rather than a value
- * consumed as one nested unit.
+ * File entries include the current revision and content details. Directory
+ * entries do not. Attribute fields are included only when requested and are
+ * serialized at the top level of the entry. Callers can pass
+ * `attributes_revision_no` as `expected_attributes_revision_no` when updating
+ * attributes.
  */
 export interface AuthoritativePathEntry extends LoonFS.AttributesProjection {
     /**

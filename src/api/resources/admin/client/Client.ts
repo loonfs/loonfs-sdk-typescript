@@ -43,76 +43,100 @@ export class AdminClient {
      *         namespace_id: "namespace_id"
      *     })
      */
-    public listCheckpoints(
+    public async listCheckpoints(
         request: LoonFS.ListCheckpointsRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ListCheckpointsResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__listCheckpoints(request, requestOptions));
-    }
-
-    private async __listCheckpoints(
-        request: LoonFS.ListCheckpointsRequest,
-        requestOptions?: AdminClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ListCheckpointsResponse>> {
-        const { namespace_id: namespaceId, limit, cursor } = request;
-        const _queryParams: Record<string, unknown> = {
-            limit,
-            cursor,
-        };
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/admin/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ListCheckpointsResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
+    ): Promise<core.Page<LoonFS.Checkpoint, LoonFS.ListCheckpointsResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (
+                request: LoonFS.ListCheckpointsRequest,
+            ): Promise<core.WithRawResponse<LoonFS.ListCheckpointsResponse>> => {
+                const { namespace_id: namespaceId, limit, cursor } = request;
+                const _queryParams: Record<string, unknown> = {
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/admin/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return {
+                        data: _response.body as LoonFS.ListCheckpointsResponse,
                         rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/admin/namespaces/{namespace_id}/checkpoints",
+                    };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/admin/namespaces/{namespace_id}/checkpoints",
+                );
+            },
         );
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.Checkpoint, LoonFS.ListCheckpointsResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.checkpoints ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
+        });
     }
 
     /**

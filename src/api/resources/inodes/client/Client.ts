@@ -139,80 +139,107 @@ export class InodesClient {
      *         inode_id: "ino_123"
      *     })
      */
-    public listFileRevisionsByInode(
+    public async listFileRevisionsByInode(
         request: LoonFS.ListFileRevisionsByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ListFileRevisionsResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__listFileRevisionsByInode(request, requestOptions));
-    }
-
-    private async __listFileRevisionsByInode(
-        request: LoonFS.ListFileRevisionsByInodeRequest,
-        requestOptions?: InodesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, limit, cursor } = request;
-        const _queryParams: Record<string, unknown> = {
-            limit,
-            cursor,
-        };
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/inodes/${core.url.encodePathParam(inodeId)}/revisions`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ListFileRevisionsResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 409:
-                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
+    ): Promise<core.Page<LoonFS.FileRevision, LoonFS.ListFileRevisionsResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (
+                request: LoonFS.ListFileRevisionsByInodeRequest,
+            ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> => {
+                const { namespace_id: namespaceId, inode_id: inodeId, limit, cursor } = request;
+                const _queryParams: Record<string, unknown> = {
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/inodes/${core.url.encodePathParam(inodeId)}/revisions`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return {
+                        data: _response.body as LoonFS.ListFileRevisionsResponse,
                         rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/namespaces/{namespace_id}/inodes/{inode_id}/revisions",
+                    };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        case 409:
+                            throw new LoonFS.ConflictError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/namespaces/{namespace_id}/inodes/{inode_id}/revisions",
+                );
+            },
         );
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.FileRevision, LoonFS.ListFileRevisionsResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.revisions ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
+        });
     }
 
     /**

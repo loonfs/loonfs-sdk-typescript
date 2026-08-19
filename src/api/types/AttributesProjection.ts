@@ -3,7 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One inode's structurally complete attribute projection.
+ * Attributes returned for one inode.
+ *
+ * A path entry omits this entire group unless the caller requests attributes.
+ * OpenAPI flattens these fields with `allOf`, so none of them can be marked as
+ * required on every path entry.
  */
 export interface AttributesProjection {
     /**
@@ -12,9 +16,9 @@ export interface AttributesProjection {
      * An inode that has never had attributes written is at revision 0 with
      * an empty map.
      */
-    attributes: LoonFS.Attributes;
+    attributes?: LoonFS.Attributes | undefined;
     /** The attribute revision this projection represents. */
-    attributes_revision_no: LoonFS.AttributeRevisionNo;
+    attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /**
      * Time of the latest attribute update, in Unix milliseconds. This is
      * `None` for the initial empty state at revision 0.

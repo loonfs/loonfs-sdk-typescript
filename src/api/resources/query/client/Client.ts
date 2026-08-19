@@ -4,7 +4,6 @@ import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClie
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
 import { mergeHeaders } from "../../../../core/headers.js";
 import * as core from "../../../../core/index.js";
-import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
 import * as LoonFS from "../../../index.js";
@@ -28,7 +27,7 @@ export class QueryClient {
     /**
      * Searches file content with a regular expression, accelerated by the namespace's grep index. Matches are verified against the real pattern and returned in ascending `(inode_id, byte_offset)` order; revisions committed after the index watermark are scanned exhaustively unless `allow_stale` skips them. Requires this deployment to serve grep and the namespace to carry a materialized active grep root.
      *
-     * @param {LoonFS.GrepRequest} request
+     * @param {LoonFS.GrepBody} request
      * @param {QueryClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -49,89 +48,130 @@ export class QueryClient {
      *         pattern: "pattern"
      *     })
      */
-    public grep(
-        request: LoonFS.GrepRequest,
+    public async grep(
+        request: LoonFS.GrepBody,
         requestOptions?: QueryClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.GrepResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__grep(request, requestOptions));
-    }
-
-    private async __grep(
-        request: LoonFS.GrepRequest,
-        requestOptions?: QueryClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.GrepResponse>> {
-        const { namespace_id: namespaceId, ..._body } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
+    ): Promise<core.Page<LoonFS.GrepMatch, LoonFS.GrepResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (request: LoonFS.GrepBody): Promise<core.WithRawResponse<LoonFS.GrepResponse>> => {
+                const {
+                    namespace_id: namespaceId,
+                    pattern,
+                    case_insensitive: caseInsensitive,
+                    path_prefix: pathPrefix,
+                    allow_scan: allowScan,
+                    allow_stale: allowStale,
+                    limit,
+                    cursor,
+                } = request;
+                const _queryParams: Record<string, unknown> = {
+                    pattern,
+                    case_insensitive: caseInsensitive,
+                    path_prefix: pathPrefix,
+                    allow_scan: allowScan,
+                    allow_stale: allowStale,
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/query/grep`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return { data: _response.body as LoonFS.GrepResponse, rawResponse: _response.rawResponse };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        case 500:
+                            throw new LoonFS.InternalServerError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 501:
+                            throw new LoonFS.NotImplementedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/namespaces/{namespace_id}/query/grep",
+                );
+            },
         );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/query/grep`,
-            ),
-            method: "POST",
-            headers: _headers,
-            contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.GrepMatch, LoonFS.GrepResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.matches ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
         });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.GrepResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 403:
-                    throw new LoonFS.ForbiddenError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 500:
-                    throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
-                case 501:
-                    throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
-                case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "POST",
-            "/v0/namespaces/{namespace_id}/query/grep",
-        );
     }
 }
