@@ -1,1 +1,1 @@
-export type { GrepBody } from "./GrepBody.js";
+export type { GrepRequest } from "./GrepRequest.js";

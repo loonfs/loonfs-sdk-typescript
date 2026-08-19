@@ -82,7 +82,6 @@ export * from "./GrepIndexLifecycleBackfilling.js";
 export * from "./GrepIndexLifecycleDisabled.js";
 export * from "./GrepIndexStatusResponse.js";
 export * from "./GrepMatch.js";
-export * from "./GrepRequest.js";
 export * from "./GrepResponse.js";
 export * from "./InodeKind.js";
 export * from "./ListCheckpointsResponse.js";

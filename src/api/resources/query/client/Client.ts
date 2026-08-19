@@ -27,7 +27,7 @@ export class QueryClient {
     /**
      * Searches file content with a regular expression, accelerated by the namespace's grep index. Matches are verified against the real pattern and returned in ascending `(inode_id, byte_offset)` order; revisions committed after the index watermark are scanned exhaustively unless `allow_stale` skips them. Requires this deployment to serve grep and the namespace to carry a materialized active grep root.
      *
-     * @param {LoonFS.GrepBody} request
+     * @param {LoonFS.GrepRequest} request
      * @param {QueryClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -49,11 +49,11 @@ export class QueryClient {
      *     })
      */
     public async grep(
-        request: LoonFS.GrepBody,
+        request: LoonFS.GrepRequest,
         requestOptions?: QueryClient.RequestOptions,
     ): Promise<core.Page<LoonFS.GrepMatch, LoonFS.GrepResponse>> {
         const list = core.HttpResponsePromise.interceptFunction(
-            async (request: LoonFS.GrepBody): Promise<core.WithRawResponse<LoonFS.GrepResponse>> => {
+            async (request: LoonFS.GrepRequest): Promise<core.WithRawResponse<LoonFS.GrepResponse>> => {
                 const {
                     namespace_id: namespaceId,
                     pattern,

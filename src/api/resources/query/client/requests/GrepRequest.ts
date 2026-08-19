@@ -7,7 +7,7 @@
  *         pattern: "pattern"
  *     }
  */
-export interface GrepBody {
+export interface GrepRequest {
     /** Namespace id */
     namespace_id: string;
     /** Pattern in the Rust `regex` crate's dialect. Its UTF-8 encoding must be at most 1024 bytes. */
