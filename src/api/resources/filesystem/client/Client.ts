@@ -435,80 +435,110 @@ export class FilesystemClient {
      *         path: "path"
      *     })
      */
-    public listPathEntries(
+    public async listPathEntries(
         request: LoonFS.ListPathEntriesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ListPathEntriesResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__listPathEntries(request, requestOptions));
-    }
-
-    private async __listPathEntries(
-        request: LoonFS.ListPathEntriesRequest,
-        requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ListPathEntriesResponse>> {
-        const { namespace_id: namespaceId, path, limit, cursor, include_attributes: includeAttributes } = request;
-        const _queryParams: Record<string, unknown> = {
-            path,
-            limit,
-            cursor,
-            include_attributes: includeAttributes,
-        };
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/list`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ListPathEntriesResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
+    ): Promise<core.Page<LoonFS.AuthoritativePathEntry, LoonFS.ListPathEntriesResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (
+                request: LoonFS.ListPathEntriesRequest,
+            ): Promise<core.WithRawResponse<LoonFS.ListPathEntriesResponse>> => {
+                const {
+                    namespace_id: namespaceId,
+                    path,
+                    limit,
+                    cursor,
+                    include_attributes: includeAttributes,
+                } = request;
+                const _queryParams: Record<string, unknown> = {
+                    path,
+                    limit,
+                    cursor,
+                    include_attributes: includeAttributes,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/list`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return {
+                        data: _response.body as LoonFS.ListPathEntriesResponse,
                         rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/namespaces/{namespace_id}/filesystem/list",
+                    };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/namespaces/{namespace_id}/filesystem/list",
+                );
+            },
         );
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.AuthoritativePathEntry, LoonFS.ListPathEntriesResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.entries ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
+        });
     }
 
     /**
@@ -531,79 +561,103 @@ export class FilesystemClient {
      *         path: "path"
      *     })
      */
-    public listFileRevisions(
+    public async listFileRevisions(
         request: LoonFS.ListFileRevisionsRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ListFileRevisionsResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__listFileRevisions(request, requestOptions));
-    }
-
-    private async __listFileRevisions(
-        request: LoonFS.ListFileRevisionsRequest,
-        requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> {
-        const { namespace_id: namespaceId, path, limit, cursor } = request;
-        const _queryParams: Record<string, unknown> = {
-            path,
-            limit,
-            cursor,
-        };
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/revisions`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ListFileRevisionsResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
+    ): Promise<core.Page<LoonFS.FileRevision, LoonFS.ListFileRevisionsResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (
+                request: LoonFS.ListFileRevisionsRequest,
+            ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> => {
+                const { namespace_id: namespaceId, path, limit, cursor } = request;
+                const _queryParams: Record<string, unknown> = {
+                    path,
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/revisions`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return {
+                        data: _response.body as LoonFS.ListFileRevisionsResponse,
                         rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/namespaces/{namespace_id}/filesystem/revisions",
+                    };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/namespaces/{namespace_id}/filesystem/revisions",
+                );
+            },
         );
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.FileRevision, LoonFS.ListFileRevisionsResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.revisions ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
+        });
     }
 
     /**
@@ -718,75 +772,91 @@ export class FilesystemClient {
      *         namespace_id: "namespace_id"
      *     })
      */
-    public listTrash(
+    public async listTrash(
         request: LoonFS.ListTrashRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ListTrashResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__listTrash(request, requestOptions));
-    }
-
-    private async __listTrash(
-        request: LoonFS.ListTrashRequest,
-        requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ListTrashResponse>> {
-        const { namespace_id: namespaceId, limit, cursor } = request;
-        const _queryParams: Record<string, unknown> = {
-            limit,
-            cursor,
-        };
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
+    ): Promise<core.Page<LoonFS.TrashEntry, LoonFS.ListTrashResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (request: LoonFS.ListTrashRequest): Promise<core.WithRawResponse<LoonFS.ListTrashResponse>> => {
+                const { namespace_id: namespaceId, limit, cursor } = request;
+                const _queryParams: Record<string, unknown> = {
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/trash`,
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return { data: _response.body as LoonFS.ListTrashResponse, rawResponse: _response.rawResponse };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 404:
+                            throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
+                        case 408:
+                            throw new LoonFS.RequestTimeoutError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(
+                    _response.error,
+                    _response.rawResponse,
+                    "GET",
+                    "/v0/namespaces/{namespace_id}/filesystem/trash",
+                );
+            },
         );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/filesystem/trash`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.TrashEntry, LoonFS.ListTrashResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.entries ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
         });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ListTrashResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/namespaces/{namespace_id}/filesystem/trash",
-        );
     }
 }
