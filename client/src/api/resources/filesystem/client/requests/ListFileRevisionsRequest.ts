@@ -3,13 +3,13 @@
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         path: "path"
  *     }
  */
 export interface ListFileRevisionsRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Absolute file path */
     path: string;
     /** Maximum page size */

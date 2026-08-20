@@ -5,7 +5,7 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         upload_id: "upload_id",
  *         body: {
  *             mode: "service_proxied"
@@ -13,8 +13,8 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CompleteUploadBody {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Upload session id */
     upload_id: string;
     body: LoonFS.CompleteUploadRequest;

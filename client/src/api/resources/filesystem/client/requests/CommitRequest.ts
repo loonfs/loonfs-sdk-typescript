@@ -5,7 +5,7 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         actor: {
  *             id: "usr_8f3c",
  *             kind: "user"
@@ -18,8 +18,8 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CommitRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Actor responsible for the commit, as supplied by the application. */
     actor: LoonFS.ActorRef;
     /** Caller-supplied idempotency key for the whole request. */
