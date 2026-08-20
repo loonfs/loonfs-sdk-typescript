@@ -16,3 +16,5 @@ jobs:
           node-version: '20'
       - run: npm ci
       - run: npm run build
+      - name: Build the browser client
+        run: cd client && npm install --no-fund --no-audit && npm run build

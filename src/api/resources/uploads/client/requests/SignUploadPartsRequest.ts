@@ -22,9 +22,8 @@ export interface SignUploadPartsRequest {
     /** Upload session id */
     upload_id: string;
     /**
-     * Parts to authorize, each with the checksum the provider will enforce
-     * on it. Asking again for a part already uploaded is how a client
-     * retries one: a repeated part is last-write-wins at the provider.
+     * Parts to authorize and the checksum for each part. Requesting a part
+     * again replaces the previous upload for that part number.
      */
     parts: LoonFS.UploadPartChecksumClaim[];
 }
