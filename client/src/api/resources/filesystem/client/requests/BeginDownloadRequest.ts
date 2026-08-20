@@ -5,13 +5,13 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         path: "/docs/report.txt"
  *     }
  */
 export interface BeginDownloadRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /** Revision to read, or `None` for the path's current revision. */

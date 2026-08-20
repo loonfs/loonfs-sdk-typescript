@@ -11,6 +11,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./transfers": {
+      "types": "./dist/transfers.d.ts",
+      "default": "./dist/transfers.js"
     }
   },
   "files": [

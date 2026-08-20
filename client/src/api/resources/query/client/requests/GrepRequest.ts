@@ -3,13 +3,13 @@
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         pattern: "pattern"
  *     }
  */
 export interface GrepRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Pattern in the Rust `regex` crate's dialect. Its UTF-8 encoding must be at most 1024 bytes. */
     pattern: string;
     /** Match case-insensitively (`true` or `false`). Defaults to `false`. */

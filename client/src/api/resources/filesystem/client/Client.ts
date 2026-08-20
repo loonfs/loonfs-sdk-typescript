@@ -41,7 +41,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.listChanges({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         after_seq: 1000000
      *     })
      */
@@ -56,7 +56,7 @@ export class FilesystemClient {
         request: LoonFS.ListChangesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.ChangesResponse>> {
-        const { mount, after_seq: afterSeq, limit } = request;
+        const { namespace_alias: namespaceAlias, after_seq: afterSeq, limit } = request;
         const _queryParams: Record<string, unknown> = {
             after_seq: afterSeq,
             limit,
@@ -66,7 +66,7 @@ export class FilesystemClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/changes`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/changes`,
             ),
             method: "GET",
             headers: _headers,
@@ -106,7 +106,12 @@ export class FilesystemClient {
             }
         }
 
-        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/v0/mounts/{mount}/changes");
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/namespace-aliases/{namespace_alias}/changes",
+        );
     }
 
     /**
@@ -127,7 +132,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.applyCommit({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         actor: {
      *             id: "usr_8f3c",
      *             kind: "user"
@@ -150,13 +155,13 @@ export class FilesystemClient {
         request: LoonFS.CommitRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.CommitResponse>> {
-        const { mount, ..._body } = request;
+        const { namespace_alias: namespaceAlias, ..._body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/commits`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/commits`,
             ),
             method: "POST",
             headers: _headers,
@@ -202,7 +207,12 @@ export class FilesystemClient {
             }
         }
 
-        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/v0/mounts/{mount}/commits");
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespace-aliases/{namespace_alias}/commits",
+        );
     }
 
     /**
@@ -228,7 +238,7 @@ export class FilesystemClient {
         request: LoonFS.GetFileBytesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { mount, path, revision_no: revisionNo } = request;
+        const { namespace_alias: namespaceAlias, path, revision_no: revisionNo } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             revision_no: revisionNo,
@@ -238,7 +248,7 @@ export class FilesystemClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/content`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/content`,
             ),
             method: "GET",
             headers: _headers,
@@ -291,7 +301,7 @@ export class FilesystemClient {
             _response.error,
             _response.rawResponse,
             "GET",
-            "/v0/mounts/{mount}/filesystem/content",
+            "/v0/namespace-aliases/{namespace_alias}/filesystem/content",
         );
     }
 
@@ -312,7 +322,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.beginDownload({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         path: "/docs/report.txt"
      *     })
      */
@@ -327,13 +337,13 @@ export class FilesystemClient {
         request: LoonFS.BeginDownloadRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginDownloadResponse>> {
-        const { mount, ..._body } = request;
+        const { namespace_alias: namespaceAlias, ..._body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/downloads`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/downloads`,
             ),
             method: "POST",
             headers: _headers,
@@ -381,7 +391,7 @@ export class FilesystemClient {
             _response.error,
             _response.rawResponse,
             "POST",
-            "/v0/mounts/{mount}/filesystem/downloads",
+            "/v0/namespace-aliases/{namespace_alias}/filesystem/downloads",
         );
     }
 
@@ -401,7 +411,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.listPathEntries({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         path: "path"
      *     })
      */
@@ -413,7 +423,13 @@ export class FilesystemClient {
             async (
                 request: LoonFS.ListPathEntriesRequest,
             ): Promise<core.WithRawResponse<LoonFS.ListPathEntriesResponse>> => {
-                const { mount, path, limit, cursor, include_attributes: includeAttributes } = request;
+                const {
+                    namespace_alias: namespaceAlias,
+                    path,
+                    limit,
+                    cursor,
+                    include_attributes: includeAttributes,
+                } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
@@ -428,7 +444,7 @@ export class FilesystemClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/list`,
+                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/list`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -485,7 +501,7 @@ export class FilesystemClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/mounts/{mount}/filesystem/list",
+                    "/v0/namespace-aliases/{namespace_alias}/filesystem/list",
                 );
             },
         );
@@ -519,7 +535,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.listFileRevisions({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         path: "path"
      *     })
      */
@@ -531,7 +547,7 @@ export class FilesystemClient {
             async (
                 request: LoonFS.ListFileRevisionsRequest,
             ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> => {
-                const { mount, path, limit, cursor } = request;
+                const { namespace_alias: namespaceAlias, path, limit, cursor } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
@@ -545,7 +561,7 @@ export class FilesystemClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/revisions`,
+                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/revisions`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -602,7 +618,7 @@ export class FilesystemClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/mounts/{mount}/filesystem/revisions",
+                    "/v0/namespace-aliases/{namespace_alias}/filesystem/revisions",
                 );
             },
         );
@@ -636,7 +652,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.statPath({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         path: "path"
      *     })
      */
@@ -651,7 +667,7 @@ export class FilesystemClient {
         request: LoonFS.StatPathRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.AuthoritativePathEntry>> {
-        const { mount, path, include_attributes: includeAttributes } = request;
+        const { namespace_alias: namespaceAlias, path, include_attributes: includeAttributes } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             include_attributes: includeAttributes,
@@ -661,7 +677,7 @@ export class FilesystemClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/stat`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/stat`,
             ),
             method: "GET",
             headers: _headers,
@@ -705,7 +721,7 @@ export class FilesystemClient {
             _response.error,
             _response.rawResponse,
             "GET",
-            "/v0/mounts/{mount}/filesystem/stat",
+            "/v0/namespace-aliases/{namespace_alias}/filesystem/stat",
         );
     }
 
@@ -724,7 +740,7 @@ export class FilesystemClient {
      *
      * @example
      *     await client.filesystem.listTrash({
-     *         mount: "mount"
+     *         namespace_alias: "namespace_alias"
      *     })
      */
     public async listTrash(
@@ -733,7 +749,7 @@ export class FilesystemClient {
     ): Promise<core.Page<LoonFS.TrashEntry, LoonFS.ListTrashResponse>> {
         const list = core.HttpResponsePromise.interceptFunction(
             async (request: LoonFS.ListTrashRequest): Promise<core.WithRawResponse<LoonFS.ListTrashResponse>> => {
-                const { mount, limit, cursor } = request;
+                const { namespace_alias: namespaceAlias, limit, cursor } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
@@ -746,7 +762,7 @@ export class FilesystemClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/mounts/${core.url.encodePathParam(mount)}/filesystem/trash`,
+                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/trash`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -795,7 +811,7 @@ export class FilesystemClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/mounts/{mount}/filesystem/trash",
+                    "/v0/namespace-aliases/{namespace_alias}/filesystem/trash",
                 );
             },
         );
