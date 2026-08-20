@@ -1,14 +1,13 @@
 export interface ProxyConfig {
     serverBaseUrl: string;
     token: string;
-    mounts: Record<string, string>;
+    namespaceAliases: Record<string, string>;
 }
 
 interface ProxyRoute {
-    operation: string;
     method: "GET" | "POST" | "PUT";
     pattern: RegExp;
-    mountScoped: boolean;
+    namespaceAliasScoped: boolean;
 }
 
 interface MatchedRoute {
@@ -29,37 +28,36 @@ const HOP_BY_HOP_HEADERS = [
 ] as const;
 
 // These routes must match docs/specs/openapi-proxy.json.
-export interface ProxyRouteTemplate {
-    operation: string;
+interface ProxyRouteTemplate {
     method: "GET" | "POST" | "PUT";
     template: string;
 }
 
-export const PROXY_ROUTE_TABLE: readonly ProxyRouteTemplate[] = [
-    { operation: "capabilities", method: "GET", template: "/v0/capabilities" },
-    { operation: "list_changes", method: "GET", template: "/v0/mounts/{mount}/changes" },
-    { operation: "apply_commit", method: "POST", template: "/v0/mounts/{mount}/commits" },
-    { operation: "get_file_bytes", method: "GET", template: "/v0/mounts/{mount}/filesystem/content" },
-    { operation: "begin_download", method: "POST", template: "/v0/mounts/{mount}/filesystem/downloads" },
-    { operation: "list_path_entries", method: "GET", template: "/v0/mounts/{mount}/filesystem/list" },
-    { operation: "list_file_revisions", method: "GET", template: "/v0/mounts/{mount}/filesystem/revisions" },
-    { operation: "stat_path", method: "GET", template: "/v0/mounts/{mount}/filesystem/stat" },
-    { operation: "list_trash", method: "GET", template: "/v0/mounts/{mount}/filesystem/trash" },
-    { operation: "grep", method: "GET", template: "/v0/mounts/{mount}/query/grep" },
-    { operation: "begin_upload", method: "POST", template: "/v0/mounts/{mount}/uploads" },
-    { operation: "get_upload_status", method: "GET", template: "/v0/mounts/{mount}/uploads/{upload_id}" },
-    { operation: "abort_upload", method: "POST", template: "/v0/mounts/{mount}/uploads/{upload_id}/abort" },
-    { operation: "complete_upload", method: "POST", template: "/v0/mounts/{mount}/uploads/{upload_id}/complete" },
-    { operation: "upload_content", method: "PUT", template: "/v0/mounts/{mount}/uploads/{upload_id}/content" },
-    { operation: "sign_upload_parts", method: "POST", template: "/v0/mounts/{mount}/uploads/{upload_id}/parts" },
+const PROXY_ROUTE_TABLE: readonly ProxyRouteTemplate[] = [
+    { method: "GET", template: "/v0/capabilities" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/changes" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/commits" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/content" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/downloads" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/list" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/revisions" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/stat" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/filesystem/trash" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/query/grep" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/uploads" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/abort" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/complete" },
+    { method: "PUT", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/content" },
+    { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/parts" },
 ];
 
 function patternFor(template: string): RegExp {
     const source = template
         .split("/")
         .map((segment) => {
-            if (segment === "{mount}") {
-                return "(?<mount>[^/]+)";
+            if (segment === "{namespace_alias}") {
+                return "(?<namespaceAlias>[^/]+)";
             }
             if (segment.startsWith("{") && segment.endsWith("}")) {
                 return "[^/]+";
@@ -71,10 +69,9 @@ function patternFor(template: string): RegExp {
 }
 
 const PROXY_ROUTES: readonly ProxyRoute[] = PROXY_ROUTE_TABLE.map((entry) => ({
-    operation: entry.operation,
     method: entry.method,
     pattern: patternFor(entry.template),
-    mountScoped: entry.template.includes("{mount}"),
+    namespaceAliasScoped: entry.template.includes("{namespace_alias}"),
 }));
 
 /** Creates a fetch-compatible handler for LoonFS browser requests. */
@@ -84,7 +81,7 @@ export function createProxyHandler(config: ProxyConfig): (request: Request) => P
     serverBaseUrl.hash = "";
     const serverBasePath = serverBaseUrl.pathname.replace(/\/+$/, "");
     const token = config.token;
-    const mounts = new Map(Object.entries(config.mounts));
+    const namespaceAliases = new Map(Object.entries(config.namespaceAliases));
 
     return async (request: Request): Promise<Response> => {
         const requestUrl = new URL(request.url);
@@ -93,7 +90,7 @@ export function createProxyHandler(config: ProxyConfig): (request: Request) => P
             return notFound();
         }
 
-        const upstreamPath = rewritePath(requestUrl.pathname, matched, mounts);
+        const upstreamPath = rewritePath(requestUrl.pathname, matched, namespaceAliases);
         if (upstreamPath === undefined) {
             return notFound();
         }
@@ -139,29 +136,29 @@ function matchRoute(method: string, pathname: string): MatchedRoute | undefined 
 function rewritePath(
     pathname: string,
     matched: MatchedRoute,
-    mounts: ReadonlyMap<string, string>,
+    namespaceAliases: ReadonlyMap<string, string>,
 ): string | undefined {
-    if (!matched.route.mountScoped) {
+    if (!matched.route.namespaceAliasScoped) {
         return pathname;
     }
 
-    const encodedMount = matched.match.groups?.mount;
-    if (encodedMount === undefined) {
+    const encodedNamespaceAlias = matched.match.groups?.namespaceAlias;
+    if (encodedNamespaceAlias === undefined) {
         return undefined;
     }
-    let mount: string;
+    let namespaceAlias: string;
     try {
-        mount = decodeURIComponent(encodedMount);
+        namespaceAlias = decodeURIComponent(encodedNamespaceAlias);
     } catch {
         return undefined;
     }
-    const namespaceId = mounts.get(mount);
+    const namespaceId = namespaceAliases.get(namespaceAlias);
     if (namespaceId === undefined) {
         return undefined;
     }
 
-    const mountPrefix = `/v0/mounts/${encodedMount}`;
-    const suffix = pathname.slice(mountPrefix.length);
+    const namespaceAliasPrefix = `/v0/namespace-aliases/${encodedNamespaceAlias}`;
+    const suffix = pathname.slice(namespaceAliasPrefix.length);
     return `/v0/namespaces/${encodeURIComponent(namespaceId)}${suffix}`;
 }
 

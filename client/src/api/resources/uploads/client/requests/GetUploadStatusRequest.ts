@@ -3,13 +3,13 @@
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         upload_id: "upload_id"
  *     }
  */
 export interface GetUploadStatusRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Upload session id */
     upload_id: string;
 }

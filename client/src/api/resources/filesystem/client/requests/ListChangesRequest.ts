@@ -5,13 +5,13 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         after_seq: 1000000
  *     }
  */
 export interface ListChangesRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Return committed changes after this sequence */
     after_seq: LoonFS.ChangeSeq;
     /** Maximum page size */

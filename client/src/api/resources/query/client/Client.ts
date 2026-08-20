@@ -44,7 +44,7 @@ export class QueryClient {
      *
      * @example
      *     await client.query.grep({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         pattern: "pattern"
      *     })
      */
@@ -55,7 +55,7 @@ export class QueryClient {
         const list = core.HttpResponsePromise.interceptFunction(
             async (request: LoonFS.GrepRequest): Promise<core.WithRawResponse<LoonFS.GrepResponse>> => {
                 const {
-                    mount,
+                    namespace_alias: namespaceAlias,
                     pattern,
                     case_insensitive: caseInsensitive,
                     path_prefix: pathPrefix,
@@ -81,7 +81,7 @@ export class QueryClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/mounts/${core.url.encodePathParam(mount)}/query/grep`,
+                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/query/grep`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -155,7 +155,7 @@ export class QueryClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/mounts/{mount}/query/grep",
+                    "/v0/namespace-aliases/{namespace_alias}/query/grep",
                 );
             },
         );

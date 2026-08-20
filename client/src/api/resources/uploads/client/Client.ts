@@ -43,7 +43,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.beginUpload({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         body: {
      *             mode: "service_proxied"
      *         }
@@ -60,13 +60,13 @@ export class UploadsClient {
         request: LoonFS.BeginUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginUploadResponse>> {
-        const { mount, body: _body } = request;
+        const { namespace_alias: namespaceAlias, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/uploads`,
             ),
             method: "POST",
             headers: _headers,
@@ -115,7 +115,12 @@ export class UploadsClient {
             }
         }
 
-        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/v0/mounts/{mount}/uploads");
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespace-aliases/{namespace_alias}/uploads",
+        );
     }
 
     /**
@@ -134,7 +139,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.getUploadStatus({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id"
      *     })
      */
@@ -149,13 +154,13 @@ export class UploadsClient {
         request: LoonFS.GetUploadStatusRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
-        const { mount, upload_id: uploadId } = request;
+        const { namespace_alias: namespaceAlias, upload_id: uploadId } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads/${core.url.encodePathParam(uploadId)}`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/uploads/${core.url.encodePathParam(uploadId)}`,
             ),
             method: "GET",
             headers: _headers,
@@ -195,7 +200,7 @@ export class UploadsClient {
             _response.error,
             _response.rawResponse,
             "GET",
-            "/v0/mounts/{mount}/uploads/{upload_id}",
+            "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}",
         );
     }
 
@@ -216,7 +221,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.abortUpload({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id"
      *     })
      */
@@ -231,13 +236,13 @@ export class UploadsClient {
         request: LoonFS.AbortUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
-        const { mount, upload_id: uploadId } = request;
+        const { namespace_alias: namespaceAlias, upload_id: uploadId } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads/${core.url.encodePathParam(uploadId)}/abort`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/uploads/${core.url.encodePathParam(uploadId)}/abort`,
             ),
             method: "POST",
             headers: _headers,
@@ -279,7 +284,7 @@ export class UploadsClient {
             _response.error,
             _response.rawResponse,
             "POST",
-            "/v0/mounts/{mount}/uploads/{upload_id}/abort",
+            "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/abort",
         );
     }
 
@@ -301,7 +306,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.completeUpload({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id",
      *         body: {
      *             mode: "service_proxied"
@@ -319,13 +324,13 @@ export class UploadsClient {
         request: LoonFS.CompleteUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
-        const { mount, upload_id: uploadId, body: _body } = request;
+        const { namespace_alias: namespaceAlias, upload_id: uploadId, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads/${core.url.encodePathParam(uploadId)}/complete`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/uploads/${core.url.encodePathParam(uploadId)}/complete`,
             ),
             method: "POST",
             headers: _headers,
@@ -375,7 +380,7 @@ export class UploadsClient {
             _response.error,
             _response.rawResponse,
             "POST",
-            "/v0/mounts/{mount}/uploads/{upload_id}/complete",
+            "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/complete",
         );
     }
 
@@ -383,7 +388,7 @@ export class UploadsClient {
      * Uploads bytes into a service-proxied upload session and returns the content reference for the stored object.
      *
      * @param {core.file.Uploadable} uploadable
-     * @param {string} mount
+     * @param {string} namespace_alias
      * @param {string} upload_id
      * @param {UploadsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
@@ -399,16 +404,18 @@ export class UploadsClient {
      */
     public uploadContent(
         uploadable: core.file.Uploadable,
-        mount: string,
+        namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadContentResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__uploadContent(uploadable, mount, upload_id, requestOptions));
+        return core.HttpResponsePromise.fromPromise(
+            this.__uploadContent(uploadable, namespace_alias, upload_id, requestOptions),
+        );
     }
 
     private async __uploadContent(
         uploadable: core.file.Uploadable,
-        mount: string,
+        namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadContentResponse>> {
@@ -422,7 +429,7 @@ export class UploadsClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads/${core.url.encodePathParam(upload_id)}/content`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespace_alias)}/uploads/${core.url.encodePathParam(upload_id)}/content`,
             ),
             method: "PUT",
             headers: _headers,
@@ -476,7 +483,7 @@ export class UploadsClient {
             _response.error,
             _response.rawResponse,
             "PUT",
-            "/v0/mounts/{mount}/uploads/{upload_id}/content",
+            "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/content",
         );
     }
 
@@ -499,7 +506,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.signUploadParts({
-     *         mount: "mount",
+     *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id",
      *         parts: [{
      *                 checksum: {
@@ -521,13 +528,13 @@ export class UploadsClient {
         request: LoonFS.SignUploadPartsRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.SignUploadPartsResponse>> {
-        const { mount, upload_id: uploadId, ..._body } = request;
+        const { namespace_alias: namespaceAlias, upload_id: uploadId, ..._body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/mounts/${core.url.encodePathParam(mount)}/uploads/${core.url.encodePathParam(uploadId)}/parts`,
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/uploads/${core.url.encodePathParam(uploadId)}/parts`,
             ),
             method: "POST",
             headers: _headers,
@@ -582,7 +589,7 @@ export class UploadsClient {
             _response.error,
             _response.rawResponse,
             "POST",
-            "/v0/mounts/{mount}/uploads/{upload_id}/parts",
+            "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}/parts",
         );
     }
 }

@@ -3,12 +3,12 @@
 /**
  * @example
  *     {
- *         mount: "mount"
+ *         namespace_alias: "namespace_alias"
  *     }
  */
 export interface ListTrashRequest {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Maximum page size */
     limit?: number;
     /** Opaque trash page cursor */

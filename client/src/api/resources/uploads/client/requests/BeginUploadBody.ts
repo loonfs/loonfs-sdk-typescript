@@ -5,14 +5,14 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         mount: "mount",
+ *         namespace_alias: "namespace_alias",
  *         body: {
  *             mode: "service_proxied"
  *         }
  *     }
  */
 export interface BeginUploadBody {
-    /** Application mount name */
-    mount: string;
+    /** Application namespace alias */
+    namespace_alias: string;
     body: LoonFS.BeginUploadRequest;
 }
