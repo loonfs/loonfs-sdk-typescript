@@ -3,22 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What an upload client claims about a complete payload.
+ * Size and checksum reported by the client for a complete payload.
  *
- * The server mints the content object's identity — a client cannot name a
- * key it has not been given — so a direct upload declares only what it can
- * know about its own bytes. Direct PUT binds the claim into the provider
- * write; multipart verifies it against the assembled object at completion.
- *
- * The digest names its own algorithm because providers do not agree on one:
- * each binds into a presigned write whatever its API can enforce. The
- * deployment advertises which it is, and a claim in any other algorithm is
- * refused at begin rather than signed into a write the provider would
- * reject.
+ * Direct uploads provide this at completion. The server verifies it against
+ * the object stored by the provider.
  */
 export interface UploadContentClaim {
     /** Whole-payload checksum in the algorithm required by this operation. */
     checksum: LoonFS.Checksum;
-    /** Complete byte length the client will write. */
+    /** Complete payload size in bytes. */
     size_bytes: number;
 }

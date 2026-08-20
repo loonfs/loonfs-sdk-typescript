@@ -6,10 +6,6 @@ import type * as LoonFS from "../index.js";
  * Write the object in parts through presigned part uploads.
  */
 export interface BeginUploadDirectMultipart {
-    /**
-     * Selects the part geometry; absent takes the server's default.
-     * A multipart upload claims its content at completion, so nothing
-     * about the payload is declared here.
-     */
+    /** Part size options. The server uses its default when omitted. */
     multipart?: LoonFS.DirectMultipartUploadOptions | undefined;
 }

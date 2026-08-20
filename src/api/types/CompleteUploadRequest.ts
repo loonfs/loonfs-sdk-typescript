@@ -5,9 +5,8 @@ import type * as LoonFS from "../index.js";
 /**
  * Request to complete an upload session.
  *
- * `mode` must match the mode used to start the session. Service-proxied and
- * direct-PUT uploads need no other fields. Direct multipart uploads also
- * include the completed parts and the expected content details.
+ * `mode` must match the mode used to start the session. Direct uploads
+ * include the expected content details. Multipart also includes its parts.
  */
 export type CompleteUploadRequest =
     | LoonFS.CompleteUploadRequest.ServiceProxied

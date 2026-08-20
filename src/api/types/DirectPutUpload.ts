@@ -3,15 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Presigned direct_put upload details. The raw object key is intentionally not public.
+ * Details for a direct PUT upload.
  */
 export interface DirectPutUpload {
-    /** Short-lived write capability the client uses without learning the raw object key. */
+    /** Short-lived permission to write the object. */
     access: LoonFS.ObjectTransferAccess;
-    /**
-     * Immutable object identity the server minted, plus the byte length and
-     * checksum covered by the signed request. Completion and the later
-     * commit both name exactly this reference.
-     */
-    content_ref: LoonFS.ContentRef;
+    /** Checksum algorithm the client must use for its completion claim. */
+    checksum_algorithm: LoonFS.ChecksumAlgorithm;
 }
