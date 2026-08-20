@@ -18,3 +18,5 @@ jobs:
       - run: npm run build
       - name: Build the browser client
         run: cd client && npm install --no-fund --no-audit && npm run build
+      - name: Build the proxy package
+        run: cd proxy && npm install --no-fund --no-audit && npm run build
