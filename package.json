@@ -5,6 +5,10 @@
   "license": "Apache-2.0",
   "repository": "github:loonfs/loonfs-sdk-typescript",
   "type": "module",
+  "workspaces": [
+    "client",
+    "proxy"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

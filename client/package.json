@@ -22,9 +22,5 @@
   ],
   "scripts": {
     "build": "tsc"
-  },
-  "devDependencies": {
-    "typescript": "^5.5.0",
-    "@types/node": "^18.19.0"
   }
 }
