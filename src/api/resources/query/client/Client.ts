@@ -32,9 +32,7 @@ export class QueryClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
@@ -83,7 +81,7 @@ export class QueryClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/query/grep`,
+                        `v0/namespaces/${core.url.encodePathParam(namespaceId)}/grep`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -113,19 +111,9 @@ export class QueryClient {
                                 _response.error.body as LoonFS.ApiError,
                                 _response.rawResponse,
                             );
-                        case 403:
-                            throw new LoonFS.ForbiddenError(
-                                _response.error.body as LoonFS.ApiError,
-                                _response.rawResponse,
-                            );
                         case 404:
                             throw new LoonFS.NotFoundError(
                                 _response.error.body as LoonFS.ApiError,
-                                _response.rawResponse,
-                            );
-                        case 408:
-                            throw new LoonFS.RequestTimeoutError(
-                                _response.error.body as unknown,
                                 _response.rawResponse,
                             );
                         case 410:
@@ -142,7 +130,7 @@ export class QueryClient {
                             );
                         case 503:
                             throw new LoonFS.ServiceUnavailableError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as unknown,
                                 _response.rawResponse,
                             );
                         default:
@@ -157,7 +145,7 @@ export class QueryClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/namespaces/{namespace_id}/query/grep",
+                    "/v0/namespaces/{namespace_id}/grep",
                 );
             },
         );

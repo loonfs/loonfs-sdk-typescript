@@ -10,7 +10,7 @@ export interface StoreProbeCheckResult {
      * What was expected and what happened instead. Present only on
      * `failed`.
      */
-    message?: (string | null) | undefined;
+    message?: string | undefined;
     /** Stable check name. */
     name: string;
     /** What the store did. */

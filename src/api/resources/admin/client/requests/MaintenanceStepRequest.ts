@@ -12,18 +12,18 @@ export interface MaintenanceStepRequest {
     /** Namespace id */
     namespace_id: string;
     /**
-     * Advance the retention floor to the flushed manifest head. Nothing
-     * surrenders replay history unless this is true.
-     */
-    advance_retention?: boolean;
-    /**
-     * Run one bounded mark-and-sweep garbage-collection pass. Nothing
-     * sweeps unless this is present.
+     * Run one bounded mark-and-sweep garbage-collection pass. Omit this
+     * field to skip garbage collection.
      */
     gc?: LoonFS.GcRequest;
     /**
-     * Flush the visible WAL tail into metadata tables, then run one bounded
+     * Flush the visible WAL tail into metadata segments, then run one bounded
      * reorganization step.
      */
-    metadata?: LoonFS.MetadataMaintenanceRequest;
+    metadata_maintenance?: LoonFS.MetadataMaintenanceRequest;
+    /**
+     * Advance the retention floor to the flushed manifest head. Include this
+     * field to select the action.
+     */
+    retention?: LoonFS.AdvanceRetentionRequest;
 }

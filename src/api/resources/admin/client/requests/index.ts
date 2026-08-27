@@ -1,7 +1,7 @@
 export type { CreateCheckpointRequest } from "./CreateCheckpointRequest.js";
 export type { DisableGrepIndexRequest } from "./DisableGrepIndexRequest.js";
 export type { EnableGrepIndexRequest } from "./EnableGrepIndexRequest.js";
-export type { GetGrepIndexStatusRequest } from "./GetGrepIndexStatusRequest.js";
+export type { GetGrepIndexRequest } from "./GetGrepIndexRequest.js";
 export type { GetNamespaceDiagnosticsRequest } from "./GetNamespaceDiagnosticsRequest.js";
 export type { GrepGcRequest } from "./GrepGcRequest.js";
 export type { ListCheckpointsRequest } from "./ListCheckpointsRequest.js";

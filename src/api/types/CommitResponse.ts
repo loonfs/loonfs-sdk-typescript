@@ -9,6 +9,9 @@ import type * as LoonFS from "../index.js";
  * explicit commits, embedded or remote. The commit id is the caller's
  * reconciliation handle: resubmitting the same request with the same id
  * replays this result instead of committing twice.
+ *
+ * The response includes the same attribution and events as
+ * [`CommittedChange`], including IDs created by the commit.
  */
 export interface CommitResponse {
     /**
@@ -16,8 +19,25 @@ export interface CommitResponse {
      * generated on the caller's behalf when the request carried none.
      */
     commit_id: LoonFS.CommitId;
+    /**
+     * Wall-clock stamp of the commit, in Unix milliseconds.
+     * Observational: `committed_seq` is the order.
+     */
+    committed_at_ms: number;
+    /** Actor responsible for the commit, as supplied by the application. */
+    committed_by: LoonFS.ActorRef;
     /** Sequence number where the commit became visible. */
     committed_seq: LoonFS.ChangeSeq;
+    /**
+     * Semantic filesystem events in commit order. This is omitted only when
+     * replaying a commit whose WAL history is no longer retained.
+     */
+    events?: LoonFS.FilesystemChange[] | undefined;
+    /**
+     * Caller annotation, omitted when absent and carrying no filesystem
+     * semantics.
+     */
+    message?: string | undefined;
     /** Namespace that changed. */
     namespace_id: LoonFS.NamespaceId;
 }

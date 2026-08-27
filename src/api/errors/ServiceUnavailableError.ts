@@ -2,12 +2,9 @@
 
 import type * as core from "../../core/index.js";
 import * as errors from "../../errors/index.js";
-import type * as LoonFS from "../index.js";
 
 export class ServiceUnavailableError extends errors.LoonFSError {
-    public declare readonly body: LoonFS.ApiError;
-
-    constructor(body: LoonFS.ApiError, rawResponse?: core.RawResponse) {
+    constructor(body?: unknown, rawResponse?: core.RawResponse) {
         super({
             message: "ServiceUnavailableError",
             statusCode: 503,

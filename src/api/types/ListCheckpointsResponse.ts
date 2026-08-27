@@ -14,5 +14,5 @@ export interface ListCheckpointsResponse {
     /** Namespace the records belong to. */
     namespace_id: LoonFS.NamespaceId;
     /** Opaque cursor for the next page. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
 }

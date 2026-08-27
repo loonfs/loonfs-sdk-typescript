@@ -15,7 +15,7 @@ export declare namespace SystemClient {
 }
 
 /**
- * Server health, readiness, and metrics
+ * Server health, readiness, metrics, and capability discovery
  */
 export class SystemClient {
     protected readonly _options: NormalizedClientOptionsWithAuth<SystemClient.Options>;
@@ -29,18 +29,18 @@ export class SystemClient {
      *
      * @param {SystemClient.RequestOptions} requestOptions - Request-specific configuration.
      *
-     * @throws {@link LoonFS.RequestTimeoutError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.system.health()
+     *     await client.system.getHealth()
      */
-    public health(requestOptions?: SystemClient.RequestOptions): core.HttpResponsePromise<string> {
-        return core.HttpResponsePromise.fromPromise(this.__health(requestOptions));
+    public getHealth(requestOptions?: SystemClient.RequestOptions): core.HttpResponsePromise<string> {
+        return core.HttpResponsePromise.fromPromise(this.__getHealth(requestOptions));
     }
 
-    private async __health(requestOptions?: SystemClient.RequestOptions): Promise<core.WithRawResponse<string>> {
+    private async __getHealth(requestOptions?: SystemClient.RequestOptions): Promise<core.WithRawResponse<string>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -69,8 +69,8 @@ export class SystemClient {
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -89,7 +89,7 @@ export class SystemClient {
      * @param {SystemClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.RequestTimeoutError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -131,8 +131,8 @@ export class SystemClient {
             switch (_response.error.statusCode) {
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -150,19 +150,18 @@ export class SystemClient {
      *
      * @param {SystemClient.RequestOptions} requestOptions - Request-specific configuration.
      *
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.system.readiness()
+     *     await client.system.getReadiness()
      */
-    public readiness(requestOptions?: SystemClient.RequestOptions): core.HttpResponsePromise<string> {
-        return core.HttpResponsePromise.fromPromise(this.__readiness(requestOptions));
+    public getReadiness(requestOptions?: SystemClient.RequestOptions): core.HttpResponsePromise<string> {
+        return core.HttpResponsePromise.fromPromise(this.__getReadiness(requestOptions));
     }
 
-    private async __readiness(requestOptions?: SystemClient.RequestOptions): Promise<core.WithRawResponse<string>> {
+    private async __getReadiness(requestOptions?: SystemClient.RequestOptions): Promise<core.WithRawResponse<string>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -191,13 +190,8 @@ export class SystemClient {
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -208,5 +202,73 @@ export class SystemClient {
         }
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/readiness");
+    }
+
+    /**
+     * Returns a summary of supported features and limits.
+     *
+     * @param {SystemClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.system.getCapabilities()
+     */
+    public getCapabilities(
+        requestOptions?: SystemClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.CapabilityDocument> {
+        return core.HttpResponsePromise.fromPromise(this.__getCapabilities(requestOptions));
+    }
+
+    private async __getCapabilities(
+        requestOptions?: SystemClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.CapabilityDocument>> {
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                "v0/capabilities",
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.CapabilityDocument, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 401:
+                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/v0/capabilities");
     }
 }
