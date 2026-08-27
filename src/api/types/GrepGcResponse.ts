@@ -17,7 +17,7 @@ export interface GrepGcResponse {
     /** Whether an absent or tombstoned namespace had extension state reaped. */
     namespace_reaped: boolean;
     /** Present when the budget stopped the pass with keys left to examine. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
     /** Young or concurrently revived candidates retained by the pass. */
     retained_candidates: number;
 }

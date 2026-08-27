@@ -34,7 +34,7 @@ export class AdminClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -104,8 +104,8 @@ export class AdminClient {
                                 _response.error.body as LoonFS.ApiError,
                                 _response.rawResponse,
                             );
-                        case 408:
-                            throw new LoonFS.RequestTimeoutError(
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
                                 _response.rawResponse,
                             );
@@ -148,7 +148,6 @@ export class AdminClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -163,14 +162,14 @@ export class AdminClient {
     public createCheckpoint(
         request: LoonFS.CreateCheckpointRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.CreateCheckpointResponse> {
+    ): core.HttpResponsePromise<LoonFS.Checkpoint> {
         return core.HttpResponsePromise.fromPromise(this.__createCheckpoint(request, requestOptions));
     }
 
     private async __createCheckpoint(
         request: LoonFS.CreateCheckpointRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.CreateCheckpointResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.Checkpoint>> {
         const { namespace_id: namespaceId, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -197,7 +196,7 @@ export class AdminClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.CreateCheckpointResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.Checkpoint, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -208,15 +207,10 @@ export class AdminClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -243,7 +237,7 @@ export class AdminClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -298,8 +292,8 @@ export class AdminClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -326,8 +320,8 @@ export class AdminClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -381,10 +375,10 @@ export class AdminClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -405,33 +399,33 @@ export class AdminClient {
     /**
      * Returns whether the namespace's grep index is `disabled`, `backfilling`, or `active`, including build progress when available. A namespace that has never enabled the index is `disabled`. This operation requires a deployment that maintains grep indexes and does not change the index.
      *
-     * @param {LoonFS.GetGrepIndexStatusRequest} request
+     * @param {LoonFS.GetGrepIndexRequest} request
      * @param {AdminClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ForbiddenError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.admin.getGrepIndexStatus({
+     *     await client.admin.getGrepIndex({
      *         namespace_id: "namespace_id"
      *     })
      */
-    public getGrepIndexStatus(
-        request: LoonFS.GetGrepIndexStatusRequest,
+    public getGrepIndex(
+        request: LoonFS.GetGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.GrepIndexStatusResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getGrepIndexStatus(request, requestOptions));
+    ): core.HttpResponsePromise<LoonFS.GrepIndex> {
+        return core.HttpResponsePromise.fromPromise(this.__getGrepIndex(request, requestOptions));
     }
 
-    private async __getGrepIndexStatus(
-        request: LoonFS.GetGrepIndexStatusRequest,
+    private async __getGrepIndex(
+        request: LoonFS.GetGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.GrepIndexStatusResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.GrepIndex>> {
         const { namespace_id: namespaceId } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -455,17 +449,15 @@ export class AdminClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.GrepIndexStatusResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.GrepIndex, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 403:
-                    throw new LoonFS.ForbiddenError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
                         _response.error.body as LoonFS.ApiError,
@@ -476,6 +468,8 @@ export class AdminClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -499,13 +493,13 @@ export class AdminClient {
      * @param {LoonFS.DisableGrepIndexRequest} request
      * @param {AdminClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -517,14 +511,14 @@ export class AdminClient {
     public disableGrepIndex(
         request: LoonFS.DisableGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.GrepIndexStatusResponse> {
+    ): core.HttpResponsePromise<LoonFS.GrepIndex> {
         return core.HttpResponsePromise.fromPromise(this.__disableGrepIndex(request, requestOptions));
     }
 
     private async __disableGrepIndex(
         request: LoonFS.DisableGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.GrepIndexStatusResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.GrepIndex>> {
         const { namespace_id: namespaceId } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -548,19 +542,17 @@ export class AdminClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.GrepIndexStatusResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.GrepIndex, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 403:
-                    throw new LoonFS.ForbiddenError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 500:
@@ -573,6 +565,8 @@ export class AdminClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -596,13 +590,13 @@ export class AdminClient {
      * @param {LoonFS.EnableGrepIndexRequest} request
      * @param {AdminClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -614,14 +608,14 @@ export class AdminClient {
     public enableGrepIndex(
         request: LoonFS.EnableGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.GrepIndexStatusResponse> {
+    ): core.HttpResponsePromise<LoonFS.GrepIndex> {
         return core.HttpResponsePromise.fromPromise(this.__enableGrepIndex(request, requestOptions));
     }
 
     private async __enableGrepIndex(
         request: LoonFS.EnableGrepIndexRequest,
         requestOptions?: AdminClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.GrepIndexStatusResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.GrepIndex>> {
         const { namespace_id: namespaceId } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -645,19 +639,17 @@ export class AdminClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.GrepIndexStatusResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.GrepIndex, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 403:
-                    throw new LoonFS.ForbiddenError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 500:
@@ -670,6 +662,8 @@ export class AdminClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -695,9 +689,9 @@ export class AdminClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -752,8 +746,6 @@ export class AdminClient {
                     throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 403:
-                    throw new LoonFS.ForbiddenError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
                         _response.error.body as LoonFS.ApiError,
@@ -764,6 +756,8 @@ export class AdminClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -782,7 +776,7 @@ export class AdminClient {
     }
 
     /**
-     * Runs one bounded maintenance step. The body selects the actions by naming them: `metadata` folds the WAL tail once it reaches the threshold and merges one bounded reorganization unit, `advance_retention: true` advances the retention floor, and `gc` runs one bounded garbage-collection pass. Selected actions run in that order, each reports separately, and an absent report means the body did not select that action. A body that selects nothing is rejected. Nothing surrenders replay history or sweeps objects unless the body asked for it. A deleted namespace accepts a step that selects `gc` alone, which is how its reclaimable state is collected; any other selection is refused. Step-driven GC defaults to 1024 candidates and returns its cursor for a later step rather than looping internally. Losing the root race is an outcome, not an error.
+     * Runs one bounded maintenance step. Include `metadata_maintenance`, `retention`, or `gc` to select actions. Each selector is an options object, and an empty object uses server defaults. Actions run in that order, and only selected actions appear in the response. At least one action is required. A deleted namespace accepts only `gc`. GC processes up to 1024 candidates by default and returns a cursor when more work remains. A lost root update race is reported as an outcome.
      *
      * @param {LoonFS.MaintenanceStepRequest} request
      * @param {AdminClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -791,22 +785,23 @@ export class AdminClient {
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.admin.maintenanceStep({
+     *     await client.admin.runMaintenance({
      *         namespace_id: "namespace_id"
      *     })
      */
-    public maintenanceStep(
+    public runMaintenance(
         request: LoonFS.MaintenanceStepRequest,
         requestOptions?: AdminClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.MaintenanceStepResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__maintenanceStep(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__runMaintenance(request, requestOptions));
     }
 
-    private async __maintenanceStep(
+    private async __runMaintenance(
         request: LoonFS.MaintenanceStepRequest,
         requestOptions?: AdminClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.MaintenanceStepResponse>> {
@@ -821,7 +816,7 @@ export class AdminClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/admin/namespaces/${core.url.encodePathParam(namespaceId)}/maintenance/step`,
+                `v0/admin/namespaces/${core.url.encodePathParam(namespaceId)}/maintenance/run`,
             ),
             method: "POST",
             headers: _headers,
@@ -849,6 +844,8 @@ export class AdminClient {
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -862,7 +859,7 @@ export class AdminClient {
             _response.error,
             _response.rawResponse,
             "POST",
-            "/v0/admin/namespaces/{namespace_id}/maintenance/step",
+            "/v0/admin/namespaces/{namespace_id}/maintenance/run",
         );
     }
 
@@ -874,6 +871,7 @@ export class AdminClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -927,6 +925,8 @@ export class AdminClient {
                     throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 401:
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,

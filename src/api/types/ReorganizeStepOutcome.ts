@@ -15,7 +15,7 @@ export type ReorganizeStepOutcome =
     | LoonFS.ReorganizeStepOutcome.CompactionRunning
     | LoonFS.ReorganizeStepOutcome.CompactionAtCapacity
     | LoonFS.ReorganizeStepOutcome.CompactionRequired
-    | LoonFS.ReorganizeStepOutcome.Superseded;
+    | LoonFS.ReorganizeStepOutcome.RootAdvanced;
 
 export namespace ReorganizeStepOutcome {
     export interface NotNeeded extends LoonFS.ReorganizeStepOutcomeNotNeeded {
@@ -42,7 +42,7 @@ export namespace ReorganizeStepOutcome {
         outcome: "compaction_required";
     }
 
-    export interface Superseded extends LoonFS.ReorganizeStepOutcomeSuperseded {
-        outcome: "superseded";
+    export interface RootAdvanced extends LoonFS.ReorganizeStepOutcomeRootAdvanced {
+        outcome: "root_advanced";
     }
 }

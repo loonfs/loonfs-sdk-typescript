@@ -8,8 +8,8 @@ import type * as LoonFS from "../index.js";
 export type WalFlushStepOutcome =
     | LoonFS.WalFlushStepOutcome.NotNeeded
     | LoonFS.WalFlushStepOutcome.Flushed
-    | LoonFS.WalFlushStepOutcome.Superseded
-    | LoonFS.WalFlushStepOutcome.RaceLost;
+    | LoonFS.WalFlushStepOutcome.AlreadyPublished
+    | LoonFS.WalFlushStepOutcome.RetriesExhausted;
 
 export namespace WalFlushStepOutcome {
     export interface NotNeeded extends LoonFS.WalFlushStepOutcomeNotNeeded {
@@ -20,11 +20,11 @@ export namespace WalFlushStepOutcome {
         outcome: "flushed";
     }
 
-    export interface Superseded extends LoonFS.WalFlushStepOutcomeSuperseded {
-        outcome: "superseded";
+    export interface AlreadyPublished extends LoonFS.WalFlushStepOutcomeAlreadyPublished {
+        outcome: "already_published";
     }
 
-    export interface RaceLost extends LoonFS.WalFlushStepOutcomeRaceLost {
-        outcome: "race_lost";
+    export interface RetriesExhausted extends LoonFS.WalFlushStepOutcomeRetriesExhausted {
+        outcome: "retries_exhausted";
     }
 }

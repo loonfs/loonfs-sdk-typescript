@@ -19,9 +19,11 @@ export interface Checkpoint {
      * has passed and which no collection pass has reached yet: it is still
      * a root, so it is still listed.
      */
-    expires_at_ms?: (number | null) | undefined;
+    expires_at_ms?: number | undefined;
     /** Manifest pinned by the checkpoint. */
-    manifest_id: LoonFS.ManifestId;
+    manifest_no: LoonFS.ManifestNo;
+    /** Namespace that owns the checkpoint. */
+    namespace_id: LoonFS.NamespaceId;
     /** Who owns the checkpoint, including the label carried by a user pin. */
     owner: LoonFS.CheckpointOwnerSummary;
 }

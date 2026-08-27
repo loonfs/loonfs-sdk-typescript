@@ -16,13 +16,13 @@ export interface ListPathEntriesResponse {
      * Entries are returned in canonical name-key order. Higher-level display
      * surfaces may sort entries separately for presentation.
      */
-    entries: LoonFS.AuthoritativePathEntry[];
+    entries: LoonFS.PathEntry[];
     /** Namespace head sequence this listing was read from. */
     head_seq: LoonFS.ChangeSeq;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Cursor for the next page, if more entries remain. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
     /** Absolute path of the listed directory. */
     path: LoonFS.AbsolutePath;
 }

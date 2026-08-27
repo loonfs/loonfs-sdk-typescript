@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface NamespaceDiagnostics {
     /** Current manifest pointer recorded by the head. */
-    current_manifest_id?: LoonFS.ManifestId | undefined;
+    current_manifest_no?: LoonFS.ManifestNo | undefined;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
     /** Namespace ID. */

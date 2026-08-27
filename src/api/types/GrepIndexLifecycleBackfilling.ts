@@ -16,4 +16,10 @@ export interface GrepIndexLifecycleBackfilling {
      * is what completes the backfill.
      */
     target_seq: LoonFS.ChangeSeq;
+    /** Namespace the status describes. */
+    namespace_id: LoonFS.NamespaceId;
+    /** Run number the index allocates next. */
+    next_run_no: LoonFS.RunNo;
+    /** True while a partitioned segment reorganization is in progress. */
+    reorganize_pending: boolean;
 }

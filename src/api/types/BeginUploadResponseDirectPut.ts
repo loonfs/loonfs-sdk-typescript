@@ -6,8 +6,10 @@ import type * as LoonFS from "../index.js";
  * One presigned request writes the whole object.
  */
 export interface BeginUploadResponseDirectPut {
-    /** The object this session writes, and the capability to write it. */
-    direct_put: LoonFS.DirectPutUpload;
+    /** Short-lived permission to write the object. */
+    access: LoonFS.ObjectTransferAccess;
+    /** Checksum algorithm the client must use for its completion claim. */
+    checksum_algorithm: LoonFS.ChecksumAlgorithm;
     /** Namespace authorized to consume the eventual staged content. */
     namespace_id: LoonFS.NamespaceId;
     /** Durable session identity used by subsequent completion calls. */

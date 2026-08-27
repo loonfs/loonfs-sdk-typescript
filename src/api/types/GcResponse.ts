@@ -4,94 +4,49 @@ import type * as LoonFS from "../index.js";
 
 /**
  * Result of one mark-and-sweep garbage-collection pass.
+ *
+ * Deletion counts are grouped by object family. Checkpoint releases and
+ * retained candidates are grouped by reason.
  */
 export interface GcResponse {
     /**
-     * True when the pass stopped because `max_objects` ran out before it
-     * finished. Whatever it did before that is reported here and stands;
-     * rerun with the returned cursor, or with a larger budget, to
-     * continue. A budget too small for the namespace's own roots stops a
-     * pass before it decides anything at all, which is what this says and
-     * an empty report on its own does not.
+     * True when the pass reached `max_objects` before it finished. Use
+     * `next_cursor` to continue or run again with a larger limit.
      */
-    budget_exhausted?: boolean | undefined;
+    budget_exhausted: boolean;
     /**
-     * True when the pass skipped completed-content reclamation because
-     * what it needs — the namespace's live roots, then the reference
-     * collection over them — did not fit in `max_objects`. Nothing was
-     * ever decided from a partial collection; a later pass with room for
-     * the whole scan reclaims what this one left behind. A pass that had
-     * room for the roots swept every other candidate normally around the
-     * skip, and one that did not also reports `budget_exhausted`.
+     * True when `max_objects` was too small to build the complete reference
+     * set required for completed-content reclamation.
      */
-    content_reclamation_deferred?: boolean | undefined;
-    /** True when ambiguous roots suppressed manifest/table deletion. */
-    degraded_retention: boolean;
-    /** Released checkpoint records deleted after their grace window. */
-    deleted_checkpoint_records: number;
-    /**
-     * Content objects reclaimed because their upload session completed,
-     * aged past the derived reclamation grace, and nothing the namespace
-     * can reach references them. The upload half's cleanup of abandoned
-     * sessions is not counted here: it deletes unconditionally, whether or
-     * not the session ever wrote anything.
-     */
-    deleted_content_objects?: number | undefined;
-    /** Unreferenced manifests deleted. */
-    deleted_manifests: number;
-    /** Unreferenced metadata tables deleted. */
-    deleted_metadata_tables: number;
-    /** Upload-session control objects deleted after the reap window. */
-    deleted_upload_sessions?: number | undefined;
-    /** Unreferenced WAL segments deleted. */
-    deleted_wal_segments: number;
+    content_reclamation_deferred: boolean;
+    /** Objects the pass deleted, split by object family. */
+    deleted: LoonFS.DeletedObjectCounts;
     /** Namespace the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
     /**
-     * Opaque resume token when more candidates remain. Resuming rebuilds
-     * every safety proof; the token carries enumeration position only and
-     * is valid only against the same namespace.
+     * Opaque resume token when more candidates remain. It is valid only for
+     * the same namespace.
      */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
     /**
-     * The soonest instant still ahead of this pass at which something it
-     * retained becomes reclaimable: an open session's lease plus the grace
-     * window, an aborted session's grace, or a completed session's derived
-     * content-reclamation grace. A scheduler reads this to decide when to
-     * come back, so a namespace needs no other side channel to have its
-     * reclamation happen.
-     *
-     * It reports what this pass saw and nothing more. A pass that stopped
-     * on `next_cursor` examined only part of the keyspace, and candidates
-     * that age out under a plain grace window on their object timestamps
-     * carry no deadline here at all, so absence is never a claim that
-     * nothing is owed.
+     * Earliest known time when a retained upload session may become
+     * reclaimable. This covers open-session leases and grace periods for
+     * aborted or completed sessions. It only reflects candidates inspected
+     * by this pass, so absence does not mean no future work remains.
      */
-    next_reclamation_at_ms?: (number | null) | undefined;
+    next_reclamation_at_ms?: number | undefined;
     /**
-     * Checkpoint records released because their expiry passed, or because
-     * they sit on a terminally deleted namespace.
+     * Checkpoint records the pass released, split by the reason each one
+     * was released.
      */
-    released_expired_checkpoints?: number | undefined;
-    /**
-     * Fork-owned checkpoint records released because their target namespace
-     * is provably gone.
-     */
-    released_fork_checkpoints: number;
-    /**
-     * Active checkpoint records released because their basis manifest is
-     * verifiably gone.
-     */
-    released_missing_basis_checkpoints?: number | undefined;
-    /**
-     * The same total, split by the decision that spared each candidate.
-     * The total above stays because it is what every existing consumer
-     * reads; this says why.
-     */
-    retained?: LoonFS.RetainedCandidates | undefined;
+    released_checkpoints: LoonFS.ReleasedCheckpointCounts;
+    /** `retained_candidates` grouped by reason. */
+    retained: LoonFS.RetainedCandidates;
     /**
      * Candidates retained at delete time (grace window, missing
      * timestamps, or reachable from the fresh root set).
      */
     retained_candidates: number;
+    /** True when ambiguous roots suppressed manifest/segment deletion. */
+    retention_degraded: boolean;
 }

@@ -15,18 +15,18 @@ export interface ErrorDetails {
      * the head recorded one. Writer ids are process labels, so two runs on
      * one machine can share one; the stamp is what tells them apart.
      */
-    active_acquired_at_ms?: (number | null) | undefined;
-    /** Deletion generation actually active for the inode. */
-    active_deletion_seq?: LoonFS.ChangeSeq | undefined;
+    active_acquired_at_ms?: number | undefined;
     /**
      * Writer id recorded by the current epoch's acquirer, when the head
      * recorded one.
      */
-    active_writer?: (string | null) | undefined;
+    active_writer?: string | undefined;
     /** Epoch that currently owns the namespace. */
     active_writer_epoch?: LoonFS.WriterEpoch | undefined;
     /** Attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    /** Deletion generation actually active for the inode. */
+    actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /**
      * Head sequence the namespace was actually at, which is what a caller
      * that still means to delete it retries against.
@@ -46,7 +46,7 @@ export interface ErrorDetails {
      * [`put_retry_fingerprint`](crate::put_retry_fingerprint) — and equality
      * is what proves the two are the same request.
      */
-    committed_fingerprint?: (string | null) | undefined;
+    committed_fingerprint?: string | undefined;
     /**
      * Sequence at which that commit id already landed. Present when the
      * failure was decided against a durable commit receipt, which is what
@@ -56,6 +56,8 @@ export interface ErrorDetails {
     committed_seq?: LoonFS.ChangeSeq | undefined;
     /** Attribute revision the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    /** Deletion generation the undelete expected to be active. */
+    expected_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /**
      * Head sequence a namespace delete required the namespace to still be
      * at.
@@ -64,7 +66,7 @@ export interface ErrorDetails {
     /** Revision the request expected to be current. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** Epoch the failing writer session held when it was displaced. */
-    fenced_epoch?: LoonFS.WriterEpoch | undefined;
+    fenced_writer_epoch?: LoonFS.WriterEpoch | undefined;
     /** Stable inode ID within a namespace */
     inode_id?: string | undefined;
     /**
@@ -72,9 +74,7 @@ export interface ErrorDetails {
      * failed. A commit applies all of its operations or none of them, so
      * this names the one that stopped the whole request.
      */
-    operation_index?: (number | null) | undefined;
-    /** Deletion generation an undelete asked to recover. */
-    requested_deletion_seq?: LoonFS.ChangeSeq | undefined;
+    operation_index?: number | undefined;
     /** Oldest sequence still promised for incremental replay. */
     retention_floor_seq?: LoonFS.ChangeSeq | undefined;
 }

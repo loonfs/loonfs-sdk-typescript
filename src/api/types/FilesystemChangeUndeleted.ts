@@ -6,6 +6,8 @@ import type * as LoonFS from "../index.js";
  * A deleted inode was recovered and re-bound.
  */
 export interface FilesystemChangeUndeleted {
+    /** Opaque identifier for the binding created by this event. */
+    binding_generation: string;
     /** Spelling of the recovered binding. */
     display_name: LoonFS.DisplayName;
     /** Stable inode ID within a namespace */

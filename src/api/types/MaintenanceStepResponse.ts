@@ -13,7 +13,7 @@ export interface MaintenanceStepResponse {
     /** What the collection pass reclaimed. */
     gc?: LoonFS.GcResponse | undefined;
     /** What the metadata-upkeep action did. */
-    metadata?: LoonFS.MetadataMaintenanceResponse | undefined;
+    metadata_maintenance?: LoonFS.MetadataMaintenanceResponse | undefined;
     /** Namespace the step ran against. */
     namespace_id: LoonFS.NamespaceId;
     /** Where the retention floor ended up. */

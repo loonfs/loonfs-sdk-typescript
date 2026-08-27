@@ -14,4 +14,10 @@ export interface GrepIndexLifecycleActive {
      * zero when the whole commit is represented.
      */
     next_event_index?: number | undefined;
+    /** Namespace the status describes. */
+    namespace_id: LoonFS.NamespaceId;
+    /** Run number the index allocates next. */
+    next_run_no: LoonFS.RunNo;
+    /** True while a partitioned segment reorganization is in progress. */
+    reorganize_pending: boolean;
 }
