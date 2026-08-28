@@ -10,6 +10,10 @@ export interface NamespaceDiagnostics {
     current_manifest_no?: LoonFS.ManifestNo | undefined;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
+    /** Number of active user checkpoints, including expired records awaiting collection. */
+    live_checkpoints: number;
+    /** Number of snapshots that had not expired when diagnostics began. */
+    live_snapshots: number;
     /** Namespace ID. */
     namespace_id: LoonFS.NamespaceId;
     /** Oldest sequence still promised for incremental replay. */

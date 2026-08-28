@@ -9,8 +9,8 @@
  */
 export interface ReleasedCheckpointCounts {
     /**
-     * Records released because their expiry passed, or because they sit on
-     * a terminally deleted namespace.
+     * User-owned records released because their expiry passed, or because
+     * they sit on a terminally deleted namespace.
      */
     expired: number;
     /**
@@ -23,4 +23,9 @@ export interface ReleasedCheckpointCounts {
      * gone.
      */
     missing_basis: number;
+    /**
+     * Snapshot-owned records released because their expiry passed, or
+     * because they sit on a terminally deleted namespace.
+     */
+    snapshot: number;
 }

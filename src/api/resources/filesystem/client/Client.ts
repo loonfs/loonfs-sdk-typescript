@@ -26,7 +26,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns committed changes from the write-ahead log. Callers can use this feed to keep another projection synchronized with WAL history.
+     * Returns committed changes after a sequence. A snapshot limits the feed to its captured sequence.
      *
      * @param {LoonFS.ListChangesRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -43,7 +43,8 @@ export class FilesystemClient {
      * @example
      *     await client.filesystem.listChanges({
      *         namespace_id: "namespace_id",
-     *         after_seq: 1000000
+     *         after_seq: 1000000,
+     *         snapshot_id: "chk_00000000000000000000000000000002"
      *     })
      */
     public listChanges(
@@ -57,10 +58,11 @@ export class FilesystemClient {
         request: LoonFS.ListChangesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.ListChangesResponse>> {
-        const { namespace_id: namespaceId, after_seq: afterSeq, limit } = request;
+        const { namespace_id: namespaceId, after_seq: afterSeq, limit, snapshot_id: snapshotId } = request;
         const _queryParams: Record<string, unknown> = {
             after_seq: afterSeq,
             limit,
+            snapshot_id: snapshotId,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -223,7 +225,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns file bytes for the current revision at a path, or for a specific retained revision when `revision_no` is provided.
+     * Returns the current file bytes, a retained revision, or the revision captured by a live snapshot.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
@@ -245,10 +247,11 @@ export class FilesystemClient {
         request: LoonFS.GetFileBytesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { namespace_id: namespaceId, path, revision_no: revisionNo } = request;
+        const { namespace_id: namespaceId, path, revision_no: revisionNo, snapshot_id: snapshotId } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             revision_no: revisionNo,
+            snapshot_id: snapshotId,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -332,6 +335,7 @@ export class FilesystemClient {
      * @example
      *     await client.filesystem.createDownload({
      *         namespace_id: "namespace_id",
+     *         snapshot_id: "chk_00000000000000000000000000000002",
      *         path: "/docs/report.txt"
      *     })
      */
@@ -346,7 +350,10 @@ export class FilesystemClient {
         request: LoonFS.BeginDownloadRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginDownloadResponse>> {
-        const { namespace_id: namespaceId, ..._body } = request;
+        const { namespace_id: namespaceId, snapshot_id: snapshotId, ..._body } = request;
+        const _queryParams: Record<string, unknown> = {
+            snapshot_id: snapshotId,
+        };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -362,7 +369,11 @@ export class FilesystemClient {
             method: "POST",
             headers: _headers,
             contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
             requestType: "json",
             body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
@@ -410,7 +421,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Lists a directory at the current namespace head.
+     * Lists a directory from the current state or a live snapshot.
      *
      * @param {LoonFS.ListPathEntriesRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -426,7 +437,8 @@ export class FilesystemClient {
      * @example
      *     await client.filesystem.listPathEntries({
      *         namespace_id: "namespace_id",
-     *         path: "path"
+     *         path: "path",
+     *         snapshot_id: "chk_00000000000000000000000000000002"
      *     })
      */
     public async listPathEntries(
@@ -443,12 +455,14 @@ export class FilesystemClient {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -536,7 +550,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns the current metadata for a path, including inode identity, kind, display name, file content metadata, and the inode's attributes.
+     * Returns path metadata from the current state or a live snapshot.
      *
      * @param {LoonFS.GetPathEntryRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -552,7 +566,8 @@ export class FilesystemClient {
      * @example
      *     await client.filesystem.getPathEntry({
      *         namespace_id: "namespace_id",
-     *         path: "path"
+     *         path: "path",
+     *         snapshot_id: "chk_00000000000000000000000000000002"
      *     })
      */
     public getPathEntry(
@@ -566,10 +581,16 @@ export class FilesystemClient {
         request: LoonFS.GetPathEntryRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.PathEntry>> {
-        const { namespace_id: namespaceId, path, include_attributes: includeAttributes } = request;
+        const {
+            namespace_id: namespaceId,
+            path,
+            include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(

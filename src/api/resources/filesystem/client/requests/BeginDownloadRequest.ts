@@ -6,12 +6,15 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
+ *         snapshot_id: "chk_00000000000000000000000000000002",
  *         path: "/docs/report.txt"
  *     }
  */
 export interface BeginDownloadRequest {
     /** Namespace id */
     namespace_id: string;
+    /** Use the file revision captured by this snapshot */
+    snapshot_id?: LoonFS.CheckpointId;
     /** Absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /** Revision to read, or `None` for the path's current revision. */

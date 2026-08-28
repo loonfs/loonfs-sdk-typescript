@@ -3,14 +3,12 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Who a checkpoint record answers to, as the record durably records it.
- *
- * The two owners have different releases, so a listing that names the
- * owner also says which records the release endpoint will act on: a user
- * pin is released by id, and a fork lease is released by deleting the
- * target namespace it protects.
+ * The owner of a checkpoint record.
  */
-export type CheckpointOwnerSummary = LoonFS.CheckpointOwnerSummary.User | LoonFS.CheckpointOwnerSummary.Fork;
+export type CheckpointOwnerSummary =
+    | LoonFS.CheckpointOwnerSummary.User
+    | LoonFS.CheckpointOwnerSummary.Fork
+    | LoonFS.CheckpointOwnerSummary.Snapshot;
 
 export namespace CheckpointOwnerSummary {
     export interface User extends LoonFS.CheckpointOwnerUser {
@@ -19,5 +17,9 @@ export namespace CheckpointOwnerSummary {
 
     export interface Fork extends LoonFS.CheckpointOwnerFork {
         kind: "fork";
+    }
+
+    export interface Snapshot extends LoonFS.CheckpointOwnerSnapshot {
+        kind: "snapshot";
     }
 }
