@@ -1,27 +1,32 @@
 {
   "name": "@loonfs/sdk",
-  "version": "0.1.0",
-  "description": "TypeScript client for the LoonFS HTTP API",
+  "version": "0.1.1",
+  "description": "TypeScript SDK for LoonFS client, proxy, and server applications",
   "license": "Apache-2.0",
-  "repository": "github:loonfs/loonfs-sdk-typescript",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loonfs/loonfs-sdk-typescript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/loonfs/loonfs-sdk-typescript/issues"
+  },
+  "homepage": "https://github.com/loonfs/loonfs-sdk-typescript#readme",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
-  "workspaces": [
-    "client",
-    "proxy"
-  ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "default": "./dist/client/index.js"
     },
-    "./transfers": {
-      "types": "./dist/transfers.d.ts",
-      "default": "./dist/transfers.js"
+    "./proxy": {
+      "types": "./dist/proxy/proxy.d.ts",
+      "default": "./dist/proxy/proxy.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "default": "./dist/server/index.js"
     }
   },
   "files": [
@@ -31,7 +36,11 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsc",
+    "clean": "node scripts/clean.mjs",
+    "build": "npm run clean && npm run build:server && npm run build:client && npm run build:proxy",
+    "build:server": "tsc",
+    "build:client": "tsc --project client/tsconfig.json",
+    "build:proxy": "tsc --project proxy/tsconfig.json",
     "prepack": "npm run build"
   },
   "devDependencies": {

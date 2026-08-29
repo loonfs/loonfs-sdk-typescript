@@ -1,4 +1,4 @@
-name: Publish packages
+name: Publish package
 
 on:
   workflow_dispatch:
@@ -36,15 +36,10 @@ jobs:
           node - "$version" <<'NODE'
           const fs = require("node:fs");
           const expected = process.argv[2];
-          for (const manifest of ["package.json", "client/package.json", "proxy/package.json"]) {
-              const actual = JSON.parse(fs.readFileSync(manifest, "utf8")).version;
-              if (actual !== expected) {
-                  throw new Error(`${manifest} has ${actual}; expected ${expected}`);
-              }
+          const actual = JSON.parse(fs.readFileSync("package.json", "utf8")).version;
+          if (actual !== expected) {
+              throw new Error(`package.json has ${actual}; expected ${expected}`);
           }
           NODE
       - run: npm run build
-      - run: npm run build --workspaces
       - run: npm publish --provenance
-      - run: npm publish --workspace client --provenance
-      - run: npm publish --workspace proxy --provenance
