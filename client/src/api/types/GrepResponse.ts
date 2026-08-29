@@ -24,7 +24,7 @@ export interface GrepResponse {
     /** Namespace searched. */
     namespace_id: LoonFS.NamespaceId;
     /** Present when another page follows. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
     /**
      * True when revisions after `built_through_seq` were scanned
      * exhaustively; false only when `allow_stale` skipped them.

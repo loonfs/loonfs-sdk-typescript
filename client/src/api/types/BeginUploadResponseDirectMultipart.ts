@@ -6,10 +6,16 @@ import type * as LoonFS from "../index.js";
  * Presigned part uploads assemble the object.
  */
 export interface BeginUploadResponseDirectMultipart {
-    /** The geometry the client cuts its payload to. */
-    direct_multipart: LoonFS.DirectMultipartUpload;
+    /** Checksum algorithm for every part and for the complete payload. */
+    checksum_algorithm: LoonFS.ChecksumAlgorithm;
     /** Namespace authorized to consume the eventual staged content. */
     namespace_id: LoonFS.NamespaceId;
+    /**
+     * Byte length of every part except the last. At most 10,000 parts
+     * may be uploaded, so this bounds the object at 10,000 times the
+     * part size.
+     */
+    part_size_bytes: number;
     /**
      * Durable session identity used by subsequent part-signing and
      * completion calls.

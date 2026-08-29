@@ -6,7 +6,8 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_alias: "namespace_alias",
- *         after_seq: 1000000
+ *         after_seq: 1000000,
+ *         snapshot_id: "chk_00000000000000000000000000000002"
  *     }
  */
 export interface ListChangesRequest {
@@ -16,4 +17,6 @@ export interface ListChangesRequest {
     after_seq: LoonFS.ChangeSeq;
     /** Maximum page size */
     limit?: number;
+    /** End the feed at this snapshot's captured sequence */
+    snapshot_id?: LoonFS.CheckpointId;
 }

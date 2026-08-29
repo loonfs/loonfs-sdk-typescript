@@ -6,6 +6,8 @@ import type * as LoonFS from "../index.js";
  * A file and its first revision were created.
  */
 export interface FilesystemChangeFileCreated {
+    /** Opaque identifier for the binding created by this event. */
+    binding_generation: string;
     /** Content of the first revision. */
     content_ref: LoonFS.ContentRef;
     /** User-facing spelling of the new entry. */

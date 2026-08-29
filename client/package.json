@@ -4,6 +4,9 @@
   "description": "Browser client for a LoonFS proxy",
   "license": "Apache-2.0",
   "repository": "github:loonfs/loonfs-sdk-typescript",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,6 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepack": "npm run build"
   }
 }

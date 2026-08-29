@@ -1,6 +1,9 @@
 export * from "./filesystem/client/requests/index.js";
 export * as filesystem from "./filesystem/index.js";
+export * from "./namespaces/client/requests/index.js";
+export * as namespaces from "./namespaces/index.js";
 export * from "./query/client/requests/index.js";
 export * as query from "./query/index.js";
+export * as system from "./system/index.js";
 export * from "./uploads/client/requests/index.js";
 export * as uploads from "./uploads/index.js";

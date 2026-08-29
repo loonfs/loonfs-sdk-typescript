@@ -28,36 +28,36 @@ export class UploadsClient {
     /**
      * Starts an upload session for content that may later be attached to a file. Service-proxied uploads send bytes through the server; direct-put uploads return object-store presigned credentials.
      *
-     * @param {LoonFS.BeginUploadBody} request
+     * @param {LoonFS.CreateUploadRequest} request
      * @param {UploadsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.beginUpload({
+     *     await client.uploads.createUpload({
      *         namespace_alias: "namespace_alias",
      *         body: {
      *             mode: "service_proxied"
      *         }
      *     })
      */
-    public beginUpload(
-        request: LoonFS.BeginUploadBody,
+    public createUpload(
+        request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.BeginUploadResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__beginUpload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__createUpload(request, requestOptions));
     }
 
-    private async __beginUpload(
-        request: LoonFS.BeginUploadBody,
+    private async __createUpload(
+        request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginUploadResponse>> {
         const { namespace_alias: namespaceAlias, body: _body } = request;
@@ -75,7 +75,7 @@ export class UploadsClient {
             requestType: "json",
             body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            maxRetries: 0,
             abortSignal: requestOptions?.abortSignal,
             fetchFn: this._options?.fetch,
             logging: this._options.logging,
@@ -92,8 +92,6 @@ export class UploadsClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 413:
@@ -106,6 +104,8 @@ export class UploadsClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -126,34 +126,34 @@ export class UploadsClient {
     /**
      * Returns an upload session. A completed session includes a new content token so the client can retry the commit without uploading the content again.
      *
-     * @param {LoonFS.GetUploadStatusRequest} request
+     * @param {LoonFS.GetUploadRequest} request
      * @param {UploadsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.getUploadStatus({
+     *     await client.uploads.getUpload({
      *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id"
      *     })
      */
-    public getUploadStatus(
-        request: LoonFS.GetUploadStatusRequest,
+    public getUpload(
+        request: LoonFS.GetUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.UploadSessionResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getUploadStatus(request, requestOptions));
+    ): core.HttpResponsePromise<LoonFS.UploadSession> {
+        return core.HttpResponsePromise.fromPromise(this.__getUpload(request, requestOptions));
     }
 
-    private async __getUploadStatus(
-        request: LoonFS.GetUploadStatusRequest,
+    private async __getUpload(
+        request: LoonFS.GetUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const { namespace_alias: namespaceAlias, upload_id: uploadId } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -172,7 +172,7 @@ export class UploadsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.UploadSessionResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.UploadSession, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -183,10 +183,10 @@ export class UploadsClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -213,9 +213,9 @@ export class UploadsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -228,14 +228,14 @@ export class UploadsClient {
     public abortUpload(
         request: LoonFS.AbortUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.UploadSessionResponse> {
+    ): core.HttpResponsePromise<LoonFS.UploadSession> {
         return core.HttpResponsePromise.fromPromise(this.__abortUpload(request, requestOptions));
     }
 
     private async __abortUpload(
         request: LoonFS.AbortUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const { namespace_alias: namespaceAlias, upload_id: uploadId } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -254,7 +254,7 @@ export class UploadsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.UploadSessionResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.UploadSession, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -265,12 +265,12 @@ export class UploadsClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -297,10 +297,10 @@ export class UploadsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -316,14 +316,14 @@ export class UploadsClient {
     public completeUpload(
         request: LoonFS.CompleteUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.UploadSessionResponse> {
+    ): core.HttpResponsePromise<LoonFS.UploadSession> {
         return core.HttpResponsePromise.fromPromise(this.__completeUpload(request, requestOptions));
     }
 
     private async __completeUpload(
         request: LoonFS.CompleteUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.UploadSessionResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const { namespace_alias: namespaceAlias, upload_id: uploadId, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -345,7 +345,7 @@ export class UploadsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.UploadSessionResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.UploadSession, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -356,8 +356,6 @@ export class UploadsClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
@@ -367,6 +365,8 @@ export class UploadsClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -402,18 +402,18 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      */
-    public uploadContent(
+    public putUploadContent(
         uploadable: core.file.Uploadable,
         namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadContentResponse> {
         return core.HttpResponsePromise.fromPromise(
-            this.__uploadContent(uploadable, namespace_alias, upload_id, requestOptions),
+            this.__putUploadContent(uploadable, namespace_alias, upload_id, requestOptions),
         );
     }
 
-    private async __uploadContent(
+    private async __putUploadContent(
         uploadable: core.file.Uploadable,
         namespace_alias: string,
         upload_id: string,
@@ -466,10 +466,7 @@ export class UploadsClient {
                         _response.rawResponse,
                     );
                 case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -496,11 +493,11 @@ export class UploadsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -560,8 +557,6 @@ export class UploadsClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
@@ -576,6 +571,8 @@ export class UploadsClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,

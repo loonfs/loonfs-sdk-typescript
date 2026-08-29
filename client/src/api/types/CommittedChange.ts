@@ -24,5 +24,5 @@ export interface CommittedChange {
      */
     events: LoonFS.FilesystemChange[];
     /** Caller annotation, omitted when absent and carrying no filesystem semantics. */
-    message?: (string | null) | undefined;
+    message?: string | undefined;
 }

@@ -6,6 +6,8 @@ import type * as LoonFS from "../index.js";
  * An inode moved to a new parent directory or name.
  */
 export interface FilesystemChangeMoved {
+    /** Opaque identifier for the binding created by this event. */
+    binding_generation: string;
     /** Spelling of the old binding. */
     from_display_name: LoonFS.DisplayName;
     /** Stable inode ID within a namespace */

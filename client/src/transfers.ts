@@ -1,6 +1,7 @@
 import { LoonFSClient } from "./Client.js";
 import type * as LoonFS from "./api/index.js";
 
+const DIRECT_GET_FEATURE = "core.downloads.direct_get";
 const DIRECT_MULTIPART_FEATURE = "core.uploads.direct_multipart";
 const DIRECT_PUT_FEATURE = "core.uploads.direct_put";
 const DIRECT_PUT_MAX_BYTES = "upload.direct_put_max_content_bytes";
@@ -39,7 +40,11 @@ export interface GetFileInput {
     revision_no?: LoonFS.RevisionNo;
 }
 
-export interface GetFileResult extends LoonFS.BeginDownloadResponse {
+export interface GetFileResult {
+    namespace_alias: string;
+    path: LoonFS.AbsolutePath;
+    revision_no: LoonFS.RevisionNo;
+    content_ref: LoonFS.ContentRef;
     bytes: Uint8Array;
 }
 
@@ -77,7 +82,7 @@ export async function putFile(client: LoonFSClient, input: PutFileInput): Promis
     if (input.message !== undefined) {
         request.message = input.message;
     }
-    return client.filesystem.applyCommit(request);
+    return client.filesystem.createCommit(request);
 }
 
 /**
@@ -85,7 +90,11 @@ export async function putFile(client: LoonFSClient, input: PutFileInput): Promis
  * Streaming and resume are follow-ups.
  */
 export async function getFile(client: LoonFSClient, input: GetFileInput): Promise<GetFileResult> {
-    const grant = await client.filesystem.beginDownload(input);
+    const capabilities = await client.system.getCapabilities();
+    if ((capabilities.features ?? {})[DIRECT_GET_FEATURE] !== true) {
+        return getFileProxied(client, input);
+    }
+    const grant = await client.filesystem.createDownload(input);
     requirePresignedMethod(grant.access, "GET", "download");
     const response = await fetch(grant.access.url, {
         redirect: "error",
@@ -103,7 +112,60 @@ export async function getFile(client: LoonFSClient, input: GetFileInput): Promis
     if (actual.value !== grant.content_ref.checksum.value) {
         throw new Error(`download checksum did not match ${grant.content_ref.checksum.algorithm} claim`);
     }
-    return { ...grant, bytes };
+    return {
+        namespace_alias: input.namespace_alias,
+        path: grant.path,
+        revision_no: grant.revision_no,
+        content_ref: grant.content_ref,
+        bytes,
+    };
+}
+
+// Reads through LoonFS when direct reads are unavailable. It loads the content
+// reference first, then requests the exact revision so the reference and
+// returned bytes describe the same file version.
+async function getFileProxied(client: LoonFSClient, input: GetFileInput): Promise<GetFileResult> {
+    let revisionNo = input.revision_no;
+    let claim: LoonFS.ContentRef | undefined;
+    if (revisionNo === undefined) {
+        const entry = await client.filesystem.getPathEntry({
+            namespace_alias: input.namespace_alias,
+            path: input.path,
+        });
+        if (entry.inode_kind !== "file") {
+            throw new Error(`path ${input.path} is a ${entry.inode_kind}, not a file`);
+        }
+        claim = entry.content_ref;
+        revisionNo = entry.revision_no;
+    } else {
+        const page = await client.filesystem.listFileRevisions({
+            namespace_alias: input.namespace_alias,
+            path: input.path,
+        });
+        for await (const revision of page) {
+            if (revision.revision_no === revisionNo) {
+                claim = revision.content_ref;
+                break;
+            }
+        }
+        if (claim === undefined) {
+            throw new Error(`revision ${revisionNo} not found for ${input.path}`);
+        }
+    }
+    const body = await client.filesystem.getFileBytes({
+        namespace_alias: input.namespace_alias,
+        path: input.path,
+        revision_no: revisionNo,
+    });
+    const bytes = new Uint8Array(await body.arrayBuffer());
+    if (bytes.byteLength !== claim.size_bytes) {
+        throw new Error(`proxied read returned ${bytes.byteLength} bytes, expected ${claim.size_bytes}`);
+    }
+    const actual = await checksum(claim.checksum.algorithm, bytes);
+    if (actual.value !== claim.checksum.value) {
+        throw new Error(`proxied read checksum did not match ${claim.checksum.algorithm} claim`);
+    }
+    return { namespace_alias: input.namespace_alias, path: input.path, revision_no: revisionNo, content_ref: claim, bytes };
 }
 
 async function stageBytes(
@@ -111,9 +173,9 @@ async function stageBytes(
     namespaceAlias: string,
     bytes: Uint8Array,
 ): Promise<StagedContent> {
-    const capabilities = await client.capabilities();
+    const capabilities = await client.system.getCapabilities();
     const beginRequest = selectBeginRequest(capabilities, bytes);
-    const begin = await client.uploads.beginUpload({
+    const begin = await client.uploads.createUpload({
         namespace_alias: namespaceAlias,
         body: beginRequest,
     });
@@ -167,7 +229,7 @@ async function stageServiceProxied(
     begin: LoonFS.BeginUploadResponse.ServiceProxied,
 ): Promise<StagedContent> {
     try {
-        await client.uploads.uploadContent(arrayBuffer(bytes), namespaceAlias, begin.upload_id);
+        await client.uploads.putUploadContent(arrayBuffer(bytes), namespaceAlias, begin.upload_id);
         return stagedContent(
             await client.uploads.completeUpload({
                 namespace_alias: namespaceAlias,
@@ -189,12 +251,12 @@ async function stageDirectPut(
 ): Promise<StagedContent> {
     let upload: DirectPutBody;
     try {
-        requirePresignedMethod(begin.direct_put.access, "PUT", "direct PUT");
-        upload = await directPutBody(begin.direct_put.checksum_algorithm, bytes);
-        const response = await fetch(begin.direct_put.access.url, {
+        requirePresignedMethod(begin.access, "PUT", "direct PUT");
+        upload = await directPutBody(begin.checksum_algorithm, bytes);
+        const response = await fetch(begin.access.url, {
             redirect: "error",
-            method: begin.direct_put.access.method,
-            headers: begin.direct_put.access.headers,
+            method: begin.access.method,
+            headers: begin.access.headers,
             body: upload.body,
         });
         requireSuccessfulResponse(response, "direct PUT");
@@ -217,7 +279,7 @@ async function stageMultipart(
     bytes: Uint8Array,
     begin: LoonFS.BeginUploadResponse.DirectMultipart,
 ): Promise<StagedContent> {
-    const { checksum_algorithm: algorithm, part_size_bytes: partSize } = begin.direct_multipart;
+    const { checksum_algorithm: algorithm, part_size_bytes: partSize } = begin;
     if (!Number.isSafeInteger(partSize) || partSize <= 0) {
         throw new Error(`invalid multipart part size ${partSize}`);
     }
@@ -293,14 +355,13 @@ function splitBytes(bytes: Uint8Array, partSize: number): Uint8Array[] {
     return parts;
 }
 
-function stagedContent(response: LoonFS.UploadSessionResponse): StagedContent {
-    const completed = response as LoonFS.UploadSessionResponse & LoonFS.UploadSessionStatus.Completed;
-    if (completed.status !== "completed") {
-        throw new Error(`upload ${response.upload_id} completed with status ${completed.status}`);
+function stagedContent(response: LoonFS.UploadSession): StagedContent {
+    if (response.status !== "completed") {
+        throw new Error(`upload ${response.upload_id} completed with status ${response.status}`);
     }
     return {
-        contentRef: completed.content_ref,
-        contentToken: completed.content_token,
+        contentRef: response.content_ref,
+        contentToken: response.content_token,
     };
 }
 

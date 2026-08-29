@@ -11,7 +11,7 @@ export interface FilesystemChangeDeleted {
      * Directory binding removed by the deletion, when the delete
      * recorded one.
      */
-    deleted_direntry?: LoonFS.DeletedDirentry | undefined;
+    deleted_binding?: LoonFS.DirectoryBinding | undefined;
     /** Stable inode ID within a namespace */
     inode_id: string;
 }
