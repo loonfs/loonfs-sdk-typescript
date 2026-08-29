@@ -15,7 +15,7 @@ export interface GrepMatch {
     /** One-based line number of the match. */
     line_number: number;
     /** True when `line` was truncated. */
-    line_truncated?: boolean | undefined;
+    line_truncated: boolean;
     /** The file's absolute path, derived at the snapshot. */
     path: LoonFS.AbsolutePath;
     /** The matched revision (the newest visible one at the snapshot). */

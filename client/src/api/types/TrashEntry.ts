@@ -5,22 +5,18 @@ import type * as LoonFS from "../index.js";
 /**
  * One deletion that can still be restored.
  *
- * `inode_id` and `deletion_seq` are sufficient to restore it. The original
- * parent and name are included when they were recorded.
+ * `inode_id` and `deletion_seq` are sufficient to restore it. The removed
+ * directory binding is included when available.
  */
 export interface TrashEntry {
     /** Time of the deletion, in Unix milliseconds. */
     deleted_at_ms: number;
+    /** Directory binding removed by the deletion, when available. */
+    deleted_binding?: LoonFS.DirectoryBinding | undefined;
     /** Actor responsible for the deletion. */
     deleted_by: LoonFS.ActorRef;
     /** Commit sequence that identifies this deletion. */
     deletion_seq: LoonFS.ChangeSeq;
-    /** User-facing spelling of the deleted binding, when recorded. */
-    display_name?: LoonFS.DisplayName | undefined;
     /** Stable inode ID within a namespace */
     inode_id: string;
-    /** Canonical key of the deleted binding, when recorded. */
-    name_key?: LoonFS.NameKey | undefined;
-    /** Stable inode ID within a namespace */
-    parent_inode_id?: string | undefined;
 }

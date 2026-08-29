@@ -1,10 +1,7 @@
 # LoonFS TypeScript SDK
 
-TypeScript client for the LoonFS HTTP API.
-
-## Status
-
-Pre-release. Not yet published to npm. This repository is private until the first release.
+The trusted server-side client for the LoonFS HTTP API. SDK v0.1.x targets
+LoonFS API v0.3.x.
 
 ## Install
 
@@ -12,24 +9,35 @@ Pre-release. Not yet published to npm. This repository is private until the firs
 npm install @loonfs/sdk
 ```
 
-This command works after the first release.
-
 ## Usage
 
 ```ts
 import { LoonFSClient } from "@loonfs/sdk";
 
 const client = new LoonFSClient({
-  environment: "https://your-loonfs-host.example",
-  token: "your-api-token",
+    environment: process.env.LOONFS_URL!,
+    token: process.env.LOONFS_AUTH_TOKEN!,
 });
 
-const capabilities = await client.capabilities();
+const capabilities = await client.system.getCapabilities();
 ```
+
+Upload and download helpers are exported from `@loonfs/sdk/transfers`.
+
+Browser applications should use [`@loonfs/sdk-client`](./client) through a
+server-side [`@loonfs/sdk-proxy`](./proxy). Never expose a LoonFS server token
+to browser code.
+
+## Retries
+
+The SDK retries transient failures on operations that are safe to repeat.
+Operations that LoonFS classifies as non-idempotent are never retried
+automatically.
 
 ## Generated code
 
-This code is generated with Fern from the LoonFS OpenAPI spec (`docs/specs/openapi.json` in `github.com/loonfs/loonfs`). Regeneration runs from the `sdk/fern/` config in that repository (`scripts/generate-sdks.sh`). Do not edit generated files by hand.
+This SDK is generated from the LoonFS OpenAPI specification. Please report SDK
+issues in the [main LoonFS repository](https://github.com/loonfs/loonfs).
 
 ## License
 

@@ -25,7 +25,7 @@ export interface ApiError {
      * For `not_supported` errors, the capability-document feature key the
      * client should reconcile against.
      */
-    feature?: (string | null) | undefined;
+    feature?: string | undefined;
     /** Human-readable error message. */
     message: string;
     /**
@@ -33,10 +33,10 @@ export interface ApiError {
      * query and path parameters use their names; CLI errors use the flag or
      * argument as written.
      */
-    param?: (string | null) | undefined;
+    param?: string | undefined;
     /**
      * Correlation id the server assigned to the failed request; the same
      * value is sent as the `x-request-id` response header.
      */
-    request_id?: (string | null) | undefined;
+    request_id?: string | undefined;
 }

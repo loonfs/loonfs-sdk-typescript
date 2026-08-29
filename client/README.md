@@ -1,30 +1,44 @@
 # LoonFS browser client
 
-Browser client for the LoonFS HTTP API, spoken through a LoonFS proxy in your
-backend. Paths are mount-scoped: the client calls `/v0/mounts/{mount}/...` on
-your proxy origin, and the proxy maps mounts to namespaces and adds
-credentials.
-
-## Status
-
-This package is pre-release. It is not yet published to npm.
+`@loonfs/sdk-client` is the browser-safe LoonFS client. It talks to a LoonFS
+proxy in your backend, which maps public namespace aliases and adds the server
+credential. SDK v0.1.x targets LoonFS API v0.3.x.
 
 ## Install
-
-After the first release, install it with:
 
 ```sh
 npm install @loonfs/sdk-client
 ```
 
+## Usage
+
+```ts
+import { LoonFSClient } from "@loonfs/sdk-client";
+
+const client = new LoonFSClient({
+    environment: window.location.origin,
+});
+
+const entries = await client.filesystem.listPathEntries({
+    namespace_alias: "team-files",
+    path: "/",
+});
+```
+
+Upload and download helpers are exported from `@loonfs/sdk-client/transfers`.
+Pair this package with [`@loonfs/sdk-proxy`](../proxy); never send the raw
+LoonFS server token to the browser.
+
+## Retries
+
+The client retries transient failures on operations that are safe to repeat.
+Operations that LoonFS classifies as non-idempotent are never retried
+automatically.
+
 ## Generated code
 
-This code is generated with Fern from the LoonFS proxy document
-(`docs/specs/openapi-proxy.json` in `github.com/loonfs/loonfs`). Regeneration
-runs from the `sdk/fern-client/` workspace in that repository
-(`scripts/generate-sdks.sh typescript-client`). Do not edit generated files by
-hand. The package has no runtime dependencies; `@types/node` is a types-only
-development dependency for a runtime-guarded stack-trace call.
+This SDK is generated from the LoonFS proxy OpenAPI specification. Please report
+SDK issues in the [main LoonFS repository](https://github.com/loonfs/loonfs).
 
 ## License
 

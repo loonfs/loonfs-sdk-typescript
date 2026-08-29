@@ -15,4 +15,10 @@ export interface UploadSessionStatusCompleted {
      * minting window closes, while `content_ref` remains available.
      */
     content_token?: LoonFS.ContentToken | undefined;
+    /** Transport selected when the session began. */
+    mode: LoonFS.UploadMode;
+    /** Namespace that owns the session. */
+    namespace_id: LoonFS.NamespaceId;
+    /** Session represented by this view. */
+    upload_id: LoonFS.UploadId;
 }

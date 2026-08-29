@@ -13,5 +13,5 @@ export interface ListTrashResponse {
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Present when another page follows. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
 }

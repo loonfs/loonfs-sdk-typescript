@@ -13,7 +13,7 @@ export interface ListFileRevisionsResponse {
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Opaque cursor for the next page, if more revisions are available. */
-    next_cursor?: (string | null) | undefined;
+    next_cursor?: string | undefined;
     /** Retained revisions in order. */
     revisions: LoonFS.FileRevision[];
 }

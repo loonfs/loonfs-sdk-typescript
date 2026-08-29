@@ -26,7 +26,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns committed changes from the write-ahead log. Callers can use this feed to keep another projection synchronized with WAL history.
+     * Returns committed changes after a sequence. A snapshot limits the feed to its captured sequence.
      *
      * @param {LoonFS.ListChangesRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -34,32 +34,35 @@ export class FilesystemClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
      *     await client.filesystem.listChanges({
      *         namespace_alias: "namespace_alias",
-     *         after_seq: 1000000
+     *         after_seq: 1000000,
+     *         snapshot_id: "chk_00000000000000000000000000000002"
      *     })
      */
     public listChanges(
         request: LoonFS.ListChangesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ChangesResponse> {
+    ): core.HttpResponsePromise<LoonFS.ListChangesResponse> {
         return core.HttpResponsePromise.fromPromise(this.__listChanges(request, requestOptions));
     }
 
     private async __listChanges(
         request: LoonFS.ListChangesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ChangesResponse>> {
-        const { namespace_alias: namespaceAlias, after_seq: afterSeq, limit } = request;
+    ): Promise<core.WithRawResponse<LoonFS.ListChangesResponse>> {
+        const { namespace_alias: namespaceAlias, after_seq: afterSeq, limit, snapshot_id: snapshotId } = request;
         const _queryParams: Record<string, unknown> = {
             after_seq: afterSeq,
             limit,
+            snapshot_id: snapshotId,
         };
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -82,7 +85,7 @@ export class FilesystemClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.ChangesResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.ListChangesResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -93,10 +96,12 @@ export class FilesystemClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -123,7 +128,6 @@ export class FilesystemClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -131,7 +135,7 @@ export class FilesystemClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.filesystem.applyCommit({
+     *     await client.filesystem.createCommit({
      *         namespace_alias: "namespace_alias",
      *         actor: {
      *             id: "usr_8f3c",
@@ -144,14 +148,14 @@ export class FilesystemClient {
      *             }]
      *     })
      */
-    public applyCommit(
+    public createCommit(
         request: LoonFS.CommitRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.CommitResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__applyCommit(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__createCommit(request, requestOptions));
     }
 
-    private async __applyCommit(
+    private async __createCommit(
         request: LoonFS.CommitRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.CommitResponse>> {
@@ -187,17 +191,12 @@ export class FilesystemClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -216,7 +215,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns file bytes for the current revision at a path, or for a specific retained revision when `revision_no` is provided.
+     * Returns the current file bytes, a retained revision, or the revision captured by a live snapshot.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
@@ -238,10 +237,11 @@ export class FilesystemClient {
         request: LoonFS.GetFileBytesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { namespace_alias: namespaceAlias, path, revision_no: revisionNo } = request;
+        const { namespace_alias: namespaceAlias, path, revision_no: revisionNo, snapshot_id: snapshotId } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             revision_no: revisionNo,
+            snapshot_id: snapshotId,
         };
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher<core.BinaryResponse>({
@@ -284,10 +284,7 @@ export class FilesystemClient {
                         _response.rawResponse,
                     );
                 case 503:
-                    throw new LoonFS.ServiceUnavailableError(
-                        _response.error.body as LoonFS.ApiError,
-                        _response.rawResponse,
-                    );
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -314,30 +311,34 @@ export class FilesystemClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.filesystem.beginDownload({
+     *     await client.filesystem.createDownload({
      *         namespace_alias: "namespace_alias",
+     *         snapshot_id: "chk_00000000000000000000000000000002",
      *         path: "/docs/report.txt"
      *     })
      */
-    public beginDownload(
+    public createDownload(
         request: LoonFS.BeginDownloadRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.BeginDownloadResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__beginDownload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
     }
 
-    private async __beginDownload(
+    private async __createDownload(
         request: LoonFS.BeginDownloadRequest,
         requestOptions?: FilesystemClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginDownloadResponse>> {
-        const { namespace_alias: namespaceAlias, ..._body } = request;
+        const { namespace_alias: namespaceAlias, snapshot_id: snapshotId, ..._body } = request;
+        const _queryParams: Record<string, unknown> = {
+            snapshot_id: snapshotId,
+        };
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
@@ -348,7 +349,11 @@ export class FilesystemClient {
             method: "POST",
             headers: _headers,
             contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
             requestType: "json",
             body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
@@ -369,8 +374,6 @@ export class FilesystemClient {
                     throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                 case 501:
@@ -378,6 +381,8 @@ export class FilesystemClient {
                         _response.error.body as LoonFS.ApiError,
                         _response.rawResponse,
                     );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
                     throw new errors.LoonFSError({
                         statusCode: _response.error.statusCode,
@@ -396,7 +401,7 @@ export class FilesystemClient {
     }
 
     /**
-     * Lists a directory at the current namespace head.
+     * Lists a directory from the current state or a live snapshot.
      *
      * @param {LoonFS.ListPathEntriesRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -404,21 +409,22 @@ export class FilesystemClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
      *     await client.filesystem.listPathEntries({
      *         namespace_alias: "namespace_alias",
-     *         path: "path"
+     *         path: "path",
+     *         snapshot_id: "chk_00000000000000000000000000000002"
      *     })
      */
     public async listPathEntries(
         request: LoonFS.ListPathEntriesRequest,
         requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.Page<LoonFS.AuthoritativePathEntry, LoonFS.ListPathEntriesResponse>> {
+    ): Promise<core.Page<LoonFS.PathEntry, LoonFS.ListPathEntriesResponse>> {
         const list = core.HttpResponsePromise.interceptFunction(
             async (
                 request: LoonFS.ListPathEntriesRequest,
@@ -429,12 +435,14 @@ export class FilesystemClient {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 };
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     this._options?.headers,
@@ -444,7 +452,7 @@ export class FilesystemClient {
                     url: core.url.join(
                         (await core.Supplier.get(this._options.baseUrl)) ??
                             (await core.Supplier.get(this._options.environment)),
-                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/list`,
+                        `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/entries`,
                     ),
                     method: "GET",
                     headers: _headers,
@@ -482,13 +490,13 @@ export class FilesystemClient {
                                 _response.error.body as LoonFS.ApiError,
                                 _response.rawResponse,
                             );
-                        case 408:
-                            throw new LoonFS.RequestTimeoutError(
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
                                 _response.rawResponse,
                             );
-                        case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                         default:
                             throw new errors.LoonFSError({
                                 statusCode: _response.error.statusCode,
@@ -501,12 +509,12 @@ export class FilesystemClient {
                     _response.error,
                     _response.rawResponse,
                     "GET",
-                    "/v0/namespace-aliases/{namespace_alias}/filesystem/list",
+                    "/v0/namespace-aliases/{namespace_alias}/filesystem/entries",
                 );
             },
         );
         const dataWithRawResponse = await list(request).withRawResponse();
-        return new core.Page<LoonFS.AuthoritativePathEntry, LoonFS.ListPathEntriesResponse>({
+        return new core.Page<LoonFS.PathEntry, LoonFS.ListPathEntriesResponse>({
             response: dataWithRawResponse.data,
             rawResponse: dataWithRawResponse.rawResponse,
             hasNextPage: (response) =>
@@ -520,6 +528,102 @@ export class FilesystemClient {
     }
 
     /**
+     * Returns path metadata from the current state or a live snapshot.
+     *
+     * @param {LoonFS.GetPathEntryRequest} request
+     * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.filesystem.getPathEntry({
+     *         namespace_alias: "namespace_alias",
+     *         path: "path",
+     *         snapshot_id: "chk_00000000000000000000000000000002"
+     *     })
+     */
+    public getPathEntry(
+        request: LoonFS.GetPathEntryRequest,
+        requestOptions?: FilesystemClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.PathEntry> {
+        return core.HttpResponsePromise.fromPromise(this.__getPathEntry(request, requestOptions));
+    }
+
+    private async __getPathEntry(
+        request: LoonFS.GetPathEntryRequest,
+        requestOptions?: FilesystemClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.PathEntry>> {
+        const {
+            namespace_alias: namespaceAlias,
+            path,
+            include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
+        } = request;
+        const _queryParams: Record<string, unknown> = {
+            path,
+            include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
+        };
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/entry`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.PathEntry, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 401:
+                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/namespace-aliases/{namespace_alias}/filesystem/entry",
+        );
+    }
+
+    /**
      * Resolves the current path to a file inode and returns revisions for that file. If the file could be renamed, use the inode revision API for stable identity.
      *
      * @param {LoonFS.ListFileRevisionsRequest} request
@@ -528,8 +632,8 @@ export class FilesystemClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -599,13 +703,13 @@ export class FilesystemClient {
                                 _response.error.body as LoonFS.ApiError,
                                 _response.rawResponse,
                             );
-                        case 408:
-                            throw new LoonFS.RequestTimeoutError(
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
                                 _response.rawResponse,
                             );
-                        case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                         default:
                             throw new errors.LoonFSError({
                                 statusCode: _response.error.statusCode,
@@ -637,104 +741,16 @@ export class FilesystemClient {
     }
 
     /**
-     * Returns the current metadata for a path, including inode identity, kind, display name, file content metadata, and the inode's attributes.
-     *
-     * @param {LoonFS.StatPathRequest} request
-     * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link LoonFS.BadRequestError}
-     * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
-     * @throws {@link LoonFS.GoneError}
-     * @throws {@link errors.LoonFSError}
-     * @throws {@link errors.LoonFSTimeoutError}
-     *
-     * @example
-     *     await client.filesystem.statPath({
-     *         namespace_alias: "namespace_alias",
-     *         path: "path"
-     *     })
-     */
-    public statPath(
-        request: LoonFS.StatPathRequest,
-        requestOptions?: FilesystemClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.AuthoritativePathEntry> {
-        return core.HttpResponsePromise.fromPromise(this.__statPath(request, requestOptions));
-    }
-
-    private async __statPath(
-        request: LoonFS.StatPathRequest,
-        requestOptions?: FilesystemClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.AuthoritativePathEntry>> {
-        const { namespace_alias: namespaceAlias, path, include_attributes: includeAttributes } = request;
-        const _queryParams: Record<string, unknown> = {
-            path,
-            include_attributes: includeAttributes,
-        };
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/filesystem/stat`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.AuthoritativePathEntry, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                case 408:
-                    throw new LoonFS.RequestTimeoutError(_response.error.body as unknown, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/v0/namespace-aliases/{namespace_alias}/filesystem/stat",
-        );
-    }
-
-    /**
      * Returns the namespace's recoverable deletions, oldest deletion first. Entries never age out at the retention floor; each carries the inode id and deletion sequence undelete needs, plus the deleted name when the delete recorded one.
      *
      * @param {LoonFS.ListTrashRequest} request
      * @param {FilesystemClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.RequestTimeoutError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
@@ -782,6 +798,11 @@ export class FilesystemClient {
                 }
                 if (_response.error.reason === "status-code") {
                     switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ApiError,
+                                _response.rawResponse,
+                            );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
                                 _response.error.body as LoonFS.ApiError,
@@ -792,13 +813,13 @@ export class FilesystemClient {
                                 _response.error.body as LoonFS.ApiError,
                                 _response.rawResponse,
                             );
-                        case 408:
-                            throw new LoonFS.RequestTimeoutError(
+                        case 410:
+                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
                                 _response.rawResponse,
                             );
-                        case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
                         default:
                             throw new errors.LoonFSError({
                                 statusCode: _response.error.statusCode,

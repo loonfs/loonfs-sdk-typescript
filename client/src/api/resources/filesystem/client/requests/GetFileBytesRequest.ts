@@ -14,6 +14,8 @@ export interface GetFileBytesRequest {
     namespace_alias: string;
     /** Absolute file path */
     path: string;
-    /** Optional prior revision number */
+    /** Optional prior revision number; cannot be combined with snapshot_id */
     revision_no?: LoonFS.RevisionNo;
+    /** Use the file revision captured by this snapshot */
+    snapshot_id?: LoonFS.CheckpointId;
 }
