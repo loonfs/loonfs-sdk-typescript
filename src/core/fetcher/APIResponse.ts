@@ -9,10 +9,6 @@ export type APIResponse<Success, Failure> = SuccessfulResponse<Success> | Failed
 export interface SuccessfulResponse<T> {
     ok: true;
     body: T;
-    /**
-     * @deprecated Use `rawResponse` instead
-     */
-    headers?: Record<string, any>;
     rawResponse: RawResponse;
 }
 
