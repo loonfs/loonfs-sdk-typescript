@@ -1,7 +1,6 @@
 import { toJson } from "../json.js";
 import { createLogger, type LogConfig, type Logger } from "../logging/logger.js";
 import type { APIResponse } from "./APIResponse.js";
-import { createRequestUrl } from "./createRequestUrl.js";
 import type { EndpointMetadata } from "./EndpointMetadata.js";
 import { EndpointSupplier } from "./EndpointSupplier.js";
 import { getErrorResponseBody } from "./getErrorResponseBody.js";
@@ -11,7 +10,7 @@ import { getResponseBody } from "./getResponseBody.js";
 import { Headers } from "./Headers.js";
 import { makeRequest } from "./makeRequest.js";
 import { abortRawResponse, toRawResponse, unknownRawResponse } from "./RawResponse.js";
-import { redactUrl, SENSITIVE_QUERY_PARAMS } from "./redactUrl.js";
+import { redactUrl } from "./redactUrl.js";
 import { requestWithRetries } from "./requestWithRetries.js";
 
 export type FetchFunction = <R = unknown>(args: Fetcher.Args) => Promise<APIResponse<R, Fetcher.Error>>;
@@ -22,12 +21,6 @@ export declare namespace Fetcher {
         method: string;
         contentType?: string;
         headers?: Record<string, unknown>;
-        /**
-         * @deprecated Prefer `queryString` (produced by `core.url.queryBuilder()`).
-         * Retained for backwards compatibility with custom fetchers and callers that
-         * still construct request args with a query-parameter object.
-         */
-        queryParameters?: Record<string, unknown>;
         queryString?: string;
         body?: unknown;
         timeoutMs?: number;
@@ -104,19 +97,6 @@ function redactHeaders(headers: Headers | Record<string, string>): Record<string
     return filtered;
 }
 
-function redactQueryParameters(
-    queryParameters: Record<string, unknown> | undefined,
-): Record<string, unknown> | undefined {
-    if (queryParameters == null) {
-        return undefined;
-    }
-    const redacted: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(queryParameters)) {
-        redacted[key] = SENSITIVE_QUERY_PARAMS.has(key.toLowerCase()) ? "[REDACTED]" : value;
-    }
-    return redacted;
-}
-
 async function getHeaders(args: Fetcher.Args): Promise<Headers> {
     const newHeaders: Headers = new Headers();
 
@@ -156,8 +136,6 @@ export async function fetcherImpl<R = unknown>(args: Fetcher.Args): Promise<APIR
     let url = args.url;
     if (args.queryString != null && args.queryString.length > 0) {
         url = `${url}?${args.queryString}`;
-    } else {
-        url = createRequestUrl(args.url, args.queryParameters);
     }
     const requestBody: BodyInit | undefined = await getRequestBody({
         body: args.body,
@@ -172,7 +150,6 @@ export async function fetcherImpl<R = unknown>(args: Fetcher.Args): Promise<APIR
             method: args.method,
             url: redactUrl(url),
             headers: redactHeaders(headers),
-            queryParameters: redactQueryParameters(args.queryParameters),
             hasBody: requestBody != null,
         };
         logger.debug("Making HTTP request", metadata);
@@ -210,7 +187,6 @@ export async function fetcherImpl<R = unknown>(args: Fetcher.Args): Promise<APIR
             return {
                 ok: true,
                 body: body as R,
-                headers: response.headers,
                 rawResponse: toRawResponse(response),
             };
         } else {

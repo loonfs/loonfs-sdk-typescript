@@ -5,7 +5,7 @@
     "moduleResolution": "NodeNext",
     "strict": true,
     "declaration": true,
-    "outDir": "dist",
+    "outDir": "../dist/proxy",
     "rootDir": "src",
     "skipLibCheck": true,
     "esModuleInterop": true,
