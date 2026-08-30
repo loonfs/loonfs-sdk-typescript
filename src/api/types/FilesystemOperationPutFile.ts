@@ -12,12 +12,7 @@ export interface FilesystemOperationPutFile {
     content_ref: LoonFS.ContentRef;
     /** Stable inode ID within a namespace */
     expected_inode_id?: string | undefined;
-    /**
-     * When set (with `replace` behavior), the put applies only while
-     * the file's current revision is still this one; a raced write
-     * fails the request instead of silently stacking on it, and a
-     * missing file answers `path_not_found`.
-     */
+    /** With `replace` behavior and an inode guard, the request requires this content revision. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** Absolute destination path; missing ancestors are created automatically. */
     path: LoonFS.AbsolutePath;
