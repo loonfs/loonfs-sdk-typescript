@@ -41,6 +41,7 @@
     "build:server": "tsc",
     "build:client": "tsc --project client/tsconfig.json",
     "build:proxy": "tsc --project proxy/tsconfig.json",
+    "prepare": "npm run build",
     "prepack": "npm run build"
   },
   "devDependencies": {
