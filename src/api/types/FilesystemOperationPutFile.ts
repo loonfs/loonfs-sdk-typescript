@@ -10,6 +10,8 @@ export interface FilesystemOperationPutFile {
     behavior?: LoonFS.DestinationBehavior | undefined;
     /** Immutable bytes that must be covered by a valid preparation proof. */
     content_ref: LoonFS.ContentRef;
+    /** Stable inode ID within a namespace */
+    expected_inode_id?: string | undefined;
     /**
      * When set (with `replace` behavior), the put applies only while
      * the file's current revision is still this one; a raced write
