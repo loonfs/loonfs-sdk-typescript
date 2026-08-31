@@ -8,6 +8,10 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationMovePath {
     /** Whether an existing destination file may be replaced. */
     behavior?: LoonFS.DestinationBehavior | undefined;
+    /** Stable inode ID within a namespace */
+    expected_destination_inode_id?: string | undefined;
+    /** With `replace` behavior and an inode guard, the request requires this content revision. */
+    expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
     /** Absolute source path that must resolve to a visible inode. */
     from_path: LoonFS.AbsolutePath;
     /** Absolute destination whose parent must be visible and writable. */

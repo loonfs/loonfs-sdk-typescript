@@ -11,6 +11,10 @@ export interface FilesystemOperationMoveByInode {
     /** Binding generation required for the move. */
     expected_binding_generation: string;
     /** Stable inode ID within a namespace */
+    expected_destination_inode_id?: string | undefined;
+    /** With `replace` behavior and an inode guard, the request requires this content revision. */
+    expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
+    /** Stable inode ID within a namespace */
     inode_id: string;
     /** New name. */
     to_display_name: LoonFS.DisplayName;
