@@ -42,21 +42,21 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.createUpload({
+     *     await client.uploads.create({
      *         namespace_alias: "namespace_alias",
      *         body: {
      *             mode: "service_proxied"
      *         }
      *     })
      */
-    public createUpload(
+    public create(
         request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.BeginUploadResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__createUpload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
-    private async __createUpload(
+    private async __create(
         request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginUploadResponse>> {
@@ -138,19 +138,19 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.getUpload({
+     *     await client.uploads.retrieve({
      *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id"
      *     })
      */
-    public getUpload(
+    public retrieve(
         request: LoonFS.GetUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadSession> {
-        return core.HttpResponsePromise.fromPromise(this.__getUpload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__retrieve(request, requestOptions));
     }
 
-    private async __getUpload(
+    private async __retrieve(
         request: LoonFS.GetUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
@@ -220,19 +220,19 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.abortUpload({
+     *     await client.uploads.abort({
      *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id"
      *     })
      */
-    public abortUpload(
+    public abort(
         request: LoonFS.AbortUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadSession> {
-        return core.HttpResponsePromise.fromPromise(this.__abortUpload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__abort(request, requestOptions));
     }
 
-    private async __abortUpload(
+    private async __abort(
         request: LoonFS.AbortUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
@@ -305,7 +305,7 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.completeUpload({
+     *     await client.uploads.complete({
      *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id",
      *         body: {
@@ -313,14 +313,14 @@ export class UploadsClient {
      *         }
      *     })
      */
-    public completeUpload(
+    public complete(
         request: LoonFS.CompleteUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadSession> {
-        return core.HttpResponsePromise.fromPromise(this.__completeUpload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__complete(request, requestOptions));
     }
 
-    private async __completeUpload(
+    private async __complete(
         request: LoonFS.CompleteUploadBody,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
@@ -402,18 +402,18 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      */
-    public putUploadContent(
+    public putContent(
         uploadable: core.file.Uploadable,
         namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadContentResponse> {
         return core.HttpResponsePromise.fromPromise(
-            this.__putUploadContent(uploadable, namespace_alias, upload_id, requestOptions),
+            this.__putContent(uploadable, namespace_alias, upload_id, requestOptions),
         );
     }
 
-    private async __putUploadContent(
+    private async __putContent(
         uploadable: core.file.Uploadable,
         namespace_alias: string,
         upload_id: string,
@@ -502,7 +502,7 @@ export class UploadsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.uploads.signUploadParts({
+     *     await client.uploads.signParts({
      *         namespace_alias: "namespace_alias",
      *         upload_id: "upload_id",
      *         parts: [{
@@ -514,14 +514,14 @@ export class UploadsClient {
      *             }]
      *     })
      */
-    public signUploadParts(
+    public signParts(
         request: LoonFS.SignUploadPartsRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.SignUploadPartsResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__signUploadParts(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__signParts(request, requestOptions));
     }
 
-    private async __signUploadParts(
+    private async __signParts(
         request: LoonFS.SignUploadPartsRequest,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.SignUploadPartsResponse>> {

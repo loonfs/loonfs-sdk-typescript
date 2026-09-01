@@ -32,6 +32,8 @@ export interface ErrorDetails {
      * that still means to delete it retries against.
      */
     actual_head_seq?: LoonFS.ChangeSeq | undefined;
+    /** Stable inode ID within a namespace */
+    actual_inode_id?: string | undefined;
     /** Revision that is actually current; absent when the inode has none. */
     actual_revision_no?: LoonFS.RevisionNo | undefined;
     /** Change-feed cursor the request asked to resume after. */
@@ -63,6 +65,8 @@ export interface ErrorDetails {
      * at.
      */
     expected_head_seq?: LoonFS.ChangeSeq | undefined;
+    /** Stable inode ID within a namespace */
+    expected_inode_id?: string | undefined;
     /** Revision the request expected to be current. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** Epoch the failing writer session held when it was displaced. */

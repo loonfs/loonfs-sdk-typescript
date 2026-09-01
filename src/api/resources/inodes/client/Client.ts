@@ -40,19 +40,19 @@ export class InodesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.inodes.getInode({
+     *     await client.inodes.retrieve({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123"
      *     })
      */
-    public getInode(
+    public retrieve(
         request: LoonFS.GetInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.PathEntry> {
-        return core.HttpResponsePromise.fromPromise(this.__getInode(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__retrieve(request, requestOptions));
     }
 
-    private async __getInode(
+    private async __retrieve(
         request: LoonFS.GetInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.PathEntry>> {
@@ -134,12 +134,12 @@ export class InodesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.inodes.listInodeChildren({
+     *     await client.inodes.listChildren({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123"
      *     })
      */
-    public async listInodeChildren(
+    public async listChildren(
         request: LoonFS.ListInodeChildrenRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.Page<LoonFS.PathEntry, LoonFS.ListInodeChildrenResponse>> {
@@ -265,12 +265,12 @@ export class InodesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.inodes.listFileRevisionsByInode({
+     *     await client.inodes.listRevisions({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123"
      *     })
      */
-    public async listFileRevisionsByInode(
+    public async listRevisions(
         request: LoonFS.ListFileRevisionsByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.Page<LoonFS.FileRevision, LoonFS.ListFileRevisionsResponse>> {
@@ -386,14 +386,14 @@ export class InodesClient {
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      */
-    public getFileRevisionBytesByInode(
+    public content(
         request: LoonFS.GetFileRevisionBytesByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): core.HttpResponsePromise<core.BinaryResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getFileRevisionBytesByInode(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__content(request, requestOptions));
     }
 
-    private async __getFileRevisionBytesByInode(
+    private async __content(
         request: LoonFS.GetFileRevisionBytesByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
@@ -477,7 +477,7 @@ export class InodesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.inodes.createDownloadByInode({
+     *     await client.inodes.createDownload({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123",
      *         revision_no: 1000000,
@@ -486,14 +486,14 @@ export class InodesClient {
      *         }
      *     })
      */
-    public createDownloadByInode(
+    public createDownload(
         request: LoonFS.CreateDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.BeginDownloadByInodeResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__createDownloadByInode(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
     }
 
-    private async __createDownloadByInode(
+    private async __createDownload(
         request: LoonFS.CreateDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.BeginDownloadByInodeResponse>> {
