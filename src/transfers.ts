@@ -1,4 +1,5 @@
-import { LoonFSClient } from "./Client.js";
+import { LoonFSClient as GeneratedLoonFSClient } from "./Client.js";
+import { FilesClient as GeneratedFilesClient } from "./api/resources/files/client/Client.js";
 import type * as LoonFS from "./api/index.js";
 
 const DIRECT_GET_FEATURE = "core.downloads.direct_get";
@@ -14,7 +15,7 @@ const CRC64_MASK = 0xffffffffffffffffn;
 const CRC32C_TABLE = makeCrc32cTable();
 const CRC64_NVME_TABLE = makeCrc64NvmeTable();
 
-export interface PutFileInput {
+export interface FileUploadInput {
     namespace_id: LoonFS.NamespaceId;
     path: LoonFS.AbsolutePath;
     bytes: Uint8Array;
@@ -26,19 +27,19 @@ export interface PutFileInput {
     expected_revision_no?: LoonFS.RevisionNo;
 }
 
-export interface PutFileResult {
+export interface FileUploadResult {
     namespace_id: LoonFS.NamespaceId;
     commit_id: LoonFS.CommitId;
     committed_seq: LoonFS.ChangeSeq;
 }
 
-export interface GetFileInput {
+export interface FileDownloadInput {
     namespace_id: LoonFS.NamespaceId;
     path: LoonFS.AbsolutePath;
     revision_no?: LoonFS.RevisionNo;
 }
 
-export interface GetFileResult {
+export interface FileDownloadResult {
     namespace_id: LoonFS.NamespaceId;
     path: LoonFS.AbsolutePath;
     revision_no: LoonFS.RevisionNo;
@@ -56,78 +57,94 @@ interface DirectPutBody {
     content: LoonFS.UploadContentClaim;
 }
 
-/**
- * Uploads in-memory bytes and commits them at one path.
- * Streaming and resume are follow-ups.
- */
-export async function putFile(client: LoonFSClient, input: PutFileInput): Promise<PutFileResult> {
-    const staged = await stageBytes(client, input.namespace_id, input.bytes);
-    const request: LoonFS.CommitRequest = {
-        namespace_id: input.namespace_id,
-        actor: input.actor,
-        commit_id: input.commit_id,
-        content_tokens: staged.contentToken === undefined ? [] : [staged.contentToken],
-        operations: [
-            {
-                kind: "put_file",
-                path: input.path,
-                content_ref: staged.contentRef,
-                behavior: input.behavior ?? "no_replace",
-                expected_inode_id: input.expected_inode_id,
-                expected_revision_no: input.expected_revision_no,
-            },
-        ],
-    };
-    if (input.message !== undefined) {
-        request.message = input.message;
+/** The files group plus whole-file transfers. */
+export class FilesClient extends GeneratedFilesClient {
+    constructor(
+        options: GeneratedFilesClient.Options,
+        private readonly root: LoonFSClient,
+    ) {
+        super(options);
     }
-    return client.filesystem.createCommit(request);
+
+    /** Uploads in-memory bytes and commits them at one path. Streaming and resume are follow-ups. */
+    public async upload(input: FileUploadInput): Promise<FileUploadResult> {
+        const staged = await stageBytes(this.root, input.namespace_id, input.bytes);
+        const request: LoonFS.CommitRequest = {
+            namespace_id: input.namespace_id,
+            actor: input.actor,
+            commit_id: input.commit_id,
+            content_tokens: staged.contentToken === undefined ? [] : [staged.contentToken],
+            operations: [
+                {
+                    kind: "put_file",
+                    path: input.path,
+                    content_ref: staged.contentRef,
+                    behavior: input.behavior ?? "no_replace",
+                    expected_inode_id: input.expected_inode_id,
+                    expected_revision_no: input.expected_revision_no,
+                },
+            ],
+        };
+        if (input.message !== undefined) {
+            request.message = input.message;
+        }
+        return this.root.commits.create(request);
+    }
+
+    /** Downloads one revision into memory and verifies its content claim. Streaming and resume are follow-ups. */
+    public async download(input: FileDownloadInput): Promise<FileDownloadResult> {
+        const capabilities = await this.root.capabilities.retrieve();
+        if ((capabilities.features ?? {})[DIRECT_GET_FEATURE] !== true) {
+            return downloadProxied(this.root, input);
+        }
+        const grant = await this.createDownload(input);
+        requirePresignedMethod(grant.access, "GET", "download");
+        const response = await fetch(grant.access.url, {
+            redirect: "error",
+            method: grant.access.method,
+            headers: grant.access.headers,
+        });
+        requireSuccessfulResponse(response, "download");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (bytes.byteLength !== grant.content_ref.size_bytes) {
+            throw new Error(
+                `download returned ${bytes.byteLength} bytes, expected ${grant.content_ref.size_bytes}`,
+            );
+        }
+        const actual = await checksum(grant.content_ref.checksum.algorithm, bytes);
+        if (actual.value !== grant.content_ref.checksum.value) {
+            throw new Error(`download checksum did not match ${grant.content_ref.checksum.algorithm} claim`);
+        }
+        return {
+            namespace_id: input.namespace_id,
+            path: grant.path,
+            revision_no: grant.revision_no,
+            content_ref: grant.content_ref,
+            bytes,
+        };
+    }
 }
 
-/**
- * Downloads one revision into memory and verifies its content claim.
- * Streaming and resume are follow-ups.
- */
-export async function getFile(client: LoonFSClient, input: GetFileInput): Promise<GetFileResult> {
-    const capabilities = await client.system.getCapabilities();
-    if ((capabilities.features ?? {})[DIRECT_GET_FEATURE] !== true) {
-        return getFileProxied(client, input);
+/** The generated client with `files.upload` and `files.download`. */
+export class LoonFSClient extends GeneratedLoonFSClient {
+    private _transferFiles: FilesClient | undefined;
+
+    public override get files(): FilesClient {
+        return (this._transferFiles ??= new FilesClient(this._options, this));
     }
-    const grant = await client.filesystem.createDownload(input);
-    requirePresignedMethod(grant.access, "GET", "download");
-    const response = await fetch(grant.access.url, {
-        redirect: "error",
-        method: grant.access.method,
-        headers: grant.access.headers,
-    });
-    requireSuccessfulResponse(response, "download");
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    if (bytes.byteLength !== grant.content_ref.size_bytes) {
-        throw new Error(
-            `download returned ${bytes.byteLength} bytes, expected ${grant.content_ref.size_bytes}`,
-        );
-    }
-    const actual = await checksum(grant.content_ref.checksum.algorithm, bytes);
-    if (actual.value !== grant.content_ref.checksum.value) {
-        throw new Error(`download checksum did not match ${grant.content_ref.checksum.algorithm} claim`);
-    }
-    return {
-        namespace_id: input.namespace_id,
-        path: grant.path,
-        revision_no: grant.revision_no,
-        content_ref: grant.content_ref,
-        bytes,
-    };
 }
 
 // Reads through LoonFS when direct reads are unavailable. It loads the content
 // reference first, then requests the exact revision so the reference and
 // returned bytes describe the same file version.
-async function getFileProxied(client: LoonFSClient, input: GetFileInput): Promise<GetFileResult> {
+async function downloadProxied(
+    client: GeneratedLoonFSClient,
+    input: FileDownloadInput,
+): Promise<FileDownloadResult> {
     let revisionNo = input.revision_no;
     let claim: LoonFS.ContentRef | undefined;
     if (revisionNo === undefined) {
-        const entry = await client.filesystem.getPathEntry({
+        const entry = await client.files.retrieve({
             namespace_id: input.namespace_id,
             path: input.path,
         });
@@ -137,7 +154,7 @@ async function getFileProxied(client: LoonFSClient, input: GetFileInput): Promis
         claim = entry.content_ref;
         revisionNo = entry.revision_no;
     } else {
-        const page = await client.filesystem.listFileRevisions({
+        const page = await client.files.listRevisions({
             namespace_id: input.namespace_id,
             path: input.path,
         });
@@ -151,7 +168,7 @@ async function getFileProxied(client: LoonFSClient, input: GetFileInput): Promis
             throw new Error(`revision ${revisionNo} not found for ${input.path}`);
         }
     }
-    const body = await client.filesystem.getFileBytes({
+    const body = await client.files.content({
         namespace_id: input.namespace_id,
         path: input.path,
         revision_no: revisionNo,
@@ -168,13 +185,13 @@ async function getFileProxied(client: LoonFSClient, input: GetFileInput): Promis
 }
 
 async function stageBytes(
-    client: LoonFSClient,
+    client: GeneratedLoonFSClient,
     namespaceId: LoonFS.NamespaceId,
     bytes: Uint8Array,
 ): Promise<StagedContent> {
-    const capabilities = await client.system.getCapabilities();
+    const capabilities = await client.capabilities.retrieve();
     const beginRequest = selectBeginRequest(capabilities, bytes);
-    const begin = await client.uploads.createUpload({
+    const begin = await client.uploads.create({
         namespace_id: namespaceId,
         body: beginRequest,
     });
@@ -222,15 +239,15 @@ function selectBeginRequest(
 }
 
 async function stageServiceProxied(
-    client: LoonFSClient,
+    client: GeneratedLoonFSClient,
     namespaceId: LoonFS.NamespaceId,
     bytes: Uint8Array,
     begin: LoonFS.BeginUploadResponse.ServiceProxied,
 ): Promise<StagedContent> {
     try {
-        await client.uploads.putUploadContent(arrayBuffer(bytes), namespaceId, begin.upload_id);
+        await client.uploads.putContent(arrayBuffer(bytes), namespaceId, begin.upload_id);
         return stagedContent(
-            await client.uploads.completeUpload({
+            await client.uploads.complete({
                 namespace_id: namespaceId,
                 upload_id: begin.upload_id,
                 body: { mode: "service_proxied" },
@@ -243,7 +260,7 @@ async function stageServiceProxied(
 }
 
 async function stageDirectPut(
-    client: LoonFSClient,
+    client: GeneratedLoonFSClient,
     namespaceId: LoonFS.NamespaceId,
     bytes: Uint8Array,
     begin: LoonFS.BeginUploadResponse.DirectPut,
@@ -264,7 +281,7 @@ async function stageDirectPut(
         throw error;
     }
     return stagedContent(
-        await client.uploads.completeUpload({
+        await client.uploads.complete({
             namespace_id: namespaceId,
             upload_id: begin.upload_id,
             body: { mode: "direct_put", content: upload.content },
@@ -273,7 +290,7 @@ async function stageDirectPut(
 }
 
 async function stageMultipart(
-    client: LoonFSClient,
+    client: GeneratedLoonFSClient,
     namespaceId: LoonFS.NamespaceId,
     bytes: Uint8Array,
     begin: LoonFS.BeginUploadResponse.DirectMultipart,
@@ -296,7 +313,7 @@ async function stageMultipart(
     }
     const completedParts: LoonFS.CompletedUploadPart[] = [];
     try {
-        const signed = await client.uploads.signUploadParts({
+        const signed = await client.uploads.signParts({
             namespace_id: namespaceId,
             upload_id: begin.upload_id,
             parts: claims,
@@ -331,7 +348,7 @@ async function stageMultipart(
     }
 
     return stagedContent(
-        await client.uploads.completeUpload({
+        await client.uploads.complete({
             namespace_id: namespaceId,
             upload_id: begin.upload_id,
             body: {
@@ -365,12 +382,12 @@ function stagedContent(response: LoonFS.UploadSession): StagedContent {
 }
 
 async function abortQuietly(
-    client: LoonFSClient,
+    client: GeneratedLoonFSClient,
     namespaceId: LoonFS.NamespaceId,
     uploadId: LoonFS.UploadId,
 ): Promise<void> {
     try {
-        await client.uploads.abortUpload({ namespace_id: namespaceId, upload_id: uploadId });
+        await client.uploads.abort({ namespace_id: namespaceId, upload_id: uploadId });
     } catch {
         // Preserve the transfer error.
     }

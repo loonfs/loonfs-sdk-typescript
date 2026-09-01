@@ -25,11 +25,11 @@ const client = new LoonFSClient({
     token: process.env.LOONFS_AUTH_TOKEN!,
 });
 
-const capabilities = await client.system.getCapabilities();
+const capabilities = await client.capabilities.retrieve();
 ```
 
-The server entry point also exports the `putFile` and `getFile` transfer
-helpers.
+`client.files.upload` and `client.files.download` transfer whole files in
+memory.
 
 ## Client
 
@@ -44,14 +44,14 @@ const client = new LoonFSClient({
     environment: window.location.origin,
 });
 
-const entries = await client.filesystem.listPathEntries({
+const entries = await client.files.list({
     namespace_alias: "team-files",
     path: "/",
 });
 ```
 
-The client entry point also exports the `putFile` and `getFile` transfer
-helpers. Never send a raw LoonFS server token to client code.
+`client.files.upload` and `client.files.download` work the same way through the
+proxy. Never send a raw LoonFS server token to client code.
 
 ## Proxy
 
