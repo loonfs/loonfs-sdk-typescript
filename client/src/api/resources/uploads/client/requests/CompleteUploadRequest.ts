@@ -12,10 +12,10 @@ import type * as LoonFS from "../../../../index.js";
  *         }
  *     }
  */
-export interface CompleteUploadBody {
+export interface CompleteUploadRequest {
     /** Application namespace alias */
     namespace_alias: string;
     /** Upload session id */
     upload_id: string;
-    body: LoonFS.CompleteUploadRequest;
+    body: LoonFS.UploadCompletion;
 }

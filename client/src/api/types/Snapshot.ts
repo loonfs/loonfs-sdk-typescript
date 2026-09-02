@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * A live snapshot.
  */
-export interface SnapshotSummary {
+export interface Snapshot {
     /** Time the snapshot record was created, in Unix milliseconds. */
     created_at_ms: number;
     /** When the snapshot lease expires, in Unix milliseconds. */

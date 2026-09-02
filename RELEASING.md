@@ -1,7 +1,7 @@
 # Releasing
 
 `@loonfs/sdk` exposes the client, proxy, and server SDKs as subpath exports. A
-v0.1.x SDK targets LoonFS API v0.3.x.
+v0.2.x SDK targets LoonFS API v0.3.x.
 
 Build and inspect the package before every release:
 

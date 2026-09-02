@@ -1,6 +1,6 @@
 # LoonFS TypeScript SDK
 
-One package for LoonFS client, proxy, and server applications. SDK v0.1.x
+One package for LoonFS client, proxy, and server applications. SDK v0.2.x
 targets LoonFS API v0.3.x.
 
 ## Install
@@ -21,7 +21,7 @@ LoonFS.
 import { LoonFSClient } from "@loonfs/sdk/server";
 
 const client = new LoonFSClient({
-    environment: process.env.LOONFS_URL!,
+    baseUrl: process.env.LOONFS_URL!,
     token: process.env.LOONFS_AUTH_TOKEN!,
 });
 
@@ -41,7 +41,7 @@ credential.
 import { LoonFSClient } from "@loonfs/sdk/client";
 
 const client = new LoonFSClient({
-    environment: window.location.origin,
+    baseUrl: window.location.origin,
 });
 
 const entries = await client.files.list({

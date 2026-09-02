@@ -79,16 +79,22 @@ export class FilesClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:
@@ -177,16 +183,22 @@ export class FilesClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 501:
                     throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:
@@ -285,21 +297,24 @@ export class FilesClient {
                     switch (_response.error.statusCode) {
                         case 400:
                             throw new LoonFS.BadRequestError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 404:
                             throw new LoonFS.NotFoundError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                            throw new LoonFS.GoneError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 503:
                             throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
@@ -405,13 +420,19 @@ export class FilesClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -498,21 +519,24 @@ export class FilesClient {
                     switch (_response.error.statusCode) {
                         case 400:
                             throw new LoonFS.BadRequestError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 404:
                             throw new LoonFS.NotFoundError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                            throw new LoonFS.GoneError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 503:
                             throw new LoonFS.ServiceUnavailableError(
                                 _response.error.body as unknown,
@@ -625,29 +649,32 @@ export class FilesClient {
                     switch (_response.error.statusCode) {
                         case 400:
                             throw new LoonFS.BadRequestError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 404:
                             throw new LoonFS.NotFoundError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 410:
-                            throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                            throw new LoonFS.GoneError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 500:
                             throw new LoonFS.InternalServerError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 501:
                             throw new LoonFS.NotImplementedError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 503:

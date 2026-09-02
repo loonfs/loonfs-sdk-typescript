@@ -5,9 +5,9 @@ import * as errors from "../../errors/index.js";
 import type * as LoonFS from "../index.js";
 
 export class ContentTooLargeError extends errors.LoonFSError {
-    public declare readonly body: LoonFS.ApiError;
+    public declare readonly body: LoonFS.ErrorResponse;
 
-    constructor(body: LoonFS.ApiError, rawResponse?: core.RawResponse) {
+    constructor(body: LoonFS.ErrorResponse, rawResponse?: core.RawResponse) {
         super({
             message: "ContentTooLargeError",
             statusCode: 413,
