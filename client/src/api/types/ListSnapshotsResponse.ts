@@ -11,5 +11,5 @@ export interface ListSnapshotsResponse {
     /** Opaque cursor for the next page. */
     next_cursor?: string | undefined;
     /** Live snapshot records in ascending snapshot-id order. */
-    snapshots: LoonFS.SnapshotSummary[];
+    snapshots: LoonFS.Snapshot[];
 }

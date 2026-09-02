@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * HTTP error body used by LoonFS APIs.
  */
-export interface ApiError {
+export interface ErrorResponse {
     /**
      * Stable machine-readable reason from the [`ErrorCode`](crate::ErrorCode)
      * registry.

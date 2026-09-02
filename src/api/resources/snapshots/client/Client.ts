@@ -43,7 +43,7 @@ export class SnapshotsClient {
     public async list(
         request: LoonFS.ListSnapshotsRequest,
         requestOptions?: SnapshotsClient.RequestOptions,
-    ): Promise<core.Page<LoonFS.SnapshotSummary, LoonFS.ListSnapshotsResponse>> {
+    ): Promise<core.Page<LoonFS.Snapshot, LoonFS.ListSnapshotsResponse>> {
         const list = core.HttpResponsePromise.interceptFunction(
             async (
                 request: LoonFS.ListSnapshotsRequest,
@@ -85,17 +85,17 @@ export class SnapshotsClient {
                     switch (_response.error.statusCode) {
                         case 400:
                             throw new LoonFS.BadRequestError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 404:
                             throw new LoonFS.NotFoundError(
-                                _response.error.body as LoonFS.ApiError,
+                                _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
                         case 503:
@@ -120,7 +120,7 @@ export class SnapshotsClient {
             },
         );
         const dataWithRawResponse = await list(request).withRawResponse();
-        return new core.Page<LoonFS.SnapshotSummary, LoonFS.ListSnapshotsResponse>({
+        return new core.Page<LoonFS.Snapshot, LoonFS.ListSnapshotsResponse>({
             response: dataWithRawResponse.data,
             rawResponse: dataWithRawResponse.rawResponse,
             hasNextPage: (response) =>
@@ -158,14 +158,14 @@ export class SnapshotsClient {
     public create(
         request: LoonFS.CreateSnapshotRequest,
         requestOptions?: SnapshotsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.SnapshotSummary> {
+    ): core.HttpResponsePromise<LoonFS.Snapshot> {
         return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
     private async __create(
         request: LoonFS.CreateSnapshotRequest,
         requestOptions?: SnapshotsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.SnapshotSummary>> {
+    ): Promise<core.WithRawResponse<LoonFS.Snapshot>> {
         const { namespace_id: namespaceId, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -192,21 +192,27 @@ export class SnapshotsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.SnapshotSummary, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.Snapshot, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
-                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -250,14 +256,14 @@ export class SnapshotsClient {
     public extend(
         request: LoonFS.ExtendSnapshotRequest,
         requestOptions?: SnapshotsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.SnapshotSummary> {
+    ): core.HttpResponsePromise<LoonFS.Snapshot> {
         return core.HttpResponsePromise.fromPromise(this.__extend(request, requestOptions));
     }
 
     private async __extend(
         request: LoonFS.ExtendSnapshotRequest,
         requestOptions?: SnapshotsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.SnapshotSummary>> {
+    ): Promise<core.WithRawResponse<LoonFS.Snapshot>> {
         const { namespace_id: namespaceId, snapshot_id: snapshotId, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -284,19 +290,25 @@ export class SnapshotsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.SnapshotSummary, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.Snapshot, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -374,9 +386,15 @@ export class SnapshotsClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:

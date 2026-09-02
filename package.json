@@ -1,6 +1,6 @@
 {
   "name": "@loonfs/sdk",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "TypeScript SDK for LoonFS client, proxy, and server applications",
   "license": "Apache-2.0",
   "repository": {

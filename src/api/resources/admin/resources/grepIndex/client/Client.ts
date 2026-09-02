@@ -81,17 +81,23 @@ export class GrepIndexClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 500:
                     throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 501:
                     throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:
@@ -174,21 +180,27 @@ export class GrepIndexClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
-                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 501:
                     throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:
@@ -271,21 +283,27 @@ export class GrepIndexClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
-                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 501:
                     throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:
@@ -369,17 +387,23 @@ export class GrepIndexClient {
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
-                    throw new LoonFS.BadRequestError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 401:
-                    throw new LoonFS.UnauthorizedError(_response.error.body as LoonFS.ApiError, _response.rawResponse);
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 500:
                     throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 501:
                     throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ApiError,
+                        _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
                 case 503:

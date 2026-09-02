@@ -8,12 +8,12 @@ import type * as LoonFS from "../index.js";
  * `mode` must match the mode used to start the session. Direct uploads
  * include the expected content details. Multipart also includes its parts.
  */
-export type CompleteUploadRequest =
-    | LoonFS.CompleteUploadRequest.ServiceProxied
-    | LoonFS.CompleteUploadRequest.DirectPut
-    | LoonFS.CompleteUploadRequest.DirectMultipart;
+export type UploadCompletion =
+    | LoonFS.UploadCompletion.ServiceProxied
+    | LoonFS.UploadCompletion.DirectPut
+    | LoonFS.UploadCompletion.DirectMultipart;
 
-export namespace CompleteUploadRequest {
+export namespace UploadCompletion {
     export interface ServiceProxied extends LoonFS.CompleteUploadServiceProxied {
         mode: "service_proxied";
     }
