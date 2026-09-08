@@ -14,4 +14,6 @@ export interface ForkNamespaceRequest {
     namespace_id: string;
     /** Durable namespace id for the fork target. */
     new_namespace_id: LoonFS.NamespaceId;
+    /** Fork from this live snapshot instead of the current head. */
+    snapshot_id?: LoonFS.CheckpointId;
 }

@@ -5,31 +5,50 @@ import type * as LoonFS from "../index.js";
 /**
  * One filesystem operation.
  *
- * Unknown fields are rejected so a misspelled concurrency guard cannot be ignored.
- * Fieldless variants must use empty braces so serde rejects unexpected fields.
+ * Unknown fields are rejected, and fieldless variants require empty objects.
  */
 export type FilesystemOperation =
+    | LoonFS.FilesystemOperation.CopyPath
     | LoonFS.FilesystemOperation.CreateDirectory
     | LoonFS.FilesystemOperation.CreateDirectoryByInode
+    | LoonFS.FilesystemOperation.DeleteByInode
+    | LoonFS.FilesystemOperation.DeletePath
+    | LoonFS.FilesystemOperation.MoveByInode
+    | LoonFS.FilesystemOperation.MovePath
     | LoonFS.FilesystemOperation.PutFile
     | LoonFS.FilesystemOperation.PutFileByInode
     | LoonFS.FilesystemOperation.PutFileRevisionByInode
-    | LoonFS.FilesystemOperation.DeletePath
-    | LoonFS.FilesystemOperation.DeleteByInode
-    | LoonFS.FilesystemOperation.MovePath
-    | LoonFS.FilesystemOperation.MoveByInode
-    | LoonFS.FilesystemOperation.CopyPath
-    | LoonFS.FilesystemOperation.Undelete
     | LoonFS.FilesystemOperation.RestoreRevision
+    | LoonFS.FilesystemOperation.Undelete
     | LoonFS.FilesystemOperation.UpdateAttributes;
 
 export namespace FilesystemOperation {
+    export interface CopyPath extends LoonFS.FilesystemOperationCopyPath {
+        kind: "copy_path";
+    }
+
     export interface CreateDirectory extends LoonFS.FilesystemOperationCreateDirectory {
         kind: "create_directory";
     }
 
     export interface CreateDirectoryByInode extends LoonFS.FilesystemOperationCreateDirectoryByInode {
         kind: "create_directory_by_inode";
+    }
+
+    export interface DeleteByInode extends LoonFS.FilesystemOperationDeleteByInode {
+        kind: "delete_by_inode";
+    }
+
+    export interface DeletePath extends LoonFS.FilesystemOperationDeletePath {
+        kind: "delete_path";
+    }
+
+    export interface MoveByInode extends LoonFS.FilesystemOperationMoveByInode {
+        kind: "move_by_inode";
+    }
+
+    export interface MovePath extends LoonFS.FilesystemOperationMovePath {
+        kind: "move_path";
     }
 
     export interface PutFile extends LoonFS.FilesystemOperationPutFile {
@@ -44,32 +63,12 @@ export namespace FilesystemOperation {
         kind: "put_file_revision_by_inode";
     }
 
-    export interface DeletePath extends LoonFS.FilesystemOperationDeletePath {
-        kind: "delete_path";
-    }
-
-    export interface DeleteByInode extends LoonFS.FilesystemOperationDeleteByInode {
-        kind: "delete_by_inode";
-    }
-
-    export interface MovePath extends LoonFS.FilesystemOperationMovePath {
-        kind: "move_path";
-    }
-
-    export interface MoveByInode extends LoonFS.FilesystemOperationMoveByInode {
-        kind: "move_by_inode";
-    }
-
-    export interface CopyPath extends LoonFS.FilesystemOperationCopyPath {
-        kind: "copy_path";
+    export interface RestoreRevision extends LoonFS.FilesystemOperationRestoreRevision {
+        kind: "restore_revision";
     }
 
     export interface Undelete extends LoonFS.FilesystemOperationUndelete {
         kind: "undelete";
-    }
-
-    export interface RestoreRevision extends LoonFS.FilesystemOperationRestoreRevision {
-        kind: "restore_revision";
     }
 
     export interface UpdateAttributes extends LoonFS.FilesystemOperationUpdateAttributes {

@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One checkpoint resource, reported from what its durable record carries.
+ * One checkpoint resource described by its durable record.
  */
 export interface Checkpoint {
     /** Durable checkpoint id used to address the checkpoint for release. */
@@ -12,13 +12,7 @@ export interface Checkpoint {
     checkpoint_seq: LoonFS.ChangeSeq;
     /** Time the checkpoint record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /**
-     * When garbage collection may release the record without being asked,
-     * in Unix milliseconds. Absent means the pin holds until it is
-     * released. An instant already in the past is a record whose expiry
-     * has passed and which no collection pass has reached yet: it is still
-     * a root, so it is still listed.
-     */
+    /** The automatic release time in Unix milliseconds, or `None` until an explicit release. */
     expires_at_ms?: number | undefined;
     /** Manifest pinned by the checkpoint. */
     manifest_no: LoonFS.ManifestNo;

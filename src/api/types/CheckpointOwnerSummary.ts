@@ -6,20 +6,20 @@ import type * as LoonFS from "../index.js";
  * The owner of a checkpoint record.
  */
 export type CheckpointOwnerSummary =
-    | LoonFS.CheckpointOwnerSummary.User
     | LoonFS.CheckpointOwnerSummary.Fork
-    | LoonFS.CheckpointOwnerSummary.Snapshot;
+    | LoonFS.CheckpointOwnerSummary.Snapshot
+    | LoonFS.CheckpointOwnerSummary.User;
 
 export namespace CheckpointOwnerSummary {
-    export interface User extends LoonFS.CheckpointOwnerUser {
-        kind: "user";
-    }
-
     export interface Fork extends LoonFS.CheckpointOwnerFork {
         kind: "fork";
     }
 
     export interface Snapshot extends LoonFS.CheckpointOwnerSnapshot {
         kind: "snapshot";
+    }
+
+    export interface User extends LoonFS.CheckpointOwnerUser {
+        kind: "user";
     }
 }

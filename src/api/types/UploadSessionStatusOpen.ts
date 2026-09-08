@@ -6,10 +6,7 @@ import type * as LoonFS from "../index.js";
  * Accepting content until its lease passes.
  */
 export interface UploadSessionStatusOpen {
-    /**
-     * Unix-millisecond instant after which the session is abandoned and
-     * may be aborted by server-side cleanup.
-     */
+    /** The Unix-millisecond time after which cleanup may abort the session. */
     expires_at_ms: number;
     /** Transport selected when the session began. */
     mode: LoonFS.UploadMode;

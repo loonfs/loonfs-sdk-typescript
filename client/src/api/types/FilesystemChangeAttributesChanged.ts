@@ -7,13 +7,12 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemChangeAttributesChanged {
     /**
-     * The inode's complete attribute map after the update, so a consumer
-     * projects it without reading anything back. An empty map is the
-     * cleared state.
+     * The inode's complete attribute map after the update, including an empty map
+     * when all attributes were cleared.
      */
     attributes: LoonFS.Attributes;
     /** New attribute revision for that inode. */
     attributes_revision_no: LoonFS.AttributeRevisionNo;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Inode whose attributes advanced. */
+    inode_id: LoonFS.InodeId;
 }

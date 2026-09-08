@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one explicit grep-index garbage-collection pass (admin plane).
+ * Result of one explicit grep index garbage-collection pass (maintenance API group).
  */
 export interface GrepGcResponse {
     /** Other unreferenced grep objects deleted after the grace window. */

@@ -10,6 +10,6 @@ export interface FilesystemOperationPutFileRevisionByInode {
     content_ref: LoonFS.ContentRef;
     /** Current revision required for the write. */
     expected_revision_no: LoonFS.RevisionNo;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** File to update. */
+    inode_id: LoonFS.InodeId;
 }

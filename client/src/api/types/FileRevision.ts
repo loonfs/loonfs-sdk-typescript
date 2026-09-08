@@ -8,10 +8,7 @@ import type * as LoonFS from "../index.js";
 export interface FileRevision {
     /** Commit ID for this revision. */
     commit_id: LoonFS.CommitId;
-    /**
-     * Wall-clock stamp of the commit that created this revision, in Unix
-     * milliseconds. Observational: `committed_seq` is the order.
-     */
+    /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
     committed_at_ms: number;
     /** Actor responsible for this revision, as supplied by the application. */
     committed_by: LoonFS.ActorRef;
@@ -19,8 +16,8 @@ export interface FileRevision {
     committed_seq: LoonFS.ChangeSeq;
     /** Content stored for this revision. */
     content_ref: LoonFS.ContentRef;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** File inode that owns this revision. */
+    inode_id: LoonFS.InodeId;
     /** Revision number within the file inode. */
     revision_no: LoonFS.RevisionNo;
 }

@@ -3,8 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One part's checksum, supplied by the client so the server can sign it
- * into that part's upload URL.
+ * One upload part number and its checksum.
  */
 export interface UploadPartChecksumClaim {
     /** Checksum over this part's bytes. */

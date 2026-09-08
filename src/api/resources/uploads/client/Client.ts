@@ -45,7 +45,7 @@ export class UploadsClient {
      *     await client.uploads.create({
      *         namespace_id: "namespace_id",
      *         body: {
-     *             mode: "service_proxied"
+     *             mode: "direct_multipart"
      *         }
      *     })
      */
@@ -342,7 +342,22 @@ export class UploadsClient {
      *         namespace_id: "namespace_id",
      *         upload_id: "upload_id",
      *         body: {
-     *             mode: "service_proxied"
+     *             mode: "direct_multipart",
+     *             content: {
+     *                 checksum: {
+     *                     algorithm: "sha256",
+     *                     value: "value"
+     *                 },
+     *                 size_bytes: 1000000
+     *             },
+     *             parts: [{
+     *                     checksum: {
+     *                         algorithm: "sha256",
+     *                         value: "value"
+     *                     },
+     *                     etag: "etag",
+     *                     part_number: 1
+     *                 }]
      *         }
      *     })
      */

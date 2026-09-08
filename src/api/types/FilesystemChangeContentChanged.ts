@@ -3,14 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A file received a new current revision — a put over an existing
- * file, or a revision restore (one durable fact for both).
+ * A file received a new current revision from a put or revision restore.
  */
 export interface FilesystemChangeContentChanged {
     /** Immutable content published by the revision. */
     content_ref: LoonFS.ContentRef;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** File inode whose history advanced. */
+    inode_id: LoonFS.InodeId;
     /** New monotonic position in that file's revision history. */
     revision_no: LoonFS.RevisionNo;
 }

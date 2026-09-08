@@ -3,36 +3,29 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A directory, which has no revision payload in v0.
- *
- * The entry tag reuses [`InodeKind`]'s wire vocabulary.
+ * A directory without a revision payload.
  */
 export interface PathEntryDirectory {
     /**
-     * The complete attribute map at `attributes_revision_no`.
-     *
-     * An inode that has never had attributes written is at revision 0 with
-     * an empty map.
+     * The complete attribute map at `attributes_revision_no`, including an empty map
+     * for the initial state.
      */
     attributes?: LoonFS.Attributes | undefined;
     /** The attribute revision this projection represents. */
     attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /**
-     * Time of the latest attribute update, in Unix milliseconds. This is
-     * `None` for the initial empty state at revision 0.
+     * The latest attribute update time in Unix milliseconds, or `None` for the
+     * initial empty state.
      */
     attributes_updated_at_ms?: number | undefined;
     /**
-     * Actor responsible for the latest attribute update. This is `None` for
-     * the initial empty state at revision 0.
+     * The actor responsible for the latest attribute update, or `None` for the
+     * initial empty state.
      */
     attributes_updated_by?: LoonFS.ActorRef | undefined;
-    /** Opaque identifier for this entry's current parent/name binding. Absent for the namespace root. */
-    binding_generation?: string | undefined;
-    /**
-     * Time the inode was created, in Unix milliseconds. Sequence numbers
-     * determine order.
-     */
+    /** The opaque ID for the current parent and name binding, or `None` for the namespace root. */
+    binding_generation?: LoonFS.BindingGeneration | undefined;
+    /** The inode creation time in Unix milliseconds. */
     created_at_ms: number;
     /** Actor that created this inode, as supplied by the application. */
     created_by: LoonFS.ActorRef;
@@ -40,12 +33,12 @@ export interface PathEntryDirectory {
     display_name?: LoonFS.DisplayName | undefined;
     /** Namespace head sequence this answer was read from. */
     head_seq: LoonFS.ChangeSeq;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Stable inode identity for this item. */
+    inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Stable inode ID within a namespace */
-    parent_inode_id?: string | undefined;
+    /** Parent directory inode, or `None` for the root. */
+    parent_inode_id?: LoonFS.InodeId | undefined;
     /** Absolute path as rendered from stored display names. */
     path: LoonFS.AbsolutePath;
 }

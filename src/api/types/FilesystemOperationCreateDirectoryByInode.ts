@@ -8,6 +8,6 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationCreateDirectoryByInode {
     /** New directory name. */
     display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    parent_inode_id: string;
+    /** Parent directory. */
+    parent_inode_id: LoonFS.InodeId;
 }

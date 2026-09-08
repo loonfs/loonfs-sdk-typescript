@@ -3,23 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Restore a deleted file or subtree.
- *
- * `inode_id` and `deletion_seq` identify one exact deletion. A stale
- * sequence returns `not_deleted` and cannot undo a later deletion.
+ * Restore the deletion identified by `inode_id` and `deletion_seq`.
  */
 export interface FilesystemOperationUndelete {
     /** Observed deletion sequence, which prevents cancelling a newer tombstone generation. */
     deletion_seq: LoonFS.ChangeSeq;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
-    /**
-     * Optional destination for the restored inode.
-     *
-     * When absent, the inode is rebound to the parent and name recorded by the
-     * deletion. Parent identity, rather than an old path string, keeps this
-     * correct after ancestor renames. An explicit path is required when the
-     * deletion recorded no binding.
-     */
+    /** Deleted inode to make reachable again. */
+    inode_id: LoonFS.InodeId;
+    /** The restore destination, or `None` to use the recorded binding. */
     path?: LoonFS.AbsolutePath | undefined;
 }

@@ -9,7 +9,7 @@ export interface FilesystemOperationDeleteByInode {
     /** Whether a non-empty directory may be tombstoned recursively. */
     behavior?: LoonFS.DeleteDirectoryBehavior | undefined;
     /** Binding generation required for the delete. */
-    expected_binding_generation: string;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    expected_binding_generation: LoonFS.BindingGeneration;
+    /** Inode to delete. */
+    inode_id: LoonFS.InodeId;
 }

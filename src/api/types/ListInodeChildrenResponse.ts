@@ -3,20 +3,10 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One directory listing addressed by parent inode, and the namespace head
- * it was answered at.
- *
- * The envelope names the parent by its stable inode identity rather than a
- * path, so a page and its resumption always describe the same directory
- * even when the parent is concurrently renamed or moved.
+ * One directory listing addressed by parent inode and the namespace head used to read it.
  */
 export interface ListInodeChildrenResponse {
-    /**
-     * Directory entries for this page.
-     *
-     * Entries are returned in canonical name-key order. Higher-level display
-     * surfaces may sort entries separately for presentation.
-     */
+    /** The directory entries in canonical name-key order. */
     entries: LoonFS.PathEntry[];
     /** Namespace head sequence this listing was read from. */
     head_seq: LoonFS.ChangeSeq;
@@ -24,6 +14,6 @@ export interface ListInodeChildrenResponse {
     namespace_id: LoonFS.NamespaceId;
     /** Cursor for the next page, if more entries remain. */
     next_cursor?: string | undefined;
-    /** Stable inode ID within a namespace */
-    parent_inode_id: string;
+    /** Directory inode whose children were returned. */
+    parent_inode_id: LoonFS.InodeId;
 }

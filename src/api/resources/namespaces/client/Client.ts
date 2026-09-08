@@ -301,7 +301,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Creates a new namespace as a fork from the source namespace's current durable view.
+     * Creates a new namespace from the source current head or a live snapshot.
      *
      * @param {LoonFS.ForkNamespaceRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.

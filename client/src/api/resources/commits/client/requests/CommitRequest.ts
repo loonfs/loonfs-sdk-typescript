@@ -12,8 +12,9 @@ import type * as LoonFS from "../../../../index.js";
  *         },
  *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
  *         operations: [{
- *                 kind: "create_directory",
- *                 path: "/docs/report.txt"
+ *                 kind: "copy_path",
+ *                 from_path: "/docs/report.txt",
+ *                 to_path: "/docs/report.txt"
  *             }]
  *     }
  */
@@ -22,23 +23,14 @@ export interface CommitRequest {
     namespace_alias: string;
     /** Actor responsible for the commit, as supplied by the application. */
     actor: LoonFS.ActorRef;
+    /** Ordered admission conditions evaluated before any operations. */
+    assertions?: LoonFS.CommitAssertion[];
     /** Caller-supplied idempotency key for the whole request. */
     commit_id: LoonFS.CommitId;
-    /**
-     * Proofs for any new external content refs introduced by this request.
-     * One proof covers every operation that names its content ref.
-     */
+    /** The proofs for new external content references in this request. */
     content_tokens?: LoonFS.ContentToken[];
-    /**
-     * Caller annotation recorded on the commit and reported by the change
-     * feed. Part of the commit's identity: reusing `commit_id` with a
-     * different message is a `commit_id_reuse_conflict`, exactly as it is
-     * for an explicit commit.
-     */
+    /** The caller annotation that forms part of the commit identity. */
     message?: string | null;
-    /**
-     * Ordered operations to apply. Must be non-empty; they commit all
-     * together or not at all.
-     */
+    /** The non-empty ordered operations to commit atomically. */
     operations: LoonFS.FilesystemOperation[];
 }

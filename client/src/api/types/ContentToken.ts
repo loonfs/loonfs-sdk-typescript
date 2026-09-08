@@ -8,6 +8,6 @@ import type * as LoonFS from "../index.js";
 export interface ContentToken {
     /** Content authorized by this token. */
     content_ref: LoonFS.ContentRef;
-    /** Opaque, server-signed token. Clients must not parse it. */
+    /** The opaque server-signed token that clients must not parse. */
     token: string;
 }

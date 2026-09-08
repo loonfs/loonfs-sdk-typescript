@@ -3,19 +3,18 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The index follows the change feed. Commits at or below the watermark
- * are searchable.
+ * An index following the change feed through its searchable watermark.
  */
 export interface GrepIndexLifecycleActive {
     /** Sequence of the commit at the index cursor. */
     built_through_seq: LoonFS.ChangeSeq;
-    /**
-     * Offset of the next change event within `built_through_seq`, or
-     * zero when the whole commit is represented.
-     */
-    next_event_index?: number | undefined;
     /** Namespace the status describes. */
     namespace_id: LoonFS.NamespaceId;
+    /**
+     * The next change-event offset within `built_through_seq`, or zero when the
+     * whole commit is indexed.
+     */
+    next_event_index?: number | undefined;
     /** Run number the index allocates next. */
     next_run_no: LoonFS.RunNo;
     /** True while a partitioned segment reorganization is in progress. */

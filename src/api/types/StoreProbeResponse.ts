@@ -3,18 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What one store contract probe observed, check by check.
+ * The ordered results from one store contract probe.
  */
 export interface StoreProbeResponse {
-    /**
-     * Every check the run performed, in the order it performed them. A
-     * failed check lives here rather than in an error: the probe answered
-     * the question, and the answer is that the store is wrong.
-     */
+    /** The check results in execution order. */
     checks: LoonFS.StoreProbeCheckResult[];
-    /**
-     * Label the server minted for this run. It scopes the objects the run
-     * wrote, so it identifies the run in provider logs too.
-     */
+    /** The server-generated label for this probe run and its objects. */
     run_id: string;
 }

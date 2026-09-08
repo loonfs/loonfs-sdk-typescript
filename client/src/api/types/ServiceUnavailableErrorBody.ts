@@ -6,37 +6,16 @@ import type * as LoonFS from "../index.js";
  * HTTP error body used by LoonFS APIs.
  */
 export interface ServiceUnavailableErrorBody {
-    /**
-     * Stable machine-readable reason from the [`ErrorCode`](crate::ErrorCode)
-     * registry.
-     *
-     * Carried as a string so clients keep working when a newer server
-     * introduces a code they do not know; use
-     * [`ErrorCode::parse`](crate::ErrorCode::parse) for typed access.
-     */
+    /** The stable machine-readable error code as a string. */
     code: string;
-    /**
-     * Structured context for the code, present when the failure carries
-     * machine-usable identity (API spec, "Standard error contract"). Boxed
-     * so the rare detailed error does not widen every error-carrying result.
-     */
+    /** The optional machine-readable context for the error code. */
     details?: LoonFS.ErrorDetails | undefined;
-    /**
-     * For `not_supported` errors, the capability-document feature key the
-     * client should reconcile against.
-     */
+    /** The capability feature key for a `not_supported` error. */
     feature?: string | undefined;
     /** Human-readable error message. */
     message: string;
-    /**
-     * Identifies the invalid input. Body fields use JSON Pointer paths;
-     * query and path parameters use their names; CLI errors use the flag or
-     * argument as written.
-     */
+    /** The invalid JSON Pointer, parameter name, CLI flag, or CLI argument. */
     param?: string | undefined;
-    /**
-     * Correlation id the server assigned to the failed request; the same
-     * value is sent as the `x-request-id` response header.
-     */
+    /** The request correlation ID also sent in the `x-request-id` response header. */
     request_id?: string | undefined;
 }

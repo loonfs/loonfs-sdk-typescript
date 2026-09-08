@@ -7,7 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         body: {
- *             mode: "service_proxied"
+ *             mode: "direct_multipart"
  *         }
  *     }
  */

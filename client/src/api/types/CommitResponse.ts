@@ -3,40 +3,23 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one commit.
- *
- * Every commit resolves to this envelope — path-oriented operations and
- * explicit commits, embedded or remote. The commit id is the caller's
- * reconciliation handle: resubmitting the same request with the same id
- * replays this result instead of committing twice.
- *
- * The response includes the same attribution and events as
- * [`CommittedChange`], including IDs created by the commit.
+ * The result of one commit, including its attribution and filesystem events.
  */
 export interface CommitResponse {
-    /**
-     * Idempotency key the commit landed under: caller-supplied, or
-     * generated on the caller's behalf when the request carried none.
-     */
+    /** The idempotency key for the commit. */
     commit_id: LoonFS.CommitId;
-    /**
-     * Wall-clock stamp of the commit, in Unix milliseconds.
-     * Observational: `committed_seq` is the order.
-     */
+    /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
     committed_at_ms: number;
     /** Actor responsible for the commit, as supplied by the application. */
     committed_by: LoonFS.ActorRef;
     /** Sequence number where the commit became visible. */
     committed_seq: LoonFS.ChangeSeq;
     /**
-     * Semantic filesystem events in commit order. This is omitted only when
-     * replaying a commit whose WAL history is no longer retained.
+     * The filesystem events in commit order, or `None` when replaying a commit
+     * without retained WAL history.
      */
     events?: LoonFS.FilesystemChange[] | undefined;
-    /**
-     * Caller annotation, omitted when absent and carrying no filesystem
-     * semantics.
-     */
+    /** The optional caller annotation for the commit. */
     message?: string | undefined;
     /** Namespace that changed. */
     namespace_id: LoonFS.NamespaceId;

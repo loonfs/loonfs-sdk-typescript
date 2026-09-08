@@ -3,15 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A file or directory subtree was deleted. Use the enclosing change's
- * `committed_seq` as `deletion_seq` when restoring it.
+ * A file or directory subtree was deleted.
  */
 export interface FilesystemChangeDeleted {
-    /**
-     * Directory binding removed by the deletion, when the delete
-     * recorded one.
-     */
-    deleted_binding?: LoonFS.DirectoryBinding | undefined;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Directory binding removed by the deletion. */
+    deleted_binding: LoonFS.DirectoryBinding;
+    /** Inode at the root of the deleted subtree. */
+    inode_id: LoonFS.InodeId;
 }

@@ -10,6 +10,6 @@ export interface DirectoryBinding {
     display_name: LoonFS.DisplayName;
     /** Name used to look up the entry. */
     name_key: LoonFS.NameKey;
-    /** Stable inode ID within a namespace */
-    parent_inode_id: string;
+    /** Parent directory containing the entry. */
+    parent_inode_id: LoonFS.InodeId;
 }
