@@ -3,25 +3,25 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What the WAL-flush part of a maintenance step did.
+ * What the WAL-flush part of a maintenance pass did.
  */
 export type WalFlushStepOutcome =
-    | LoonFS.WalFlushStepOutcome.NotNeeded
-    | LoonFS.WalFlushStepOutcome.Flushed
     | LoonFS.WalFlushStepOutcome.AlreadyPublished
+    | LoonFS.WalFlushStepOutcome.Flushed
+    | LoonFS.WalFlushStepOutcome.NotNeeded
     | LoonFS.WalFlushStepOutcome.RetriesExhausted;
 
 export namespace WalFlushStepOutcome {
-    export interface NotNeeded extends LoonFS.WalFlushStepOutcomeNotNeeded {
-        outcome: "not_needed";
+    export interface AlreadyPublished extends LoonFS.WalFlushStepOutcomeAlreadyPublished {
+        outcome: "already_published";
     }
 
     export interface Flushed extends LoonFS.WalFlushStepOutcomeFlushed {
         outcome: "flushed";
     }
 
-    export interface AlreadyPublished extends LoonFS.WalFlushStepOutcomeAlreadyPublished {
-        outcome: "already_published";
+    export interface NotNeeded extends LoonFS.WalFlushStepOutcomeNotNeeded {
+        outcome: "not_needed";
     }
 
     export interface RetriesExhausted extends LoonFS.WalFlushStepOutcomeRetriesExhausted {

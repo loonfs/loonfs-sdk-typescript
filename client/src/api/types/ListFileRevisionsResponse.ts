@@ -8,8 +8,8 @@ import type * as LoonFS from "../index.js";
 export interface ListFileRevisionsResponse {
     /** Namespace head sequence used for the read. */
     head_seq: LoonFS.ChangeSeq;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** File inode whose revisions were returned. */
+    inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Opaque cursor for the next page, if more revisions are available. */

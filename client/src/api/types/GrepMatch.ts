@@ -8,8 +8,8 @@ import type * as LoonFS from "../index.js";
 export interface GrepMatch {
     /** Byte offset of the match within the file. */
     byte_offset: number;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Durable identity of the matched file. */
+    inode_id: LoonFS.InodeId;
     /** The matching line, truncated to the server's line cap. */
     line: string;
     /** One-based line number of the match. */

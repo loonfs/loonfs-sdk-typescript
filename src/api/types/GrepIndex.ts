@@ -3,21 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The namespace's grep-index lifecycle and its cheap bookkeeping (admin
- * plane).
+ * The maintenance status of a namespace's grep index.
  */
-export type GrepIndex = LoonFS.GrepIndex.Disabled | LoonFS.GrepIndex.Backfilling | LoonFS.GrepIndex.Active;
+export type GrepIndex = LoonFS.GrepIndex.Active | LoonFS.GrepIndex.Backfilling | LoonFS.GrepIndex.Disabled;
 
 export namespace GrepIndex {
-    export interface Disabled extends LoonFS.GrepIndexLifecycleDisabled {
-        status: "disabled";
+    export interface Active extends LoonFS.GrepIndexLifecycleActive {
+        status: "active";
     }
 
     export interface Backfilling extends LoonFS.GrepIndexLifecycleBackfilling {
         status: "backfilling";
     }
 
-    export interface Active extends LoonFS.GrepIndexLifecycleActive {
-        status: "active";
+    export interface Disabled extends LoonFS.GrepIndexLifecycleDisabled {
+        status: "disabled";
     }
 }

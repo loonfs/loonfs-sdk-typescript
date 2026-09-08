@@ -10,8 +10,8 @@ export interface FilesystemOperationPutFile {
     behavior?: LoonFS.DestinationBehavior | undefined;
     /** Immutable bytes that must be covered by a valid preparation proof. */
     content_ref: LoonFS.ContentRef;
-    /** Stable inode ID within a namespace */
-    expected_inode_id?: string | undefined;
+    /** With `replace` behavior, the request requires the path to contain this inode. */
+    expected_inode_id?: LoonFS.InodeId | undefined;
     /** With `replace` behavior and an inode guard, the request requires this content revision. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** Absolute destination path; missing ancestors are created automatically. */

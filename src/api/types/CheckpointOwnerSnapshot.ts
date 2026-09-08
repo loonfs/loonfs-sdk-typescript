@@ -4,8 +4,6 @@
  * An application-created read view.
  */
 export interface CheckpointOwnerSnapshot {
-    /** When the snapshot lease expires, in Unix milliseconds. */
-    expires_at_ms: number;
     /** A label that does not need to be unique. */
     name: string;
 }

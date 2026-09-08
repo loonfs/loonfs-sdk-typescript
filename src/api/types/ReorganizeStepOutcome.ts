@@ -3,46 +3,28 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What the metadata-reorganization part of a maintenance step did.
- *
- * Deliberately coarse: the run counts and byte budgets a reorganization
- * consumes are engine policy, not a wire contract.
+ * The outcome of the metadata-reorganization part of a maintenance pass.
  */
 export type ReorganizeStepOutcome =
-    | LoonFS.ReorganizeStepOutcome.NotNeeded
-    | LoonFS.ReorganizeStepOutcome.UnitPublished
-    | LoonFS.ReorganizeStepOutcome.CompactionStarted
-    | LoonFS.ReorganizeStepOutcome.CompactionRunning
-    | LoonFS.ReorganizeStepOutcome.CompactionAtCapacity
     | LoonFS.ReorganizeStepOutcome.CompactionRequired
-    | LoonFS.ReorganizeStepOutcome.RootAdvanced;
+    | LoonFS.ReorganizeStepOutcome.NotNeeded
+    | LoonFS.ReorganizeStepOutcome.RootAdvanced
+    | LoonFS.ReorganizeStepOutcome.UnitPublished;
 
 export namespace ReorganizeStepOutcome {
-    export interface NotNeeded extends LoonFS.ReorganizeStepOutcomeNotNeeded {
-        outcome: "not_needed";
-    }
-
-    export interface UnitPublished extends LoonFS.ReorganizeStepOutcomeUnitPublished {
-        outcome: "unit_published";
-    }
-
-    export interface CompactionStarted extends LoonFS.ReorganizeStepOutcomeCompactionStarted {
-        outcome: "compaction_started";
-    }
-
-    export interface CompactionRunning extends LoonFS.ReorganizeStepOutcomeCompactionRunning {
-        outcome: "compaction_running";
-    }
-
-    export interface CompactionAtCapacity extends LoonFS.ReorganizeStepOutcomeCompactionAtCapacity {
-        outcome: "compaction_at_capacity";
-    }
-
     export interface CompactionRequired extends LoonFS.ReorganizeStepOutcomeCompactionRequired {
         outcome: "compaction_required";
     }
 
+    export interface NotNeeded extends LoonFS.ReorganizeStepOutcomeNotNeeded {
+        outcome: "not_needed";
+    }
+
     export interface RootAdvanced extends LoonFS.ReorganizeStepOutcomeRootAdvanced {
         outcome: "root_advanced";
+    }
+
+    export interface UnitPublished extends LoonFS.ReorganizeStepOutcomeUnitPublished {
+        outcome: "unit_published";
     }
 }

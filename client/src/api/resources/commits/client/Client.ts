@@ -23,7 +23,7 @@ export class CommitsClient {
     }
 
     /**
-     * Applies one commit: an ordered, non-empty list of path operations that commit together as one logical commit, under one commit id that makes retries idempotent. A single-operation call is the one-element case. The first operation that fails aborts the whole request, and a request carrying more than one operation names that operation's position in `details.operation_index`.
+     * Applies one commit: an ordered, non-empty list of path operations that commit together as one logical commit, under one commit id that makes retries idempotent. Request assertions check the pre-state after receipt resolution and before operations; a failed assertion names its position in `details.assertion_index`. A single-operation call is the one-element case. The first operation that fails aborts the whole request, and a request carrying more than one operation names that operation's position in `details.operation_index`.
      *
      * @param {LoonFS.CommitRequest} request
      * @param {CommitsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -46,8 +46,9 @@ export class CommitsClient {
      *         },
      *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
      *         operations: [{
-     *                 kind: "create_directory",
-     *                 path: "/docs/report.txt"
+     *                 kind: "copy_path",
+     *                 from_path: "/docs/report.txt",
+     *                 to_path: "/docs/report.txt"
      *             }]
      *     })
      */

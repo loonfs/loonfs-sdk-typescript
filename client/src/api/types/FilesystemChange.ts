@@ -3,27 +3,32 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One semantic filesystem change inside a commit.
+ * One filesystem change within a commit.
  *
- * A commit's events are the operations it applied, in the order it applied
- * them. One request operation can apply several: creating missing parent
- * directories, or replacing a file by moving over it, each produce an event
- * per directory created or file replaced. So a request with three
- * operations may report more than three events, and the events stay in
- * request order. Events name inodes and their parent-directory bindings
- * rather than full paths; a consumer that needs paths can stat the inode or
- * maintain its own binding projection from this feed.
+ * One request operation can produce multiple changes.
  */
 export type FilesystemChange =
+    | LoonFS.FilesystemChange.AttributesChanged
+    | LoonFS.FilesystemChange.ContentChanged
+    | LoonFS.FilesystemChange.Deleted
     | LoonFS.FilesystemChange.DirectoryCreated
     | LoonFS.FilesystemChange.FileCreated
-    | LoonFS.FilesystemChange.ContentChanged
     | LoonFS.FilesystemChange.Moved
-    | LoonFS.FilesystemChange.Deleted
-    | LoonFS.FilesystemChange.Undeleted
-    | LoonFS.FilesystemChange.AttributesChanged;
+    | LoonFS.FilesystemChange.Undeleted;
 
 export namespace FilesystemChange {
+    export interface AttributesChanged extends LoonFS.FilesystemChangeAttributesChanged {
+        kind: "attributes_changed";
+    }
+
+    export interface ContentChanged extends LoonFS.FilesystemChangeContentChanged {
+        kind: "content_changed";
+    }
+
+    export interface Deleted extends LoonFS.FilesystemChangeDeleted {
+        kind: "deleted";
+    }
+
     export interface DirectoryCreated extends LoonFS.FilesystemChangeDirectoryCreated {
         kind: "directory_created";
     }
@@ -32,23 +37,11 @@ export namespace FilesystemChange {
         kind: "file_created";
     }
 
-    export interface ContentChanged extends LoonFS.FilesystemChangeContentChanged {
-        kind: "content_changed";
-    }
-
     export interface Moved extends LoonFS.FilesystemChangeMoved {
         kind: "moved";
     }
 
-    export interface Deleted extends LoonFS.FilesystemChangeDeleted {
-        kind: "deleted";
-    }
-
     export interface Undeleted extends LoonFS.FilesystemChangeUndeleted {
         kind: "undeleted";
-    }
-
-    export interface AttributesChanged extends LoonFS.FilesystemChangeAttributesChanged {
-        kind: "attributes_changed";
     }
 }

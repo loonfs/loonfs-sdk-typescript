@@ -10,8 +10,8 @@ export interface BeginDownloadByInodeResponse {
     access: LoonFS.ObjectTransferAccess;
     /** Content identity, size, and checksum. */
     content_ref: LoonFS.ContentRef;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** File inode being read. */
+    inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Revision being read. */

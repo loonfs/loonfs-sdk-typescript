@@ -3,14 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Pointer to one immutable content object.
+ * A reference to one immutable content object.
  *
- * `content_id` is identity — *which* object — and the checksum is
- * evidence about its bytes. Separating the two is what lets the final
- * object key exist before the first byte is read.
- *
- * A `ContentRef` is safe to publish only after the referenced bytes are
- * durable in the namespace's content store.
+ * The object must be durable before the reference is published.
  */
 export interface ContentRef {
     /** Mandatory checksum over the complete object. */
@@ -18,7 +13,9 @@ export interface ContentRef {
     /** Immutable identity of the referenced object. */
     content_id: LoonFS.ContentId;
     /** Content strategy used by the referenced object. */
-    kind: string;
+    kind: LoonFS.ContentRefKind;
+    /** Namespace that originally wrote the bytes. */
+    owner_namespace_id: LoonFS.NamespaceId;
     /** Complete byte length of the referenced content. */
     size_bytes: number;
 }

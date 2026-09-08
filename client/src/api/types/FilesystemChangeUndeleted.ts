@@ -7,11 +7,11 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemChangeUndeleted {
     /** Opaque identifier for the binding created by this event. */
-    binding_generation: string;
+    binding_generation: LoonFS.BindingGeneration;
     /** Spelling of the recovered binding. */
     display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
-    /** Stable inode ID within a namespace */
-    parent_inode_id: string;
+    /** Recovered inode. */
+    inode_id: LoonFS.InodeId;
+    /** Directory the recovered entry was bound under. */
+    parent_inode_id: LoonFS.InodeId;
 }

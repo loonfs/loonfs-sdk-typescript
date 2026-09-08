@@ -21,9 +21,6 @@ export interface SignUploadPartsRequest {
     namespace_id: string;
     /** Upload session id */
     upload_id: string;
-    /**
-     * Parts to authorize and the checksum for each part. Requesting a part
-     * again replaces the previous upload for that part number.
-     */
+    /** The parts to authorize; repeated part numbers replace their previous uploads. */
     parts: LoonFS.UploadPartChecksumClaim[];
 }

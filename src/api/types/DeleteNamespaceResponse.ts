@@ -6,10 +6,7 @@ import type * as LoonFS from "../index.js";
  * Result of deleting a namespace.
  */
 export interface DeleteNamespaceResponse {
-    /**
-     * The head's last committed sequence; the delete linearized
-     * immediately after it, so this is where history ended.
-     */
+    /** The final committed sequence before the namespace was deleted. */
     head_seq: LoonFS.ChangeSeq;
     /** Namespace whose history ended. */
     namespace_id: LoonFS.NamespaceId;

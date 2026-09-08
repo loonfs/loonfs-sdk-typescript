@@ -10,10 +10,7 @@ export interface UploadSessionStatusCompleted {
     completed_at_ms: number;
     /** Verified content selected by this session. */
     content_ref: LoonFS.ContentRef;
-    /**
-     * Fresh proof for a later commit. This is absent after the token
-     * minting window closes, while `content_ref` remains available.
-     */
+    /** Fresh proof for a later commit, or `None` after the token minting window closes. */
     content_token?: LoonFS.ContentToken | undefined;
     /** Transport selected when the session began. */
     mode: LoonFS.UploadMode;

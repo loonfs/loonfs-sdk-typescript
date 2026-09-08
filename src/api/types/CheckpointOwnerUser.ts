@@ -4,9 +4,6 @@
  * An operator-created pin, released by id or by its own expiry.
  */
 export interface CheckpointOwnerUser {
-    /**
-     * The label the creator recorded. Not a key: several records may
-     * carry one label over different bases.
-     */
+    /** The non-unique label recorded by the creator. */
     name: string;
 }

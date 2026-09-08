@@ -10,15 +10,8 @@ export interface BeginUploadResponseDirectMultipart {
     checksum_algorithm: LoonFS.ChecksumAlgorithm;
     /** Namespace authorized to consume the eventual staged content. */
     namespace_id: LoonFS.NamespaceId;
-    /**
-     * Byte length of every part except the last. At most 10,000 parts
-     * may be uploaded, so this bounds the object at 10,000 times the
-     * part size.
-     */
+    /** The byte length of every part except the last, with at most 10,000 parts allowed. */
     part_size_bytes: number;
-    /**
-     * Durable session identity used by subsequent part-signing and
-     * completion calls.
-     */
+    /** The session identity used by later part-signing and completion calls. */
     upload_id: LoonFS.UploadId;
 }

@@ -7,15 +7,15 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemChangeMoved {
     /** Opaque identifier for the binding created by this event. */
-    binding_generation: string;
+    binding_generation: LoonFS.BindingGeneration;
     /** Spelling of the old binding. */
     from_display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    from_parent_inode_id: string;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Directory that held the old binding. */
+    from_parent_inode_id: LoonFS.InodeId;
+    /** Inode whose binding changed. */
+    inode_id: LoonFS.InodeId;
     /** Spelling of the new binding. */
     to_display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    to_parent_inode_id: string;
+    /** Directory holding the new binding. */
+    to_parent_inode_id: LoonFS.InodeId;
 }

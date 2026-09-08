@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Create a file under an existing parent inode. The name must be unused.
+ * Create a file with an unused name under an existing parent inode.
  */
 export interface FilesystemOperationPutFileByInode {
     /** Immutable bytes that must be covered by a valid preparation proof. */
     content_ref: LoonFS.ContentRef;
     /** New file name. */
     display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    parent_inode_id: string;
+    /** Parent directory. */
+    parent_inode_id: LoonFS.InodeId;
 }

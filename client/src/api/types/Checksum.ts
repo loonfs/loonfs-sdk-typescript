@@ -3,18 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * An algorithm and its canonical lowercase-hex checksum value.
- *
- * The enclosing value defines which bytes the checksum covers.
+ * A checksum algorithm and its canonical lowercase hexadecimal value.
  */
 export interface Checksum {
     /** Algorithm that produced `value`. */
     algorithm: LoonFS.ChecksumAlgorithm;
-    /**
-     * Lowercase hex of the raw checksum bytes.
-     *
-     * The algorithm is its own field, so the value carries no prefix.
-     * Provider APIs that report base64 are converted at the adapter.
-     */
+    /** The canonical lowercase hexadecimal checksum without a prefix. */
     value: string;
 }

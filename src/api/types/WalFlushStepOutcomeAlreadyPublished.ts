@@ -3,8 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The step did not update the root because it already referenced a
- * different manifest.
+ * The step did not update a root that already referenced another manifest.
  */
 export interface WalFlushStepOutcomeAlreadyPublished {
     /** Sequence this step attempted to flush through. */

@@ -7,8 +7,8 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemOperationCreateDirectory {
     /**
-     * Also create missing ancestor directories (the same auto-create
-     * `put_file` performs). The final component must still be new.
+     * Whether to create missing ancestor directories while requiring the final
+     * component to be new.
      */
     parents?: boolean | undefined;
     /** Absolute destination path, rejected when invalid or already bound. */

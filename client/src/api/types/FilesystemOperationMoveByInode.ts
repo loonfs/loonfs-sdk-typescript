@@ -9,15 +9,15 @@ export interface FilesystemOperationMoveByInode {
     /** Whether an existing destination file may be replaced. */
     behavior?: LoonFS.DestinationBehavior | undefined;
     /** Binding generation required for the move. */
-    expected_binding_generation: string;
-    /** Stable inode ID within a namespace */
-    expected_destination_inode_id?: string | undefined;
-    /** With `replace` behavior and an inode guard, the request requires this content revision. */
+    expected_binding_generation: LoonFS.BindingGeneration;
+    /** With `replace` behavior, the destination inode required by the request. */
+    expected_destination_inode_id?: LoonFS.InodeId | undefined;
+    /** With `replace` behavior and an inode guard, the required content revision. */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Inode to move. */
+    inode_id: LoonFS.InodeId;
     /** New name. */
     to_display_name: LoonFS.DisplayName;
-    /** Stable inode ID within a namespace */
-    to_parent_inode_id: string;
+    /** Destination directory. */
+    to_parent_inode_id: LoonFS.InodeId;
 }

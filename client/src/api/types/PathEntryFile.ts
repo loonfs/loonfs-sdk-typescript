@@ -6,49 +6,28 @@ import type * as LoonFS from "../index.js";
  * A file and its current revision summary.
  */
 export interface PathEntryFile {
-    /** Current content reference. */
-    content_ref: LoonFS.ContentRef;
     /**
-     * Time of the current revision, in Unix milliseconds. Revision
-     * sequences determine order.
-     */
-    revision_committed_at_ms: number;
-    /** Actor responsible for the current revision. */
-    revision_committed_by: LoonFS.ActorRef;
-    /** Current file revision number. */
-    revision_no: LoonFS.RevisionNo;
-    /**
-     * Current file size in bytes.
-     *
-     * This remains explicit even though `content_ref` also carries the
-     * length because callers sort directory listings by this field.
-     */
-    size_bytes: number;
-    /**
-     * The complete attribute map at `attributes_revision_no`.
-     *
-     * An inode that has never had attributes written is at revision 0 with
-     * an empty map.
+     * The complete attribute map at `attributes_revision_no`, including an empty map
+     * for the initial state.
      */
     attributes?: LoonFS.Attributes | undefined;
     /** The attribute revision this projection represents. */
     attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /**
-     * Time of the latest attribute update, in Unix milliseconds. This is
-     * `None` for the initial empty state at revision 0.
+     * The latest attribute update time in Unix milliseconds, or `None` for the
+     * initial empty state.
      */
     attributes_updated_at_ms?: number | undefined;
     /**
-     * Actor responsible for the latest attribute update. This is `None` for
-     * the initial empty state at revision 0.
+     * The actor responsible for the latest attribute update, or `None` for the
+     * initial empty state.
      */
     attributes_updated_by?: LoonFS.ActorRef | undefined;
-    /** Opaque identifier for this entry's current parent/name binding. Absent for the namespace root. */
-    binding_generation?: string | undefined;
-    /**
-     * Time the inode was created, in Unix milliseconds. Sequence numbers
-     * determine order.
-     */
+    /** The opaque ID for the current parent and name binding, or `None` for the namespace root. */
+    binding_generation?: LoonFS.BindingGeneration | undefined;
+    /** Current content reference. */
+    content_ref: LoonFS.ContentRef;
+    /** The inode creation time in Unix milliseconds. */
     created_at_ms: number;
     /** Actor that created this inode, as supplied by the application. */
     created_by: LoonFS.ActorRef;
@@ -56,12 +35,20 @@ export interface PathEntryFile {
     display_name?: LoonFS.DisplayName | undefined;
     /** Namespace head sequence this answer was read from. */
     head_seq: LoonFS.ChangeSeq;
-    /** Stable inode ID within a namespace */
-    inode_id: string;
+    /** Stable inode identity for this item. */
+    inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Stable inode ID within a namespace */
-    parent_inode_id?: string | undefined;
+    /** Parent directory inode, or `None` for the root. */
+    parent_inode_id?: LoonFS.InodeId | undefined;
     /** Absolute path as rendered from stored display names. */
     path: LoonFS.AbsolutePath;
+    /** The current revision time in Unix milliseconds. */
+    revision_committed_at_ms: number;
+    /** Actor responsible for the current revision. */
+    revision_committed_by: LoonFS.ActorRef;
+    /** Current file revision number. */
+    revision_no: LoonFS.RevisionNo;
+    /** The current file size in bytes. */
+    size_bytes: number;
 }

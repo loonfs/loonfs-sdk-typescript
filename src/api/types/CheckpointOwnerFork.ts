@@ -3,10 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A fork target keeping its source basis alive for the length of one
- * fork attempt.
+ * A fork target retaining its source basis for one fork attempt.
  */
 export interface CheckpointOwnerFork {
-    /** Namespace whose continued existence keeps this pin standing. */
+    /** The target namespace whose existence retains this checkpoint. */
     target_namespace_id: LoonFS.NamespaceId;
 }

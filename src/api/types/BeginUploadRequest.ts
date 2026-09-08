@@ -3,26 +3,23 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Request to start an upload session, tagged by transport mode.
- *
- * Each variant contains only fields valid for that transport, so invalid
- * combinations are rejected during decoding. The `mode` field is required.
+ * A request to start an upload session for one required transport mode.
  */
 export type BeginUploadRequest =
-    | LoonFS.BeginUploadRequest.ServiceProxied
+    | LoonFS.BeginUploadRequest.DirectMultipart
     | LoonFS.BeginUploadRequest.DirectPut
-    | LoonFS.BeginUploadRequest.DirectMultipart;
+    | LoonFS.BeginUploadRequest.ServiceProxied;
 
 export namespace BeginUploadRequest {
-    export interface ServiceProxied extends LoonFS.BeginUploadServiceProxied {
-        mode: "service_proxied";
+    export interface DirectMultipart extends LoonFS.BeginUploadDirectMultipart {
+        mode: "direct_multipart";
     }
 
     export interface DirectPut extends LoonFS.BeginUploadDirectPut {
         mode: "direct_put";
     }
 
-    export interface DirectMultipart extends LoonFS.BeginUploadDirectMultipart {
-        mode: "direct_multipart";
+    export interface ServiceProxied extends LoonFS.BeginUploadServiceProxied {
+        mode: "service_proxied";
     }
 }

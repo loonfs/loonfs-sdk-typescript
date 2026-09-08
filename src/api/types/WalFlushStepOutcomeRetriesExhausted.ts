@@ -3,8 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Concurrent updates prevented every attempt from publishing. Nothing
- * was flushed, and a later step can try again.
+ * Concurrent updates prevented every publication attempt.
  */
 export interface WalFlushStepOutcomeRetriesExhausted {
     /** Head sequence observed before the step ran. */

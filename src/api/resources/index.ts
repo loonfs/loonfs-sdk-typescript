@@ -1,4 +1,3 @@
-export * as admin from "./admin/index.js";
 export * as capabilities from "./capabilities/index.js";
 export * from "./changes/client/requests/index.js";
 export * as changes from "./changes/index.js";
@@ -8,6 +7,7 @@ export * from "./files/client/requests/index.js";
 export * as files from "./files/index.js";
 export * from "./inodes/client/requests/index.js";
 export * as inodes from "./inodes/index.js";
+export * as maintenance from "./maintenance/index.js";
 export * from "./namespaces/client/requests/index.js";
 export * as namespaces from "./namespaces/index.js";
 export * from "./snapshots/client/requests/index.js";

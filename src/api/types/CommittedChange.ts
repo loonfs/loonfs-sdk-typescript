@@ -8,20 +8,13 @@ import type * as LoonFS from "../index.js";
 export interface CommittedChange {
     /** Client idempotency key for this logical commit. */
     commit_id: LoonFS.CommitId;
-    /**
-     * Wall-clock stamp of the commit, in Unix milliseconds.
-     * Observational: `committed_seq` is the order.
-     */
+    /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
     committed_at_ms: number;
     /** Actor responsible for the commit, as supplied by the application. */
     committed_by: LoonFS.ActorRef;
     /** Namespace sequence for this logical commit. */
     committed_seq: LoonFS.ChangeSeq;
-    /**
-     * Semantic filesystem events for this commit, in the order the commit
-     * applied them. One request operation may produce more than one event
-     * (see [`FilesystemChange`]).
-     */
+    /** The filesystem events for this commit in commit order. */
     events: LoonFS.FilesystemChange[];
     /** Caller annotation, omitted when absent and carrying no filesystem semantics. */
     message?: string | undefined;

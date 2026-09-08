@@ -3,23 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The initial walk over a pinned checkpoint is running. Nothing is
- * searchable yet.
+ * An initial scan of a pinned checkpoint that is not yet searchable.
  */
 export interface GrepIndexLifecycleBackfilling {
     /** Checkpoint pinning the state being walked. */
     checkpoint_id: LoonFS.CheckpointId;
-    /** Stable inode ID within a namespace */
-    cursor_inode_id?: string | undefined;
-    /**
-     * Namespace sequence the pinned checkpoint captured. Reaching it
-     * is what completes the backfill.
-     */
-    target_seq: LoonFS.ChangeSeq;
+    /** The inode after which the scan resumes, or `None` before the first page. */
+    cursor_inode_id?: LoonFS.InodeId | undefined;
     /** Namespace the status describes. */
     namespace_id: LoonFS.NamespaceId;
     /** Run number the index allocates next. */
     next_run_no: LoonFS.RunNo;
     /** True while a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
+    /** The namespace sequence that completes the backfill when reached. */
+    target_seq: LoonFS.ChangeSeq;
 }

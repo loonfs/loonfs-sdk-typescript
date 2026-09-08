@@ -3,13 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Metadata for one path returned by stat and directory-listing operations.
+ * Metadata for one path returned by stat and directory listings.
  *
- * File entries include the current revision and content details. Directory
- * entries do not. Attribute fields are included only when requested and are
- * serialized at the top level of the entry. Callers can pass
- * `attributes_revision_no` as `expected_attributes_revision_no` when updating
- * attributes.
+ * Attribute fields are included only when requested.
  */
 export type PathEntry = LoonFS.PathEntry.Dir | LoonFS.PathEntry.File;
 

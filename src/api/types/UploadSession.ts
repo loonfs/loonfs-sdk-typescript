@@ -5,18 +5,18 @@ import type * as LoonFS from "../index.js";
 /**
  * Current view of one upload session.
  */
-export type UploadSession = LoonFS.UploadSession.Open | LoonFS.UploadSession.Completed | LoonFS.UploadSession.Aborted;
+export type UploadSession = LoonFS.UploadSession.Aborted | LoonFS.UploadSession.Completed | LoonFS.UploadSession.Open;
 
 export namespace UploadSession {
-    export interface Open extends LoonFS.UploadSessionStatusOpen {
-        status: "open";
+    export interface Aborted extends LoonFS.UploadSessionStatusAborted {
+        status: "aborted";
     }
 
     export interface Completed extends LoonFS.UploadSessionStatusCompleted {
         status: "completed";
     }
 
-    export interface Aborted extends LoonFS.UploadSessionStatusAborted {
-        status: "aborted";
+    export interface Open extends LoonFS.UploadSessionStatusOpen {
+        status: "open";
     }
 }

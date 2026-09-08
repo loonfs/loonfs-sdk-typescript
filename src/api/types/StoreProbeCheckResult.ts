@@ -6,10 +6,7 @@ import type * as LoonFS from "../index.js";
  * One named contract check and what the store did with it.
  */
 export interface StoreProbeCheckResult {
-    /**
-     * What was expected and what happened instead. Present only on
-     * `failed`.
-     */
+    /** The expected and actual behavior for a failed check. */
     message?: string | undefined;
     /** Stable check name. */
     name: string;

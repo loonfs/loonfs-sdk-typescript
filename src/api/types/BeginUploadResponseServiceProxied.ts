@@ -8,9 +8,6 @@ import type * as LoonFS from "../index.js";
 export interface BeginUploadResponseServiceProxied {
     /** Namespace authorized to consume the eventual staged content. */
     namespace_id: LoonFS.NamespaceId;
-    /**
-     * Durable session identity used by subsequent append and completion
-     * calls.
-     */
+    /** The session identity used by later append and completion calls. */
     upload_id: LoonFS.UploadId;
 }

@@ -6,11 +6,11 @@ import type * as LoonFS from "../index.js";
  * Copy one file path to another path.
  */
 export interface FilesystemOperationCopyPath {
-    /** Whether an existing destination file may receive a copied revision. */
+    /** Whether an existing destination file may be replaced. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** Stable inode ID within a namespace */
-    expected_destination_inode_id?: string | undefined;
-    /** With `replace` behavior and an inode guard, the request requires this content revision. */
+    /** With `replace` behavior, the destination inode required by the request. */
+    expected_destination_inode_id?: LoonFS.InodeId | undefined;
+    /** With `replace` behavior and an inode guard, the required content revision. */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
     /** Absolute source path that must resolve to a visible file. */
     from_path: LoonFS.AbsolutePath;

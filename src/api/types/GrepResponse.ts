@@ -8,26 +8,14 @@ import type * as LoonFS from "../index.js";
 export interface GrepResponse {
     /** Commits at or below this sequence were answered from the index. */
     built_through_seq: LoonFS.ChangeSeq;
-    /**
-     * Sequence this page was evaluated at. Pages are evaluated against
-     * the namespace head at page time; the cursor is an ordering resume,
-     * not a snapshot pin.
-     */
+    /** The namespace head sequence used to evaluate this page. */
     head_seq: LoonFS.ChangeSeq;
-    /**
-     * Matches in ascending `(inode_id, byte_offset)` order. A page may
-     * return fewer matches than its limit and still carry a cursor: the
-     * per-page verified-candidate budget bounds how much content one
-     * request reads, whatever the plan's false-positive rate.
-     */
+    /** The matches in ascending `(inode_id, byte_offset)` order. */
     matches: LoonFS.GrepMatch[];
     /** Namespace searched. */
     namespace_id: LoonFS.NamespaceId;
     /** Present when another page follows. */
     next_cursor?: string | undefined;
-    /**
-     * True when revisions after `built_through_seq` were scanned
-     * exhaustively; false only when `allow_stale` skipped them.
-     */
+    /** Whether revisions after `built_through_seq` were scanned exhaustively. */
     tail_scanned: boolean;
 }

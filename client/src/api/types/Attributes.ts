@@ -3,17 +3,10 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A validated attribute map for one inode.
+ * A validated attribute map limited to [`MAX_ATTRIBUTE_ENTRIES`] entries and
+ * [`MAX_ATTRIBUTES_TOTAL_BYTES`] total key and value UTF-8 bytes.
  *
- * Construction and decoding both enforce the same limits: a map holds at
- * most [`MAX_ATTRIBUTE_ENTRIES`] entries, each value is at most
- * [`MAX_ATTRIBUTE_VALUE_BYTES`] UTF-8 bytes, and the whole map is at most
- * [`MAX_ATTRIBUTES_TOTAL_BYTES`] logical UTF-8 bytes. The total counts key
- * bytes and value bytes and nothing else, so it does not depend on the
- * encoding the map is written in. Durable state that breaks a limit fails to
- * decode rather than decoding to something smaller.
- *
- * An empty map is valid. It is the cleared state, and clearing an inode's
- * attributes is a real update with its own revision.
+ * Construction and decoding reject values over these limits; an empty map
+ * represents cleared attributes.
  */
 export type Attributes = Record<string, LoonFS.AttributeValue>;

@@ -6,29 +6,17 @@ import type * as LoonFS from "../index.js";
  * Write and remove attributes on the inode one path resolves to.
  */
 export interface FilesystemOperationUpdateAttributes {
-    /**
-     * When set, the update applies only while the inode's attribute
-     * revision is still this one. Absent means the update is applied
-     * over whatever revision is current; either way the write carries
-     * its own revision guard, so a concurrent update never merges
-     * silently.
-     */
+    /** The attribute revision that must still be current before the update. */
     expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
-    /** Stable inode ID within a namespace */
-    expected_inode_id?: string | undefined;
+    /** The inode that the path must still resolve to before the update. */
+    expected_inode_id?: LoonFS.InodeId | undefined;
     /** Absolute path that must resolve to a visible file or directory. */
     path: LoonFS.AbsolutePath;
-    /**
-     * Attribute keys to remove.
-     *
-     * A list preserves duplicate entries so validation can report them instead
-     * of silently deduplicating the request.
-     */
+    /** The attribute keys to remove, including duplicates that validation must reject. */
     remove?: LoonFS.AttributeKey[] | undefined;
     /**
-     * Attributes to write. Each key replaces whatever the inode
-     * currently holds under it; keys the inode holds and this map does
-     * not name are left alone.
+     * The attributes to write, replacing values for matching keys and leaving
+     * other keys unchanged.
      */
     set?: Record<string, LoonFS.AttributeValue> | undefined;
 }
