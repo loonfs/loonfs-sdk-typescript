@@ -3,19 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one bounded mark-and-sweep garbage-collection pass.
+ * Counts and deadlines from one collection call.
  */
 export interface RunMaintenanceResponseGc {
-    /** Whether the pass reached `max_steps` before completion. */
-    budget_exhausted: boolean;
-    /** Whether reference marking is unfinished, so content reclamation has not started. */
-    content_reclamation_deferred: boolean;
     /** Objects the pass deleted, split by object family. */
     deleted: LoonFS.DeletedObjectCounts;
     /** Namespace the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
-    /** The opaque run token for remaining marking, sweeping, or cleanup work. */
-    next_cursor?: string | undefined;
     /** The earliest known future reclamation time observed by this pass. */
     next_reclamation_at_ms?: number | undefined;
     /** The deleted head's irrevocable owner-prefix collection deadline. */
@@ -26,6 +20,4 @@ export interface RunMaintenanceResponseGc {
     retained: LoonFS.RetainedCandidates;
     /** The number of candidates retained at deletion time. */
     retained_candidates: number;
-    /** True when ambiguous roots suppressed manifest/segment deletion. */
-    retention_degraded: boolean;
 }

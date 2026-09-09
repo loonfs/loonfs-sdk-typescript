@@ -4,7 +4,7 @@
  * Object counts deleted by one garbage-collection pass, grouped by family.
  */
 export interface DeletedObjectCounts {
-    /** Released checkpoint records deleted after their grace window. */
+    /** Pin records deleted by this pass. */
     checkpoint_records: number;
     /** Content reclaimed through completed upload sessions. */
     content_objects: number;

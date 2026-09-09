@@ -8,16 +8,12 @@ import type * as LoonFS from "../index.js";
 export interface GrepGcResponse {
     /** Other unreferenced grep objects deleted after the grace window. */
     deleted_other_objects: number;
-    /** Unreferenced grep segments deleted after the grace window. */
+    /** Unreferenced grep segments older than the minimum segment age. */
     deleted_segments: number;
-    /** Whether unreadable namespace or grep state forced conservative retention. */
-    namespace_degraded: boolean;
     /** Namespace whose grep-owned keyspace was inspected. */
     namespace_id: LoonFS.NamespaceId;
     /** Whether an absent or tombstoned namespace had extension state reaped. */
     namespace_reaped: boolean;
-    /** Present when the budget stopped the pass with keys left to examine. */
-    next_cursor?: string | undefined;
-    /** Young or concurrently revived candidates retained by the pass. */
+    /** Referenced, young, or unrecognized candidates retained by the pass. */
     retained_candidates: number;
 }

@@ -40,7 +40,7 @@ export class ChangesClient {
      *     await client.changes.list({
      *         namespace_id: "namespace_id",
      *         after_seq: 1000000,
-     *         snapshot_id: "chk_00000000000000000000000000000002"
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public list(

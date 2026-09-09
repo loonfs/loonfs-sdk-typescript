@@ -120,7 +120,7 @@ export class GrepIndexClient {
     }
 
     /**
-     * Disables the namespace's grep root and clears its segment references with one durable compare-and-swap; index maintenance stops on its own once a step reads the disabled root. Explicit grep garbage collection later reclaims the segments. Idempotent. Requires this deployment to maintain the grep index.
+     * Disables the namespace's grep index by publishing the next manifest number with no segment references. Index maintenance stops when a step reads the disabled manifest. Explicit grep garbage collection later reclaims the segments. Idempotent. Requires this deployment to maintain the grep index.
      *
      * @param {LoonFS.maintenance.DisableGrepIndexRequest} request
      * @param {GrepIndexClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -223,7 +223,7 @@ export class GrepIndexClient {
     }
 
     /**
-     * Enables the namespace's grep root and asks this deployment's maintenance runner for the backfill's first step. The response reports the lifecycle and bookkeeping read after the transition: a fresh enable is `backfilling` with the sequence its checkpoint captured, while an already-enabled namespace answers with its current status. Idempotent. Requires this deployment to maintain the grep index.
+     * Enables the namespace's grep index and asks this deployment's maintenance runner for the backfill's first step. The response reports the lifecycle and bookkeeping read after the transition: a fresh enable is `backfilling` with the sequence its checkpoint captured, while an already-enabled namespace answers with its current status. Idempotent. Requires this deployment to maintain the grep index.
      *
      * @param {LoonFS.maintenance.EnableGrepIndexRequest} request
      * @param {GrepIndexClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -326,9 +326,9 @@ export class GrepIndexClient {
     }
 
     /**
-     * Runs one explicit garbage-collection pass over only this namespace's grep-owned extension keyspace. A tombstoned or absent namespace has aged extension state reaped; no grep garbage collection runs implicitly. `max_objects` bounds the reads the pass spends and returns a `next_cursor` when keys remain; resuming re-reads liveness and the grep root, so a cursor only skips enumeration. Requires this deployment to maintain the grep index.
+     * Runs one explicit garbage-collection pass over only this namespace's grep-owned extension keyspace. A tombstoned or absent namespace has aged extension state reaped. Every call reads durable roots and completes one pass. Unreadable or invalid roots fail before deletion. Requires this deployment to maintain the grep index.
      *
-     * @param {LoonFS.maintenance.GrepGcRequest} request
+     * @param {LoonFS.maintenance.GcGrepIndexRequest} request
      * @param {GrepIndexClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -341,21 +341,24 @@ export class GrepIndexClient {
      *
      * @example
      *     await client.maintenance.grepIndex.gc({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "namespace_id",
+     *         body: {
+     *             "key": "value"
+     *         }
      *     })
      */
     public gc(
-        request: LoonFS.maintenance.GrepGcRequest,
+        request: LoonFS.maintenance.GcGrepIndexRequest,
         requestOptions?: GrepIndexClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.GrepGcResponse> {
         return core.HttpResponsePromise.fromPromise(this.__gc(request, requestOptions));
     }
 
     private async __gc(
-        request: LoonFS.maintenance.GrepGcRequest,
+        request: LoonFS.maintenance.GcGrepIndexRequest,
         requestOptions?: GrepIndexClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.GrepGcResponse>> {
-        const { namespace_id: namespaceId, ..._body } = request;
+        const { namespace_id: namespaceId, body: _body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,

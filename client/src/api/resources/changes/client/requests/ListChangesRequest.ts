@@ -7,7 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_alias: "namespace_alias",
  *         after_seq: 1000000,
- *         snapshot_id: "chk_00000000000000000000000000000002"
+ *         snapshot_id: "pin_00000000000000000001-0000000000000002"
  *     }
  */
 export interface ListChangesRequest {

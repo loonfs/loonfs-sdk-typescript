@@ -8,8 +8,6 @@ export interface ReleasedCheckpointCounts {
     expired: number;
     /** Fork-owned records released because their target namespaces are gone. */
     fork: number;
-    /** Active records released because their basis manifests are gone. */
-    missing_basis: number;
     /** Snapshot-owned records released after expiry or terminal namespace deletion. */
     snapshot: number;
 }

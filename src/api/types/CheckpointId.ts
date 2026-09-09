@@ -3,6 +3,6 @@
 /**
  * Durable checkpoint identifier.
  *
- * A checkpoint is a durable bookmark to a namespace manifest version.
+ * The manifest number determines which namespace manifest it pins.
  */
 export type CheckpointId = string;

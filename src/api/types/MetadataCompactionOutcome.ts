@@ -11,8 +11,7 @@ export type MetadataCompactionOutcome =
     | LoonFS.MetadataCompactionOutcome.Cancelled
     | LoonFS.MetadataCompactionOutcome.Fenced
     | LoonFS.MetadataCompactionOutcome.NotNeeded
-    | LoonFS.MetadataCompactionOutcome.Published
-    | LoonFS.MetadataCompactionOutcome.Superseded;
+    | LoonFS.MetadataCompactionOutcome.Published;
 
 export namespace MetadataCompactionOutcome {
     export interface Abandoned extends LoonFS.MetadataCompactionOutcomeAbandoned {
@@ -37,9 +36,5 @@ export namespace MetadataCompactionOutcome {
 
     export interface Published extends LoonFS.MetadataCompactionOutcomePublished {
         outcome: "published";
-    }
-
-    export interface Superseded extends LoonFS.MetadataCompactionOutcomeSuperseded {
-        outcome: "superseded";
     }
 }

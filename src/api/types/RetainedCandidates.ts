@@ -8,13 +8,9 @@
 export interface RetainedCandidates {
     /** Checkpoint records that could not be safely released or deleted. */
     checkpoint_not_releasable: number;
-    /** Candidates retained because root resolution failed. */
-    degraded_roots: number;
     /** Unreachable candidates without provider timestamps. */
     no_provider_timestamp: number;
-    /** Unreachable candidates without a reference manifest old enough to cover the grace window. */
-    no_reference_manifest: number;
-    /** Candidates found reachable during the final check before deletion. */
+    /** Candidates protected by current references or manifest discovery. */
     referenced: number;
     /** Unrecognized keys retained from object families scanned by garbage collection. */
     unrecognized_key: number;
