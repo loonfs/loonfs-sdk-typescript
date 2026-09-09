@@ -329,7 +329,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Releases a snapshot by id. Repeated releases succeed.
+     * Deletes a snapshot pin. A missing id returns snapshot_not_found.
      *
      * @param {LoonFS.ReleaseSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.

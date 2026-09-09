@@ -8,7 +8,7 @@ import type * as LoonFS from "../index.js";
 export interface Snapshot {
     /** Time the snapshot record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** When the snapshot lease expires, in Unix milliseconds. */
+    /** When the snapshot expires, in Unix milliseconds. */
     expires_at_ms: number;
     /** Namespace sequence captured by the snapshot. */
     head_seq: LoonFS.ChangeSeq;

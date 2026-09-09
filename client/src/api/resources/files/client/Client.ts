@@ -134,7 +134,7 @@ export class FilesClient {
      * @example
      *     await client.files.createDownload({
      *         namespace_alias: "namespace_alias",
-     *         snapshot_id: "chk_00000000000000000000000000000002",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002",
      *         path: "/docs/report.txt"
      *     })
      */
@@ -238,7 +238,7 @@ export class FilesClient {
      *     await client.files.list({
      *         namespace_alias: "namespace_alias",
      *         path: "path",
-     *         snapshot_id: "chk_00000000000000000000000000000002"
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public async list(
@@ -368,7 +368,7 @@ export class FilesClient {
      *     await client.files.retrieve({
      *         namespace_alias: "namespace_alias",
      *         path: "path",
-     *         snapshot_id: "chk_00000000000000000000000000000002"
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public retrieve(
@@ -573,7 +573,7 @@ export class FilesClient {
     }
 
     /**
-     * Searches file content with a regular expression, accelerated by the namespace's grep index. Matches are verified against the real pattern and returned in ascending `(inode_id, byte_offset)` order; revisions committed after the index watermark are scanned exhaustively unless `allow_stale` skips them. Requires this deployment to serve grep and the namespace to carry a materialized active grep root.
+     * Searches file content with a regular expression, accelerated by the namespace's grep index. Matches are verified against the real pattern and returned in ascending `(inode_id, byte_offset)` order; revisions committed after the index watermark are scanned exhaustively unless `allow_stale` skips them. Requires this deployment to serve grep and the namespace to carry a materialized active grep index.
      *
      * @param {LoonFS.GrepRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.

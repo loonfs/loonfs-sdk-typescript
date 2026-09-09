@@ -12,7 +12,7 @@ export interface Checkpoint {
     checkpoint_seq: LoonFS.ChangeSeq;
     /** Time the checkpoint record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** The automatic release time in Unix milliseconds, or `None` until an explicit release. */
+    /** Expiry in Unix milliseconds; collection waits one further grace window. */
     expires_at_ms?: number | undefined;
     /** Manifest pinned by the checkpoint. */
     manifest_no: LoonFS.ManifestNo;

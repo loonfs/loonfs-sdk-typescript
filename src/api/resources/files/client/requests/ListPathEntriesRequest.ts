@@ -7,7 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         path: "path",
- *         snapshot_id: "chk_00000000000000000000000000000002"
+ *         snapshot_id: "pin_00000000000000000001-0000000000000002"
  *     }
  */
 export interface ListPathEntriesRequest {

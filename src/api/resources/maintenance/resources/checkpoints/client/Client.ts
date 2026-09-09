@@ -23,7 +23,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Lists one page of active checkpoints in checkpoint-id order. Expired checkpoints remain visible until collection releases them. Released checkpoints are omitted. The cursor resumes a live listing and does not create a snapshot.
+     * Lists existing pins in checkpoint-id order. Expired pins remain visible until collection deletes them after expiry plus grace. The cursor resumes a live listing.
      *
      * @param {LoonFS.maintenance.ListCheckpointsRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -232,7 +232,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Releases a user-owned checkpoint pin by id. Idempotent: releasing an already-released or reaped record succeeds. The record is reaped by a later garbage-collection pass; its pinned data becomes collectable only on the pass after that.
+     * Deletes a user-owned checkpoint pin. A missing id returns checkpoint_not_found. Garbage collection can reclaim its unreferenced manifest and runs.
      *
      * @param {LoonFS.maintenance.ReleaseCheckpointRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
