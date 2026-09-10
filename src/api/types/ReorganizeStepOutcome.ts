@@ -7,8 +7,9 @@ import type * as LoonFS from "../index.js";
  */
 export type ReorganizeStepOutcome =
     | LoonFS.ReorganizeStepOutcome.CompactionRequired
+    | LoonFS.ReorganizeStepOutcome.Fenced
+    | LoonFS.ReorganizeStepOutcome.ManifestAdvanced
     | LoonFS.ReorganizeStepOutcome.NotNeeded
-    | LoonFS.ReorganizeStepOutcome.RootAdvanced
     | LoonFS.ReorganizeStepOutcome.UnitPublished;
 
 export namespace ReorganizeStepOutcome {
@@ -16,12 +17,16 @@ export namespace ReorganizeStepOutcome {
         outcome: "compaction_required";
     }
 
-    export interface NotNeeded extends LoonFS.ReorganizeStepOutcomeNotNeeded {
-        outcome: "not_needed";
+    export interface Fenced extends LoonFS.ReorganizeStepOutcomeFenced {
+        outcome: "fenced";
     }
 
-    export interface RootAdvanced extends LoonFS.ReorganizeStepOutcomeRootAdvanced {
-        outcome: "root_advanced";
+    export interface ManifestAdvanced extends LoonFS.ReorganizeStepOutcomeManifestAdvanced {
+        outcome: "manifest_advanced";
+    }
+
+    export interface NotNeeded extends LoonFS.ReorganizeStepOutcomeNotNeeded {
+        outcome: "not_needed";
     }
 
     export interface UnitPublished extends LoonFS.ReorganizeStepOutcomeUnitPublished {

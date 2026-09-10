@@ -40,10 +40,7 @@ export class CommitsClient {
      * @example
      *     await client.commits.create({
      *         namespace_alias: "namespace_alias",
-     *         actor: {
-     *             id: "usr_8f3c",
-     *             kind: "user"
-     *         },
+     *         actor_id: "usr_8f3c",
      *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
      *         operations: [{
      *                 kind: "copy_path",

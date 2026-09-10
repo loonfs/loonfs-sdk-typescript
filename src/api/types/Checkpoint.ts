@@ -6,7 +6,7 @@ import type * as LoonFS from "../index.js";
  * One checkpoint resource described by its durable record.
  */
 export interface Checkpoint {
-    /** Durable checkpoint id used to address the checkpoint for release. */
+    /** Durable checkpoint id used to address the checkpoint for deletion. */
     checkpoint_id: LoonFS.CheckpointId;
     /** Sequence covered by the checkpoint's pinned basis. */
     checkpoint_seq: LoonFS.ChangeSeq;

@@ -6,10 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         actor: {
- *             id: "usr_8f3c",
- *             kind: "user"
- *         },
+ *         actor_id: "usr_8f3c",
  *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
  *         operations: [{
  *                 kind: "copy_path",
@@ -22,7 +19,7 @@ export interface CommitRequest {
     /** Namespace id */
     namespace_id: string;
     /** Actor responsible for the commit, as supplied by the application. */
-    actor: LoonFS.ActorRef;
+    actor_id: LoonFS.ActorId;
     /** Ordered admission conditions evaluated before any operations. */
     assertions?: LoonFS.CommitAssertion[];
     /** Caller-supplied idempotency key for the whole request. */

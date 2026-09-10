@@ -6,8 +6,8 @@
  * Every field is present and contributes to [`GcResponse::retained_candidates`].
  */
 export interface RetainedCandidates {
-    /** Checkpoint records that could not be safely released or deleted. */
-    checkpoint_not_releasable: number;
+    /** Checkpoint records whose owner or grace window prevents deletion. */
+    checkpoint_not_deletable: number;
     /** Unreachable candidates without provider timestamps. */
     no_provider_timestamp: number;
     /** Candidates protected by current references or manifest discovery. */

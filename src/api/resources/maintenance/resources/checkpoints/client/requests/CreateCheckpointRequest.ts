@@ -12,6 +12,6 @@ export interface CreateCheckpointRequest {
     namespace_id: string;
     /** The non-unique label recorded on the checkpoint. */
     name: string;
-    /** The checkpoint lifetime in milliseconds, or `None` for an explicit release only. */
+    /** The checkpoint lifetime in milliseconds, or `None` for an explicit deletion only. */
     ttl_ms?: number | null;
 }

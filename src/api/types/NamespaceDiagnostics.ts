@@ -6,7 +6,7 @@ import type * as LoonFS from "../index.js";
  * Namespace state and storage details used by maintenance.
  */
 export interface NamespaceDiagnostics {
-    /** Current manifest pointer recorded by the head. */
+    /** The namespace's current manifest number. */
     current_manifest_no?: LoonFS.ManifestNo | undefined;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;

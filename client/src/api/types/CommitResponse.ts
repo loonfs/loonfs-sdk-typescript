@@ -11,7 +11,7 @@ export interface CommitResponse {
     /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
     committed_at_ms: number;
     /** Actor responsible for the commit, as supplied by the application. */
-    committed_by: LoonFS.ActorRef;
+    committed_by: LoonFS.ActorId;
     /** Sequence number where the commit became visible. */
     committed_seq: LoonFS.ChangeSeq;
     /**

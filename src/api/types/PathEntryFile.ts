@@ -22,7 +22,7 @@ export interface PathEntryFile {
      * The actor responsible for the latest attribute update, or `None` for the
      * initial empty state.
      */
-    attributes_updated_by?: LoonFS.ActorRef | undefined;
+    attributes_updated_by?: LoonFS.ActorId | undefined;
     /** The opaque ID for the current parent and name binding, or `None` for the namespace root. */
     binding_generation?: LoonFS.BindingGeneration | undefined;
     /** Current content reference. */
@@ -30,7 +30,7 @@ export interface PathEntryFile {
     /** The inode creation time in Unix milliseconds. */
     created_at_ms: number;
     /** Actor that created this inode, as supplied by the application. */
-    created_by: LoonFS.ActorRef;
+    created_by: LoonFS.ActorId;
     /** Stored display name for this path component, absent for the nameless root. */
     display_name?: LoonFS.DisplayName | undefined;
     /** Namespace head sequence this answer was read from. */
@@ -46,7 +46,7 @@ export interface PathEntryFile {
     /** The current revision time in Unix milliseconds. */
     revision_committed_at_ms: number;
     /** Actor responsible for the current revision. */
-    revision_committed_by: LoonFS.ActorRef;
+    revision_committed_by: LoonFS.ActorId;
     /** Current file revision number. */
     revision_no: LoonFS.RevisionNo;
     /** The current file size in bytes. */

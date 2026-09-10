@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The step flushed the WAL tail and advanced the metadata root.
+ * The step flushed the WAL tail and published the next current manifest.
  */
 export interface WalFlushStepOutcomeFlushed {
     /** Sequence covered by the published manifest. */

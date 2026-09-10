@@ -7,7 +7,7 @@
  *         checkpoint_id: "checkpoint_id"
  *     }
  */
-export interface ReleaseCheckpointRequest {
+export interface DeleteCheckpointRequest {
     /** Namespace id */
     namespace_id: string;
     /** Checkpoint id */
