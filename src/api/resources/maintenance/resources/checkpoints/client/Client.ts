@@ -137,7 +137,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Creates a named, user-owned checkpoint record pinning the current namespace view. Every call mints a new record under a new id; the name is a label, not a key. The record is a garbage-collection root until it is released, so routine maintenance should flush the WAL instead. This is a maintenance operation, not a file mutation.
+     * Creates a named, user-owned checkpoint record pinning the current namespace view. Every call mints a new record under a new id; the name is a label, not a key. The record is a garbage-collection root until it is deleted, so routine maintenance should flush the WAL instead. This is a maintenance operation, not a file mutation.
      *
      * @param {LoonFS.maintenance.CreateCheckpointRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -234,7 +234,7 @@ export class CheckpointsClient {
     /**
      * Deletes a user-owned checkpoint pin. A missing id returns checkpoint_not_found. Garbage collection can reclaim its unreferenced manifest and runs.
      *
-     * @param {LoonFS.maintenance.ReleaseCheckpointRequest} request
+     * @param {LoonFS.maintenance.DeleteCheckpointRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -245,22 +245,22 @@ export class CheckpointsClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.maintenance.checkpoints.release({
+     *     await client.maintenance.checkpoints.delete({
      *         namespace_id: "namespace_id",
      *         checkpoint_id: "checkpoint_id"
      *     })
      */
-    public release(
-        request: LoonFS.maintenance.ReleaseCheckpointRequest,
+    public delete(
+        request: LoonFS.maintenance.DeleteCheckpointRequest,
         requestOptions?: CheckpointsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ReleaseCheckpointResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__release(request, requestOptions));
+    ): core.HttpResponsePromise<LoonFS.DeleteCheckpointResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__delete(request, requestOptions));
     }
 
-    private async __release(
-        request: LoonFS.maintenance.ReleaseCheckpointRequest,
+    private async __delete(
+        request: LoonFS.maintenance.DeleteCheckpointRequest,
         requestOptions?: CheckpointsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ReleaseCheckpointResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.DeleteCheckpointResponse>> {
         const { namespace_id: namespaceId, checkpoint_id: checkpointId } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -272,9 +272,9 @@ export class CheckpointsClient {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)),
-                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints/${core.url.encodePathParam(checkpointId)}/release`,
+                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints/${core.url.encodePathParam(checkpointId)}`,
             ),
-            method: "POST",
+            method: "DELETE",
             headers: _headers,
             queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
@@ -284,7 +284,7 @@ export class CheckpointsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.ReleaseCheckpointResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.DeleteCheckpointResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -315,8 +315,8 @@ export class CheckpointsClient {
         return handleNonStatusCodeError(
             _response.error,
             _response.rawResponse,
-            "POST",
-            "/v0/maintenance/namespaces/{namespace_id}/checkpoints/{checkpoint_id}/release",
+            "DELETE",
+            "/v0/maintenance/namespaces/{namespace_id}/checkpoints/{checkpoint_id}",
         );
     }
 }

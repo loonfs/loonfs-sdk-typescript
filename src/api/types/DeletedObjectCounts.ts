@@ -4,8 +4,6 @@
  * Object counts deleted by one garbage-collection pass, grouped by family.
  */
 export interface DeletedObjectCounts {
-    /** Pin records deleted by this pass. */
-    checkpoint_records: number;
     /** Content reclaimed through completed upload sessions. */
     content_objects: number;
     /** Unreferenced manifests deleted. */

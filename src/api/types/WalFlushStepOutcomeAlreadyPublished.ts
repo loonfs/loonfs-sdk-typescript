@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The step did not update a root that already referenced another manifest.
+ * The current manifest already covered the captured WAL tail; this step published no manifest.
  */
 export interface WalFlushStepOutcomeAlreadyPublished {
     /** Sequence this step attempted to flush through. */
     attempted_seq: LoonFS.ChangeSeq;
-    /** Manifest the root currently references. */
+    /** The namespace's current manifest number. */
     current_manifest_no: LoonFS.ManifestNo;
 }

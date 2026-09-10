@@ -11,7 +11,7 @@ export interface FileRevision {
     /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
     committed_at_ms: number;
     /** Actor responsible for this revision, as supplied by the application. */
-    committed_by: LoonFS.ActorRef;
+    committed_by: LoonFS.ActorId;
     /** Namespace sequence that created this revision. */
     committed_seq: LoonFS.ChangeSeq;
     /** Content stored for this revision. */

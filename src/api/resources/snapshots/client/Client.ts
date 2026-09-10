@@ -23,7 +23,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Lists live snapshots in snapshot-id order. Released and expired snapshots are omitted.
+     * Lists live snapshots in snapshot-id order. Deleted and expired snapshots are omitted.
      *
      * @param {LoonFS.ListSnapshotsRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -233,6 +233,95 @@ export class SnapshotsClient {
     }
 
     /**
+     * Deletes a snapshot pin. A missing id returns snapshot_not_found.
+     *
+     * @param {LoonFS.DeleteSnapshotRequest} request
+     * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.snapshots.delete({
+     *         namespace_id: "namespace_id",
+     *         snapshot_id: "snapshot_id"
+     *     })
+     */
+    public delete(
+        request: LoonFS.DeleteSnapshotRequest,
+        requestOptions?: SnapshotsClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.DeleteSnapshotResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__delete(request, requestOptions));
+    }
+
+    private async __delete(
+        request: LoonFS.DeleteSnapshotRequest,
+        requestOptions?: SnapshotsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.DeleteSnapshotResponse>> {
+        const { namespace_id: namespaceId, snapshot_id: snapshotId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/snapshots/${core.url.encodePathParam(snapshotId)}`,
+            ),
+            method: "DELETE",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.DeleteSnapshotResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "DELETE",
+            "/v0/namespaces/{namespace_id}/snapshots/{snapshot_id}",
+        );
+    }
+
+    /**
      * Extends a live snapshot without passing its lifetime limit. Repeating the request has the same result.
      *
      * @param {LoonFS.ExtendSnapshotRequest} request
@@ -325,92 +414,6 @@ export class SnapshotsClient {
             _response.rawResponse,
             "POST",
             "/v0/namespaces/{namespace_id}/snapshots/{snapshot_id}/extend",
-        );
-    }
-
-    /**
-     * Deletes a snapshot pin. A missing id returns snapshot_not_found.
-     *
-     * @param {LoonFS.ReleaseSnapshotRequest} request
-     * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link LoonFS.BadRequestError}
-     * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.ServiceUnavailableError}
-     * @throws {@link errors.LoonFSError}
-     * @throws {@link errors.LoonFSTimeoutError}
-     *
-     * @example
-     *     await client.snapshots.release({
-     *         namespace_id: "namespace_id",
-     *         snapshot_id: "snapshot_id"
-     *     })
-     */
-    public release(
-        request: LoonFS.ReleaseSnapshotRequest,
-        requestOptions?: SnapshotsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.ReleaseSnapshotResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__release(request, requestOptions));
-    }
-
-    private async __release(
-        request: LoonFS.ReleaseSnapshotRequest,
-        requestOptions?: SnapshotsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.ReleaseSnapshotResponse>> {
-        const { namespace_id: namespaceId, snapshot_id: snapshotId } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/snapshots/${core.url.encodePathParam(snapshotId)}/release`,
-            ),
-            method: "POST",
-            headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.ReleaseSnapshotResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 401:
-                    throw new LoonFS.UnauthorizedError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 503:
-                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "POST",
-            "/v0/namespaces/{namespace_id}/snapshots/{snapshot_id}/release",
         );
     }
 }

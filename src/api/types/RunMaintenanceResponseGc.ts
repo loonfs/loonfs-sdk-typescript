@@ -8,14 +8,14 @@ import type * as LoonFS from "../index.js";
 export interface RunMaintenanceResponseGc {
     /** Objects the pass deleted, split by object family. */
     deleted: LoonFS.DeletedObjectCounts;
+    /** The checkpoint records deleted by the pass, grouped by owner. */
+    deleted_checkpoints_by_owner: LoonFS.DeletedCheckpointsByOwner;
     /** Namespace the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
     /** The earliest known future reclamation time observed by this pass. */
     next_reclamation_at_ms?: number | undefined;
     /** The deleted head's irrevocable owner-prefix collection deadline. */
     reclaim_after_ms?: number | undefined;
-    /** The checkpoint records released by the pass, grouped by reason. */
-    released_checkpoints: LoonFS.ReleasedCheckpointCounts;
     /** `retained_candidates` grouped by reason. */
     retained: LoonFS.RetainedCandidates;
     /** The number of candidates retained at deletion time. */

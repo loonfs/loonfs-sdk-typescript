@@ -3,13 +3,13 @@
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_alias: "namespace_alias",
  *         snapshot_id: "snapshot_id"
  *     }
  */
-export interface ReleaseSnapshotRequest {
-    /** Namespace id */
-    namespace_id: string;
+export interface DeleteSnapshotRequest {
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Snapshot id */
     snapshot_id: string;
 }

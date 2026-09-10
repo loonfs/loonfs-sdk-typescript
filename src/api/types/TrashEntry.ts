@@ -11,7 +11,7 @@ export interface TrashEntry {
     /** Directory binding removed by the deletion. */
     deleted_binding: LoonFS.DirectoryBinding;
     /** Actor responsible for the deletion. */
-    deleted_by: LoonFS.ActorRef;
+    deleted_by: LoonFS.ActorId;
     /** Commit sequence that identifies this deletion. */
     deletion_seq: LoonFS.ChangeSeq;
     /** Inode hidden by the deletion. */
