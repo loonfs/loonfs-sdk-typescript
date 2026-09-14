@@ -11,12 +11,12 @@ export type FilesystemOperation =
     | LoonFS.FilesystemOperation.CopyPath
     | LoonFS.FilesystemOperation.CreateDirectory
     | LoonFS.FilesystemOperation.CreateDirectoryByInode
+    | LoonFS.FilesystemOperation.CreateFileByInode
     | LoonFS.FilesystemOperation.DeleteByInode
     | LoonFS.FilesystemOperation.DeletePath
     | LoonFS.FilesystemOperation.MoveByInode
     | LoonFS.FilesystemOperation.MovePath
     | LoonFS.FilesystemOperation.PutFile
-    | LoonFS.FilesystemOperation.PutFileByInode
     | LoonFS.FilesystemOperation.PutFileRevisionByInode
     | LoonFS.FilesystemOperation.RestoreRevision
     | LoonFS.FilesystemOperation.Undelete
@@ -33,6 +33,10 @@ export namespace FilesystemOperation {
 
     export interface CreateDirectoryByInode extends LoonFS.FilesystemOperationCreateDirectoryByInode {
         kind: "create_directory_by_inode";
+    }
+
+    export interface CreateFileByInode extends LoonFS.FilesystemOperationCreateFileByInode {
+        kind: "create_file_by_inode";
     }
 
     export interface DeleteByInode extends LoonFS.FilesystemOperationDeleteByInode {
@@ -53,10 +57,6 @@ export namespace FilesystemOperation {
 
     export interface PutFile extends LoonFS.FilesystemOperationPutFile {
         kind: "put_file";
-    }
-
-    export interface PutFileByInode extends LoonFS.FilesystemOperationPutFileByInode {
-        kind: "put_file_by_inode";
     }
 
     export interface PutFileRevisionByInode extends LoonFS.FilesystemOperationPutFileRevisionByInode {

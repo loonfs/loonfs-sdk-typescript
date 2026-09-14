@@ -12,7 +12,7 @@ export interface FilesystemOperationPutFile {
     content_ref: LoonFS.ContentRef;
     /** With `replace` behavior, the request requires the path to contain this inode. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode guard, the request requires this content revision. */
+    /** With `replace` behavior and an inode precondition, the request requires this content revision. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** Absolute destination path; missing ancestors are created automatically. */
     path: LoonFS.AbsolutePath;

@@ -8,16 +8,16 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationMoveByInode {
     /** Whether an existing destination file may be replaced. */
     behavior?: LoonFS.DestinationBehavior | undefined;
+    /** New name. */
+    destination_display_name: LoonFS.DisplayName;
+    /** Destination directory. */
+    destination_parent_inode_id: LoonFS.InodeId;
     /** Binding generation required for the move. */
     expected_binding_generation: LoonFS.BindingGeneration;
     /** With `replace` behavior, the destination inode required by the request. */
     expected_destination_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode guard, the required content revision. */
+    /** With `replace` behavior and an inode precondition, the required content revision. */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
     /** Inode to move. */
     inode_id: LoonFS.InodeId;
-    /** New name. */
-    to_display_name: LoonFS.DisplayName;
-    /** Destination directory. */
-    to_parent_inode_id: LoonFS.InodeId;
 }

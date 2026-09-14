@@ -6,7 +6,7 @@ import type * as LoonFS from "../index.js";
  * Write and remove attributes on the inode one path resolves to.
  */
 export interface FilesystemOperationUpdateAttributes {
-    /** The attribute revision that must still be current before the update. */
+    /** With an inode precondition, the attribute revision that must still be current. */
     expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /** The inode that the path must still resolve to before the update. */
     expected_inode_id?: LoonFS.InodeId | undefined;
