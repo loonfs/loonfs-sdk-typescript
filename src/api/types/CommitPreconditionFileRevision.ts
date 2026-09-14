@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * Requires a visible inode with the content revision the caller read.
  */
-export interface CommitAssertionFileRevision {
+export interface CommitPreconditionFileRevision {
     /** Content revision observed by the caller. */
     expected_revision_no: LoonFS.RevisionNo;
     /** Inode whose state the caller read. */

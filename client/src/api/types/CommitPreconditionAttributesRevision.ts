@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * Requires a visible inode with the attribute revision the caller read.
  */
-export interface CommitAssertionAttributes {
+export interface CommitPreconditionAttributesRevision {
     /** Attribute revision observed by the caller. */
     expected_attributes_revision_no: LoonFS.AttributeRevisionNo;
     /** Inode whose state the caller read. */

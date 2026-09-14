@@ -8,14 +8,14 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemChangeMoved {
     /** Opaque identifier for the binding created by this event. */
     binding_generation: LoonFS.BindingGeneration;
-    /** Spelling of the old binding. */
-    from_display_name: LoonFS.DisplayName;
-    /** Directory that held the old binding. */
-    from_parent_inode_id: LoonFS.InodeId;
+    /** Spelling of the new binding. */
+    destination_display_name: LoonFS.DisplayName;
+    /** Directory holding the new binding. */
+    destination_parent_inode_id: LoonFS.InodeId;
     /** Inode whose binding changed. */
     inode_id: LoonFS.InodeId;
-    /** Spelling of the new binding. */
-    to_display_name: LoonFS.DisplayName;
-    /** Directory holding the new binding. */
-    to_parent_inode_id: LoonFS.InodeId;
+    /** Spelling of the removed binding. */
+    source_display_name: LoonFS.DisplayName;
+    /** Directory that held the removed binding. */
+    source_parent_inode_id: LoonFS.InodeId;
 }

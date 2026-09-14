@@ -10,8 +10,8 @@ import type * as LoonFS from "../../../../index.js";
  *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
  *         operations: [{
  *                 kind: "copy_path",
- *                 from_path: "/docs/report.txt",
- *                 to_path: "/docs/report.txt"
+ *                 destination_path: "/docs/report.txt",
+ *                 source_path: "/docs/report.txt"
  *             }]
  *     }
  */
@@ -20,8 +20,6 @@ export interface CommitRequest {
     namespace_alias: string;
     /** Actor responsible for the commit, as supplied by the application. */
     actor_id: LoonFS.ActorId;
-    /** Ordered admission conditions evaluated before any operations. */
-    assertions?: LoonFS.CommitAssertion[];
     /** Caller-supplied idempotency key for the whole request. */
     commit_id: LoonFS.CommitId;
     /** The proofs for new external content references in this request. */
@@ -30,4 +28,6 @@ export interface CommitRequest {
     message?: string | null;
     /** The non-empty ordered operations to commit atomically. */
     operations: LoonFS.FilesystemOperation[];
+    /** Ordered admission conditions evaluated before any operations. */
+    preconditions?: LoonFS.CommitPrecondition[];
 }

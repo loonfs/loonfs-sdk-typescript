@@ -14,6 +14,8 @@ export interface ErrorDetails {
     active_writer_epoch?: LoonFS.WriterEpoch | undefined;
     /** Attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    /** Current binding token; absent for the root, which has no binding. */
+    actual_binding_generation?: LoonFS.BindingGeneration | undefined;
     /** Deletion generation actually active for the inode. */
     actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /** The actual namespace head sequence. */
@@ -24,8 +26,6 @@ export interface ErrorDetails {
     actual_revision_no?: LoonFS.RevisionNo | undefined;
     /** Change-feed cursor the request asked to resume after. */
     after_seq?: LoonFS.ChangeSeq | undefined;
-    /** Zero-based position of the failed request assertion. */
-    assertion_index?: number | undefined;
     /** Idempotency key of the commit the error concerns. */
     commit_id?: LoonFS.CommitId | undefined;
     /** The fingerprint of the mutation that landed under `commit_id`, present with `committed_seq`. */
@@ -34,6 +34,8 @@ export interface ErrorDetails {
     committed_seq?: LoonFS.ChangeSeq | undefined;
     /** Attribute revision the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    /** Opaque binding token supplied by the request. */
+    expected_binding_generation?: LoonFS.BindingGeneration | undefined;
     /** Deletion generation the undelete expected to be active. */
     expected_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /** The head sequence required by the request. */
@@ -50,6 +52,8 @@ export interface ErrorDetails {
     max_writer_sessions?: number | undefined;
     /** The index of the failed operation in the request. */
     operation_index?: number | undefined;
+    /** Zero-based position of the failed request precondition. */
+    precondition_index?: number | undefined;
     /** Oldest sequence still promised for incremental replay. */
     retention_floor_seq?: LoonFS.ChangeSeq | undefined;
 }
