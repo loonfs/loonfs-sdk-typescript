@@ -2,7 +2,7 @@
 
 import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClient.js";
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
-import { mergeHeaders } from "../../../../core/headers.js";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import * as core from "../../../../core/index.js";
 import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
@@ -55,6 +55,7 @@ export class FilesClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher<core.BinaryResponse>({
@@ -124,7 +125,7 @@ export class FilesClient {
     /**
      * Authorizes one direct read of a file's content object and returns a short-lived presigned GET capability, the resolved revision, and the content reference the client checks the arriving bytes against. `Range` is outside the signature, so one grant serves ranged, resumed, and parallel reads. Deployments that cannot presign answer 501 `not_supported`; the proxied `GET /filesystem/content` route stays available and is capped by `download.max_content_bytes`.
      *
-     * @param {LoonFS.BeginDownloadRequest} request
+     * @param {LoonFS.CreateDownloadRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -139,29 +140,26 @@ export class FilesClient {
      * @example
      *     await client.files.createDownload({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "pin_00000000000000000001-0000000000000002",
      *         path: "/docs/report.txt"
      *     })
      */
     public createDownload(
-        request: LoonFS.BeginDownloadRequest,
+        request: LoonFS.CreateDownloadRequest,
         requestOptions?: FilesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.BeginDownloadResponse> {
+    ): core.HttpResponsePromise<LoonFS.CreateDownloadResponse> {
         return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
     }
 
     private async __createDownload(
-        request: LoonFS.BeginDownloadRequest,
+        request: LoonFS.CreateDownloadRequest,
         requestOptions?: FilesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.BeginDownloadResponse>> {
-        const { namespace_id: namespaceId, snapshot_id: snapshotId, ..._body } = request;
-        const _queryParams: Record<string, unknown> = {
-            snapshot_id: snapshotId,
-        };
+    ): Promise<core.WithRawResponse<LoonFS.CreateDownloadResponse>> {
+        const { namespace_id: namespaceId, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -173,11 +171,7 @@ export class FilesClient {
             method: "POST",
             headers: _headers,
             contentType: "application/json",
-            queryString: core.url
-                .queryBuilder()
-                .addMany(_queryParams)
-                .mergeAdditional(requestOptions?.queryParams)
-                .build(),
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
             requestType: "json",
             body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
@@ -187,7 +181,7 @@ export class FilesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.BeginDownloadResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.CreateDownloadResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -278,6 +272,7 @@ export class FilesClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -409,6 +404,7 @@ export class FilesClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -507,6 +503,7 @@ export class FilesClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -642,6 +639,7 @@ export class FilesClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({

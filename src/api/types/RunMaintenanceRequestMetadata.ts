@@ -5,5 +5,5 @@
  */
 export interface RunMaintenanceRequestMetadata {
     /** The WAL-tail threshold for flushing, or `None` for the server default. */
-    max_wal_tail_segments?: (number | null) | undefined;
+    max_wal_tail_segments?: number | undefined;
 }

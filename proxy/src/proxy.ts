@@ -1,11 +1,27 @@
+export interface ProxyRouteContext {
+    method: string;
+    template: string;
+    namespaceAlias?: string;
+    namespaceId?: string;
+}
+
+export interface ProxyAuthorization {
+    /** Sent upstream in `Loonfs-Actor`. */
+    actorId?: string;
+}
+
 export interface ProxyConfig {
     serverBaseUrl: string;
     token: string;
     namespaceAliases: Record<string, string>;
+    /** Runs before every forwarded request. Return a Response to refuse it. */
+    authorize?: (
+        request: Request,
+        context: ProxyRouteContext,
+    ) => ProxyAuthorization | Response | Promise<ProxyAuthorization | Response>;
 }
 
-interface ProxyRoute {
-    method: "GET" | "POST" | "PUT" | "DELETE";
+interface ProxyRoute extends ProxyRouteTemplate {
     pattern: RegExp;
 }
 
@@ -67,7 +83,7 @@ function patternFor(template: string): RegExp {
 }
 
 const PROXY_ROUTES: readonly ProxyRoute[] = PROXY_ROUTE_TABLE.map((entry) => ({
-    method: entry.method,
+    ...entry,
     pattern: patternFor(entry.template),
 }));
 
@@ -77,21 +93,25 @@ export function createProxyHandler(config: ProxyConfig): (request: Request) => P
     const serverBasePath = serverBaseUrl.pathname.replace(/\/+$/, "");
     const token = config.token;
     const namespaceAliases = new Map(Object.entries(config.namespaceAliases));
+    const authorize = config.authorize;
 
     return async (request: Request): Promise<Response> => {
         const requestUrl = new URL(request.url);
-        const matched = matchRoute(request.method, requestUrl.pathname);
-        if (matched === undefined) {
+        const resolved = resolveRoute(request.method, requestUrl.pathname, namespaceAliases);
+        if (resolved === undefined) {
             return notFound();
         }
 
-        const upstreamPath = rewritePath(requestUrl.pathname, matched, namespaceAliases);
-        if (upstreamPath === undefined) {
-            return notFound();
+        const authorization = await authorize?.(request, resolved.context);
+        if (authorization instanceof Response) {
+            return authorization;
         }
 
         const headers = forwardedHeaders(request.headers, REQUEST_STRIPPED_HEADERS);
         headers.set("authorization", `Bearer ${token}`);
+        if (authorization?.actorId !== undefined) {
+            headers.set("Loonfs-Actor", authorization.actorId);
+        }
         const init: RequestInit & { duplex?: "half" } = {
             method: request.method,
             headers,
@@ -104,7 +124,7 @@ export function createProxyHandler(config: ProxyConfig): (request: Request) => P
         }
 
         const upstreamUrl = new URL(serverBaseUrl);
-        upstreamUrl.pathname = `${serverBasePath}${upstreamPath}`;
+        upstreamUrl.pathname = `${serverBasePath}${resolved.path}`;
         upstreamUrl.search = requestUrl.search;
         const upstream = await fetch(upstreamUrl, init);
         return new Response(upstream.body, {
@@ -115,42 +135,42 @@ export function createProxyHandler(config: ProxyConfig): (request: Request) => P
     };
 }
 
-function matchRoute(method: string, pathname: string): RegExpMatchArray | undefined {
+function resolveRoute(
+    method: string,
+    pathname: string,
+    namespaceAliases: ReadonlyMap<string, string>,
+): { path: string; context: ProxyRouteContext } | undefined {
     for (const route of PROXY_ROUTES) {
         if (route.method !== method) {
             continue;
         }
         const match = pathname.match(route.pattern);
-        if (match !== null) {
-            return match;
+        if (match === null) {
+            continue;
         }
+        const context: ProxyRouteContext = { method, template: route.template };
+        const encodedNamespaceAlias = match.groups?.namespaceAlias;
+        if (encodedNamespaceAlias === undefined) {
+            return { path: pathname, context };
+        }
+        try {
+            context.namespaceAlias = decodeURIComponent(encodedNamespaceAlias);
+        } catch {
+            return undefined;
+        }
+        context.namespaceId = namespaceAliases.get(context.namespaceAlias);
+        if (context.namespaceId === undefined) {
+            return undefined;
+        }
+
+        const namespaceAliasPrefix = `/v0/namespace-aliases/${encodedNamespaceAlias}`;
+        const suffix = pathname.slice(namespaceAliasPrefix.length);
+        return {
+            path: `/v0/namespaces/${encodeURIComponent(context.namespaceId)}${suffix}`,
+            context,
+        };
     }
     return undefined;
-}
-
-function rewritePath(
-    pathname: string,
-    match: RegExpMatchArray,
-    namespaceAliases: ReadonlyMap<string, string>,
-): string | undefined {
-    const encodedNamespaceAlias = match.groups?.namespaceAlias;
-    if (encodedNamespaceAlias === undefined) {
-        return pathname;
-    }
-    let namespaceAlias: string;
-    try {
-        namespaceAlias = decodeURIComponent(encodedNamespaceAlias);
-    } catch {
-        return undefined;
-    }
-    const namespaceId = namespaceAliases.get(namespaceAlias);
-    if (namespaceId === undefined) {
-        return undefined;
-    }
-
-    const namespaceAliasPrefix = `/v0/namespace-aliases/${encodedNamespaceAlias}`;
-    const suffix = pathname.slice(namespaceAliasPrefix.length);
-    return `/v0/namespaces/${encodeURIComponent(namespaceId)}${suffix}`;
 }
 
 function forwardedHeaders(source: Headers, extra: readonly string[]): Headers {
@@ -167,7 +187,7 @@ function forwardedHeaders(source: Headers, extra: readonly string[]): Headers {
 }
 
 // Do not forward application cookies to LoonFS.
-const REQUEST_STRIPPED_HEADERS = ["cookie"] as const;
+const REQUEST_STRIPPED_HEADERS = ["cookie", "loonfs-actor"] as const;
 // Fetch decompresses responses, so remove the old encoding and length headers.
 // Do not forward LoonFS cookies to the application.
 const RESPONSE_STRIPPED_HEADERS = ["content-encoding", "content-length", "set-cookie"] as const;

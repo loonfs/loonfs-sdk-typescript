@@ -7,10 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         inode_id: "ino_123",
- *         revision_no: 1000000,
- *         body: {
- *             "key": "value"
- *         }
+ *         revision_no: 1000000
  *     }
  */
 export interface CreateDownloadByInodeRequest {
@@ -20,5 +17,4 @@ export interface CreateDownloadByInodeRequest {
     inode_id: string;
     /** Revision number */
     revision_no: LoonFS.RevisionNo;
-    body: LoonFS.BeginDownloadByInodeRequest;
 }

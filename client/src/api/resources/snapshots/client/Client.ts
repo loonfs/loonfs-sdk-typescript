@@ -241,7 +241,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.delete({
      *         namespace_alias: "namespace_alias",
-     *         snapshot_id: "snapshot_id"
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public delete(
@@ -326,7 +326,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.extend({
      *         namespace_alias: "namespace_alias",
-     *         snapshot_id: "snapshot_id",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002",
      *         ttl_ms: 1000000
      *     })
      */

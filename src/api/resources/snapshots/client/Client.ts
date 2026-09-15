@@ -2,7 +2,7 @@
 
 import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClient.js";
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
-import { mergeHeaders } from "../../../../core/headers.js";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import * as core from "../../../../core/index.js";
 import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
@@ -57,6 +57,7 @@ export class SnapshotsClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -171,6 +172,7 @@ export class SnapshotsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -248,7 +250,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.delete({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "snapshot_id"
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public delete(
@@ -267,6 +269,7 @@ export class SnapshotsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -338,7 +341,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.extend({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "snapshot_id",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002",
      *         ttl_ms: 1000000
      *     })
      */
@@ -358,6 +361,7 @@ export class SnapshotsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({

@@ -6,6 +6,12 @@ import type * as LoonFS from "../index.js";
  * Current state for one namespace.
  */
 export interface Namespace {
+    /** Time the namespace was created, in Unix milliseconds. */
+    created_at_ms: number;
+    /** Actor that created the namespace, as supplied by the application. */
+    created_by: LoonFS.ActorId;
+    /** Present only for a fork: the source it was forked from. */
+    fork_basis?: LoonFS.NamespaceForkBasis | undefined;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
     /** Namespace ID. */

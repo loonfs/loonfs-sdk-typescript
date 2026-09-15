@@ -2,9 +2,8 @@
 
 import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClient.js";
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
-import { mergeHeaders } from "../../../../core/headers.js";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import * as core from "../../../../core/index.js";
-import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
 import * as LoonFS from "../../../index.js";
@@ -26,7 +25,7 @@ export class InodesClient {
     }
 
     /**
-     * Returns the current path entry for a visible inode. Unknown or hidden inodes answer `inode_not_found`.
+     * Returns the path entry for a visible inode from the current state or a live snapshot. Unknown or hidden inodes answer `inode_not_found`.
      *
      * @param {LoonFS.GetInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -42,7 +41,8 @@ export class InodesClient {
      * @example
      *     await client.inodes.retrieve({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123"
+     *         inode_id: "ino_123",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public retrieve(
@@ -56,14 +56,21 @@ export class InodesClient {
         request: LoonFS.GetInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.PathEntry>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, include_attributes: includeAttributes } = request;
+        const {
+            namespace_id: namespaceId,
+            inode_id: inodeId,
+            include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             include_attributes: includeAttributes,
+            snapshot_id: snapshotId,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -125,7 +132,7 @@ export class InodesClient {
     }
 
     /**
-     * Lists one page of a directory's children addressed by parent inode ID, in canonical name-key order. Inode addressing keeps a listing and its resumption on the same directory across concurrent renames or moves of the parent.
+     * Lists one page of a directory's children from the current state or a live snapshot, addressed by parent inode ID, in canonical name-key order. Inode addressing keeps a listing and its resumption on the same directory across concurrent renames or moves of the parent.
      *
      * @param {LoonFS.ListInodeChildrenRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -142,7 +149,8 @@ export class InodesClient {
      * @example
      *     await client.inodes.listChildren({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123"
+     *         inode_id: "ino_123",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
     public async listChildren(
@@ -159,16 +167,19 @@ export class InodesClient {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    snapshot_id: snapshotId,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -296,6 +307,7 @@ export class InodesClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
+                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -414,6 +426,7 @@ export class InodesClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher<core.BinaryResponse>({
@@ -479,7 +492,7 @@ export class InodesClient {
     }
 
     /**
-     * Authorizes a direct read of one retained inode revision. The request body is `{}` and the response does not include a path.
+     * Authorizes a direct read of one retained inode revision. The request has no body and the response does not include a path.
      *
      * @param {LoonFS.CreateDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -498,28 +511,26 @@ export class InodesClient {
      *     await client.inodes.createDownload({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123",
-     *         revision_no: 1000000,
-     *         body: {
-     *             "key": "value"
-     *         }
+     *         revision_no: 1000000
      *     })
      */
     public createDownload(
         request: LoonFS.CreateDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.BeginDownloadByInodeResponse> {
+    ): core.HttpResponsePromise<LoonFS.CreateDownloadByInodeResponse> {
         return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
     }
 
     private async __createDownload(
         request: LoonFS.CreateDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.BeginDownloadByInodeResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, revision_no: revisionNo, body: _body } = request;
+    ): Promise<core.WithRawResponse<LoonFS.CreateDownloadByInodeResponse>> {
+        const { namespace_id: namespaceId, inode_id: inodeId, revision_no: revisionNo } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -530,10 +541,7 @@ export class InodesClient {
             ),
             method: "POST",
             headers: _headers,
-            contentType: "application/json",
             queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -541,7 +549,7 @@ export class InodesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.BeginDownloadByInodeResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.CreateDownloadByInodeResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

@@ -8,5 +8,5 @@ export interface RunMaintenanceRequestGc {
      * The minimum object age for deletion in milliseconds, which must meet the
      * server's advertised safety floor.
      */
-    grace_window_ms?: (number | null) | undefined;
+    grace_window_ms?: number | undefined;
 }
