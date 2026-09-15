@@ -17,5 +17,5 @@ export interface GetFileBytesRequest {
     /** Optional prior revision number; cannot be combined with snapshot_id */
     revision_no?: LoonFS.RevisionNo;
     /** Use the file revision captured by this snapshot */
-    snapshot_id?: LoonFS.CheckpointId;
+    snapshot_id?: LoonFS.SnapshotId;
 }

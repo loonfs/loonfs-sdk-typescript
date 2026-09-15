@@ -52,14 +52,14 @@ export class UploadsClient {
     public create(
         request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.BeginUploadResponse> {
+    ): core.HttpResponsePromise<LoonFS.UploadSession> {
         return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
     private async __create(
         request: LoonFS.CreateUploadRequest,
         requestOptions?: UploadsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.BeginUploadResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const { namespace_alias: namespaceAlias, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -81,7 +81,7 @@ export class UploadsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.BeginUploadResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.UploadSession, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -130,7 +130,7 @@ export class UploadsClient {
     }
 
     /**
-     * Returns an upload session. A completed session includes a new content token so the client can retry the commit without uploading the content again.
+     * Returns an upload session. An open direct_put session includes freshly signed access. A completed session includes a new content token so the client can retry the commit without uploading the content again.
      *
      * @param {LoonFS.GetUploadRequest} request
      * @param {UploadsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -424,7 +424,7 @@ export class UploadsClient {
     }
 
     /**
-     * Uploads bytes into a service-proxied upload session and returns the content reference for the stored object.
+     * Uploads bytes into a service-proxied upload session and returns the open session with the staged content reference.
      *
      * @param {core.file.Uploadable} uploadable
      * @param {string} namespace_alias
@@ -446,7 +446,7 @@ export class UploadsClient {
         namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.UploadContentResponse> {
+    ): core.HttpResponsePromise<LoonFS.UploadSession> {
         return core.HttpResponsePromise.fromPromise(
             this.__putContent(uploadable, namespace_alias, upload_id, requestOptions),
         );
@@ -457,7 +457,7 @@ export class UploadsClient {
         namespace_alias: string,
         upload_id: string,
         requestOptions?: UploadsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.UploadContentResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const _binaryUploadRequest = await core.file.toBinaryUploadRequest(uploadable);
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
@@ -484,7 +484,7 @@ export class UploadsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.UploadContentResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.UploadSession, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

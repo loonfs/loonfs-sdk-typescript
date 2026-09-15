@@ -22,5 +22,5 @@ export interface ListPathEntriesRequest {
     /** Project each entry's attribute map and revision (`true` or `false`). Defaults to `false`: a page holds many entries and each map may be 64 KiB, so a listing does not carry them unless asked. */
     include_attributes?: boolean;
     /** Use the directory state captured by this snapshot */
-    snapshot_id?: LoonFS.CheckpointId;
+    snapshot_id?: LoonFS.SnapshotId;
 }

@@ -16,8 +16,6 @@ export interface RunMaintenanceResponseGc {
     next_reclamation_at_ms?: number | undefined;
     /** The deleted head's irrevocable owner-prefix collection deadline. */
     reclaim_after_ms?: number | undefined;
-    /** `retained_candidates` grouped by reason. */
+    /** Candidates retained at deletion time, grouped by reason. */
     retained: LoonFS.RetainedCandidates;
-    /** The number of candidates retained at deletion time. */
-    retained_candidates: number;
 }

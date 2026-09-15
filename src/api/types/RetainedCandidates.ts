@@ -2,8 +2,6 @@
 
 /**
  * The candidates inspected but not deleted by one garbage-collection pass.
- *
- * Every field is present and contributes to [`GcResponse::retained_candidates`].
  */
 export interface RetainedCandidates {
     /** Checkpoint records whose owner or grace window prevents deletion. */

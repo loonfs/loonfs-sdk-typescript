@@ -32,5 +32,5 @@ export interface CompleteUploadRequest {
     namespace_id: string;
     /** Upload session id */
     upload_id: string;
-    body: LoonFS.UploadCompletion;
+    body: LoonFS.CompleteUploadBody;
 }

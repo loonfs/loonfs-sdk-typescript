@@ -40,7 +40,6 @@ export class CommitsClient {
      * @example
      *     await client.commits.create({
      *         namespace_alias: "namespace_alias",
-     *         actor_id: "usr_8f3c",
      *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
      *         operations: [{
      *                 kind: "copy_path",
@@ -52,14 +51,14 @@ export class CommitsClient {
     public create(
         request: LoonFS.CommitRequest,
         requestOptions?: CommitsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.CommitResponse> {
+    ): core.HttpResponsePromise<LoonFS.Commit> {
         return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
     private async __create(
         request: LoonFS.CommitRequest,
         requestOptions?: CommitsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.CommitResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.Commit>> {
         const { namespace_alias: namespaceAlias, ..._body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
@@ -81,7 +80,7 @@ export class CommitsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.CommitResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.Commit, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

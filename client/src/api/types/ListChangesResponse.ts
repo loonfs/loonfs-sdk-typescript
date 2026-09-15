@@ -9,7 +9,7 @@ export interface ListChangesResponse {
     /** Exclusive cursor supplied by the caller, or the endpoint's initial position. */
     after_seq: LoonFS.ChangeSeq;
     /** Logical commits after `after_seq`, ordered by ascending namespace sequence. */
-    changes: LoonFS.CommittedChange[];
+    changes: LoonFS.Commit[];
     /** Namespace whose ordered commit stream was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Cursor to request when another page remains, or `None` at `through_seq`. */

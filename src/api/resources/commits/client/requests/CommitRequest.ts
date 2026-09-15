@@ -6,7 +6,6 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         actor_id: "usr_8f3c",
  *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
  *         operations: [{
  *                 kind: "copy_path",
@@ -18,14 +17,12 @@ import type * as LoonFS from "../../../../index.js";
 export interface CommitRequest {
     /** Namespace id */
     namespace_id: string;
-    /** Actor responsible for the commit, as supplied by the application. */
-    actor_id: LoonFS.ActorId;
     /** Caller-supplied idempotency key for the whole request. */
     commit_id: LoonFS.CommitId;
     /** The proofs for new external content references in this request. */
     content_tokens?: LoonFS.ContentToken[];
     /** The caller annotation that forms part of the commit identity. */
-    message?: string | null;
+    message?: string;
     /** The non-empty ordered operations to commit atomically. */
     operations: LoonFS.FilesystemOperation[];
     /** Ordered admission conditions evaluated before any operations. */
