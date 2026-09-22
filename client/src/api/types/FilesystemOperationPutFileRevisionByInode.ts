@@ -4,12 +4,15 @@ import type * as LoonFS from "../index.js";
 
 /**
  * Append a revision to a file inode if its current revision matches.
+ * Requires exactly one of `content_ref` and `inline_content`.
  */
 export interface FilesystemOperationPutFileRevisionByInode {
-    /** Immutable bytes that must be covered by a valid preparation proof. */
-    content_ref: LoonFS.ContentRef;
+    /** Uploaded content covered by a token; mutually exclusive with `inline_content`. */
+    content_ref?: LoonFS.ContentRef | undefined;
     /** Current revision required for the write. */
     expected_revision_no: LoonFS.RevisionNo;
+    /** Complete file bytes as base64; mutually exclusive with `content_ref`. */
+    inline_content?: string | undefined;
     /** File to update. */
     inode_id: LoonFS.InodeId;
 }

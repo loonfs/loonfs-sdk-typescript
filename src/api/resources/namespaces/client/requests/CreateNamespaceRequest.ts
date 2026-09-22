@@ -9,6 +9,11 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CreateNamespaceRequest {
+    /**
+     * The access mode, fixed for the namespace's life. Defaults to
+     * unrestricted.
+     */
+    access?: LoonFS.NamespaceAccess;
     /** Durable namespace id to create. */
     namespace_id: LoonFS.NamespaceId;
 }

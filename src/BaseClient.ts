@@ -16,6 +16,12 @@ export type BaseClientOptions = {
     baseUrl?: core.Supplier<string>;
     /** Override the Loonfs-Actor header */
     actorId?: core.Supplier<string | undefined>;
+    /** Override the Loonfs-Subject header */
+    subjectId?: core.Supplier<string | undefined>;
+    /** Override the Loonfs-Principal-Scope header */
+    principalScope?: core.Supplier<string | undefined>;
+    /** Override the Loonfs-Principals header */
+    principals?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<string, string | core.Supplier<string | null | undefined> | null | undefined>;
     /** The default maximum time to wait for a response in seconds. */
@@ -39,6 +45,12 @@ export interface BaseRequestOptions {
     abortSignal?: AbortSignal;
     /** Override the Loonfs-Actor header */
     actorId?: string | undefined;
+    /** Override the Loonfs-Subject header */
+    subjectId?: string | undefined;
+    /** Override the Loonfs-Principal-Scope header */
+    principalScope?: string | undefined;
+    /** Override the Loonfs-Principals header */
+    principals?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** A dictionary containing additional parameters to spread into the request's body. */
@@ -66,6 +78,9 @@ export function normalizeClientOptions<T extends BaseClientOptions = BaseClientO
             "X-Fern-Runtime": core.RUNTIME.type,
             "X-Fern-Runtime-Version": core.RUNTIME.version,
             "Loonfs-Actor": options?.actorId,
+            "Loonfs-Subject": options?.subjectId,
+            "Loonfs-Principal-Scope": options?.principalScope,
+            "Loonfs-Principals": options?.principals,
         },
         options?.headers,
     );

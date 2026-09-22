@@ -57,7 +57,12 @@ export class CheckpointsClient {
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
                     _authRequest.headers,
                     this._options?.headers,
-                    mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
+                    mergeOnlyDefinedHeaders({
+                        "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                        "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                    }),
                     requestOptions?.headers,
                 );
                 const _response = await core.fetcher({
@@ -173,7 +178,12 @@ export class CheckpointsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
-            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -268,7 +278,12 @@ export class CheckpointsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
-            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({

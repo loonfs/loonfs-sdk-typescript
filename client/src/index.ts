@@ -9,6 +9,8 @@ export type {
     StreamUploadInput,
     PrepareStreamInput,
     PreparedContent,
+    InlinePreparedContent,
+    PreparedFile,
     PreparedUploadInput,
 } from "./transfers.js";
 export { LoonFSError, LoonFSTimeoutError } from "./errors/index.js";

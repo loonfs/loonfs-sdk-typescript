@@ -3,17 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Create or replace one file with an already-durable content ref.
+ * Create or replace one file from uploaded or inline content.
+ * Requires exactly one of `content_ref` and `inline_content`.
  */
 export interface FilesystemOperationPutFile {
     /** Whether an existing file may receive a new revision instead of causing a conflict. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** Immutable bytes that must be covered by a valid preparation proof. */
-    content_ref: LoonFS.ContentRef;
+    /** Uploaded content covered by a token; mutually exclusive with `inline_content`. */
+    content_ref?: LoonFS.ContentRef | undefined;
     /** With `replace` behavior, the request requires the path to contain this inode. */
     expected_inode_id?: LoonFS.InodeId | undefined;
     /** With `replace` behavior and an inode precondition, the request requires this content revision. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
+    /** Complete file bytes as base64; mutually exclusive with `content_ref`. */
+    inline_content?: string | undefined;
     /** Absolute destination path; missing ancestors are created automatically. */
     path: LoonFS.AbsolutePath;
 }

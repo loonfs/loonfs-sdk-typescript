@@ -9,6 +9,7 @@ export type RunMaintenanceResponse =
     | LoonFS.RunMaintenanceResponse.Gc
     | LoonFS.RunMaintenanceResponse.Metadata
     | LoonFS.RunMaintenanceResponse.MetadataCompaction
+    | LoonFS.RunMaintenanceResponse.RecoverAdministrator
     | LoonFS.RunMaintenanceResponse.Retention;
 
 export namespace RunMaintenanceResponse {
@@ -22,6 +23,10 @@ export namespace RunMaintenanceResponse {
 
     export interface MetadataCompaction extends LoonFS.RunMaintenanceResponseMetadataCompaction {
         kind: "metadata_compaction";
+    }
+
+    export interface RecoverAdministrator extends LoonFS.RunMaintenanceResponseRecoverAdministrator {
+        kind: "recover_administrator";
     }
 
     export interface Retention extends LoonFS.RunMaintenanceResponseRetention {

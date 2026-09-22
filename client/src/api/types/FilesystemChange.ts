@@ -8,6 +8,7 @@ import type * as LoonFS from "../index.js";
  * One request operation can produce multiple changes.
  */
 export type FilesystemChange =
+    | LoonFS.FilesystemChange.AccessChanged
     | LoonFS.FilesystemChange.AttributesChanged
     | LoonFS.FilesystemChange.ContentChanged
     | LoonFS.FilesystemChange.Deleted
@@ -17,6 +18,10 @@ export type FilesystemChange =
     | LoonFS.FilesystemChange.Undeleted;
 
 export namespace FilesystemChange {
+    export interface AccessChanged extends LoonFS.FilesystemChangeAccessChanged {
+        kind: "access_changed";
+    }
+
     export interface AttributesChanged extends LoonFS.FilesystemChangeAttributesChanged {
         kind: "attributes_changed";
     }

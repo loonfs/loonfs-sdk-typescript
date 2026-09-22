@@ -33,6 +33,7 @@ export class CommitsClient {
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -64,7 +65,12 @@ export class CommitsClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
-            mergeOnlyDefinedHeaders({ "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId }),
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -107,6 +113,11 @@ export class CommitsClient {
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:

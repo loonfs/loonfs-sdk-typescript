@@ -4,12 +4,15 @@ import type * as LoonFS from "../index.js";
 
 /**
  * Create a file with an unused name under an existing parent inode.
+ * Requires exactly one of `content_ref` and `inline_content`.
  */
 export interface FilesystemOperationCreateFileByInode {
-    /** Immutable bytes that must be covered by a valid preparation proof. */
-    content_ref: LoonFS.ContentRef;
+    /** Uploaded content covered by a token; mutually exclusive with `inline_content`. */
+    content_ref?: LoonFS.ContentRef | undefined;
     /** New file name. */
     display_name: LoonFS.DisplayName;
+    /** Complete file bytes as base64; mutually exclusive with `content_ref`. */
+    inline_content?: string | undefined;
     /** Parent directory. */
     parent_inode_id: LoonFS.InodeId;
 }
