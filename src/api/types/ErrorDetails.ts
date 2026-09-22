@@ -12,6 +12,8 @@ export interface ErrorDetails {
     active_writer?: LoonFS.WriterId | undefined;
     /** Epoch that currently owns the namespace. */
     active_writer_epoch?: LoonFS.WriterEpoch | undefined;
+    /** Access revision that is actually current for the inode. */
+    actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /** Current binding token; absent for the root, which has no binding. */
@@ -32,6 +34,8 @@ export interface ErrorDetails {
     committed_fingerprint?: string | undefined;
     /** The sequence where this commit ID already landed, when recorded by a durable receipt. */
     committed_seq?: LoonFS.ChangeSeq | undefined;
+    /** Access revision the request expected to be current. */
+    expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
     /** Opaque binding token supplied by the request. */

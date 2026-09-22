@@ -20,6 +20,7 @@ export type FilesystemOperation =
     | LoonFS.FilesystemOperation.PutFileRevisionByInode
     | LoonFS.FilesystemOperation.RestoreRevision
     | LoonFS.FilesystemOperation.Undelete
+    | LoonFS.FilesystemOperation.UpdateAccess
     | LoonFS.FilesystemOperation.UpdateAttributes;
 
 export namespace FilesystemOperation {
@@ -69,6 +70,10 @@ export namespace FilesystemOperation {
 
     export interface Undelete extends LoonFS.FilesystemOperationUndelete {
         kind: "undelete";
+    }
+
+    export interface UpdateAccess extends LoonFS.FilesystemOperationUpdateAccess {
+        kind: "update_access";
     }
 
     export interface UpdateAttributes extends LoonFS.FilesystemOperationUpdateAttributes {

@@ -8,6 +8,7 @@ import type * as LoonFS from "../index.js";
  * or the batch's base head sequence when no earlier candidate was admitted.
  */
 export type CommitPrecondition =
+    | LoonFS.CommitPrecondition.AccessRevision
     | LoonFS.CommitPrecondition.AttributesRevision
     | LoonFS.CommitPrecondition.FileRevision
     | LoonFS.CommitPrecondition.NamespaceHead
@@ -15,6 +16,10 @@ export type CommitPrecondition =
     | LoonFS.CommitPrecondition.PathBinding;
 
 export namespace CommitPrecondition {
+    export interface AccessRevision extends LoonFS.CommitPreconditionAccessRevision {
+        kind: "access_revision";
+    }
+
     export interface AttributesRevision extends LoonFS.CommitPreconditionAttributesRevision {
         kind: "attributes_revision";
     }

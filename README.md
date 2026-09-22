@@ -1,6 +1,6 @@
 # LoonFS TypeScript SDK
 
-One package for LoonFS client, proxy, and server applications. SDK v0.2.x
+One package for LoonFS client, proxy, and server applications. SDK v0.3.x
 targets LoonFS API v0.3.x.
 
 ## Install
@@ -74,6 +74,28 @@ const response = await handle(request);
 
 The proxy streams uploads and downloads without retrying, caching, or changing
 response bodies.
+
+## Small files and prepared uploads
+
+`files.upload` and `files.uploadStream` automatically prepare small content inline
+when the server advertises support, up to the smaller of its inline limit and
+64 KiB. Larger sources keep using the existing upload transports. Streaming
+preparation uses bounded lookahead and preserves every consumed byte on fallback.
+
+`files.prepare` and `files.prepareStream` now return `PreparedFile`, a union of
+`InlinePreparedContent` and the existing staged `PreparedContent`. Pass either to
+`files.uploadPrepared`. Code that reads staged fields must narrow first:
+
+```ts
+if ("contentRef" in prepared) {
+    // The staged variant also exposes contentToken when required.
+    console.log(prepared.contentRef);
+}
+```
+
+For a publication retry, retain the same prepared value and commit ID, keeping
+all publication inputs identical. Do not prepare again or switch representations
+after a failed or uncertain commit. Existing staged constructors remain valid.
 
 ## Retries
 
