@@ -78,7 +78,6 @@ export * from "./ListPathEntriesResponse.js";
 export * from "./ListSnapshotsResponse.js";
 export * from "./ListTrashResponse.js";
 export * from "./NameKey.js";
-export * from "./NamespaceGeneration.js";
 export * from "./NamespaceId.js";
 export * from "./ObjectTransferAccess.js";
 export * from "./ObjectTransferAccessPresignedUrl.js";
