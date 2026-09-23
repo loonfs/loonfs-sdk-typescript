@@ -14,8 +14,6 @@ export interface ContentRef {
     content_id: LoonFS.ContentId;
     /** Content strategy used by the referenced object. */
     kind: LoonFS.ContentRefKind;
-    /** Generation of the owner namespace that wrote the bytes. */
-    owner_generation: LoonFS.NamespaceGeneration;
     /** Namespace that originally wrote the bytes. */
     owner_namespace_id: LoonFS.NamespaceId;
     /** Complete byte length of the referenced content. */
