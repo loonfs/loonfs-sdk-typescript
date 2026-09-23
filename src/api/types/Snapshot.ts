@@ -17,5 +17,5 @@ export interface Snapshot {
     /** Namespace whose state the snapshot captured. */
     namespace_id: LoonFS.NamespaceId;
     /** Snapshot id. */
-    snapshot_id: LoonFS.SnapshotId;
+    snapshot_id: LoonFS.PinId;
 }

@@ -12,7 +12,7 @@ export interface FilesystemChangeAttributesChanged {
      */
     attributes: LoonFS.Attributes;
     /** New attribute revision for that inode. */
-    attributes_revision_no: LoonFS.AttributeRevisionNo;
+    attributes_revision_no: LoonFS.AttributesRevisionNo;
     /** Inode whose attributes advanced. */
     inode_id: LoonFS.InodeId;
 }

@@ -9,6 +9,7 @@ import { getRequestBody } from "./getRequestBody.js";
 import { getResponseBody } from "./getResponseBody.js";
 import { Headers } from "./Headers.js";
 import { makeRequest } from "./makeRequest.js";
+import { RequestTimeoutError } from "./signals.js";
 import { abortRawResponse, toRawResponse, unknownRawResponse } from "./RawResponse.js";
 import { redactUrl } from "./redactUrl.js";
 import { requestWithRetries } from "./requestWithRetries.js";
@@ -227,7 +228,7 @@ export async function fetcherImpl<R = unknown>(args: Fetcher.Args): Promise<APIR
                 },
                 rawResponse: abortRawResponse,
             };
-        } else if (error instanceof Error && error.name === "AbortError") {
+        } else if (error instanceof RequestTimeoutError) {
             if (logger.isError()) {
                 const metadata = {
                     method: args.method,

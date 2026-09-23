@@ -12,9 +12,9 @@ export interface RunMaintenanceResponseGc {
     deleted_checkpoints_by_owner: LoonFS.DeletedCheckpointsByOwner;
     /** Namespace the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
-    /** The earliest known future reclamation time observed by this pass. */
+    /** The earliest pending generation deadline or future upload cleanup time. */
     next_reclamation_at_ms?: number | undefined;
-    /** The deleted head's irrevocable owner-prefix collection deadline. */
+    /** The current tombstone's deletion time plus the configured retirement grace. */
     reclaim_after_ms?: number | undefined;
     /** Candidates retained at deletion time, grouped by reason. */
     retained: LoonFS.RetainedCandidates;

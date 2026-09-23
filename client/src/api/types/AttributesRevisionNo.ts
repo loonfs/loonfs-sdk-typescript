@@ -3,4 +3,4 @@
 /**
  * Revision number for an inode's attributes. It starts at 0 and increases whenever the attribute map changes.
  */
-export type AttributeRevisionNo = number;
+export type AttributesRevisionNo = number;

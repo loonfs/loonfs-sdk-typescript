@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface GrepIndexLifecycleBackfilling {
     /** Checkpoint pinning the state being walked. */
-    checkpoint_id: LoonFS.CheckpointId;
+    checkpoint_id: LoonFS.PinId;
     /** The inode after which the scan resumes, or `None` before the first page. */
     cursor_inode_id?: LoonFS.InodeId | undefined;
     /** Namespace the status describes. */

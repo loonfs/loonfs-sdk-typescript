@@ -23,5 +23,5 @@ export interface CreateDownloadRequest {
      * Read the file revision captured by this snapshot.
      * Cannot be combined with `revision_no`.
      */
-    snapshot_id?: LoonFS.SnapshotId;
+    snapshot_id?: LoonFS.PinId;
 }

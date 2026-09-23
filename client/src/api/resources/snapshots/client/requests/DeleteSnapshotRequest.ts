@@ -13,5 +13,5 @@ export interface DeleteSnapshotRequest {
     /** Application namespace alias */
     namespace_alias: string;
     /** Snapshot id */
-    snapshot_id: LoonFS.SnapshotId;
+    snapshot_id: LoonFS.PinId;
 }

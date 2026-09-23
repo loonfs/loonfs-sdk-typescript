@@ -14,11 +14,8 @@ export interface Commit {
     committed_by: LoonFS.ActorId;
     /** Sequence number where the commit became visible. */
     committed_seq: LoonFS.ChangeSeq;
-    /**
-     * Always present on the change feed. Absent only from a replayed
-     * `POST /commits` response whose WAL record has been retired.
-     */
-    events?: LoonFS.FilesystemChange[] | undefined;
+    /** The semantic filesystem operations the commit applied, in request order. */
+    events: LoonFS.FilesystemChange[];
     /** The optional caller annotation for the commit. */
     message?: string | undefined;
     /** Namespace that changed. */

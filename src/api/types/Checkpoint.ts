@@ -9,7 +9,7 @@ export interface Checkpoint {
     /** Namespace sequence captured by the checkpoint. */
     captured_seq: LoonFS.ChangeSeq;
     /** Durable checkpoint id used to address the checkpoint for deletion. */
-    checkpoint_id: LoonFS.CheckpointId;
+    checkpoint_id: LoonFS.PinId;
     /** Time the checkpoint record was created, in Unix milliseconds. */
     created_at_ms: number;
     /** Expiry in Unix milliseconds; collection waits one further grace window. */
