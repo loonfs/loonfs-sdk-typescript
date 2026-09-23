@@ -18,5 +18,5 @@ export interface ListChangesRequest {
     /** Maximum page size */
     limit?: number;
     /** End the feed at this snapshot's captured sequence */
-    snapshot_id?: LoonFS.SnapshotId;
+    snapshot_id?: LoonFS.PinId;
 }

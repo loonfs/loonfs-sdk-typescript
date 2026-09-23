@@ -18,5 +18,5 @@ export interface GetInodeRequest {
     /** Project the inode's attribute map and revision (`true` or `false`). Defaults to `true`: a stat answers for one path and a map is capped at 64 KiB. */
     include_attributes?: boolean;
     /** Use the path state captured by this snapshot */
-    snapshot_id?: LoonFS.SnapshotId;
+    snapshot_id?: LoonFS.PinId;
 }

@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface DeleteCheckpointResponse {
     /** Deleted checkpoint record. */
-    checkpoint_id: LoonFS.CheckpointId;
+    checkpoint_id: LoonFS.PinId;
     /** Namespace the checkpoint belonged to. */
     namespace_id: LoonFS.NamespaceId;
 }

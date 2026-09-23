@@ -1,8 +1,8 @@
-const TIMEOUT = "timeout";
+export class RequestTimeoutError extends Error {}
 
 export function getTimeoutSignal(timeoutMs: number): { signal: AbortSignal; abortId: ReturnType<typeof setTimeout> } {
     const controller = new AbortController();
-    const abortId = setTimeout(() => controller.abort(TIMEOUT), timeoutMs);
+    const abortId = setTimeout(() => controller.abort(new RequestTimeoutError("Request timed out")), timeoutMs);
     return { signal: controller.signal, abortId };
 }
 

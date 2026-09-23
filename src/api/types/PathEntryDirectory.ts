@@ -12,7 +12,7 @@ export interface PathEntryDirectory {
      */
     attributes?: LoonFS.Attributes | undefined;
     /** The attribute revision this projection represents. */
-    attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /**
      * The latest attribute update time in Unix milliseconds, or `None` for the
      * initial empty state.

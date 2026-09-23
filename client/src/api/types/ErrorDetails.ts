@@ -15,7 +15,7 @@ export interface ErrorDetails {
     /** Access revision that is actually current for the inode. */
     actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision that is actually current for the inode. */
-    actual_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    actual_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** Current binding token; absent for the root, which has no binding. */
     actual_binding_generation?: LoonFS.BindingGeneration | undefined;
     /** Deletion generation actually active for the inode. */
@@ -37,7 +37,7 @@ export interface ErrorDetails {
     /** Access revision the request expected to be current. */
     expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision the request expected to be current. */
-    expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** Opaque binding token supplied by the request. */
     expected_binding_generation?: LoonFS.BindingGeneration | undefined;
     /** Deletion generation the undelete expected to be active. */

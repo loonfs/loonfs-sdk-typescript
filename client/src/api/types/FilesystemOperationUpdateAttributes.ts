@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemOperationUpdateAttributes {
     /** With an inode precondition, the attribute revision that must still be current. */
-    expected_attributes_revision_no?: LoonFS.AttributeRevisionNo | undefined;
+    expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** The inode that the path must still resolve to before the update. */
     expected_inode_id?: LoonFS.InodeId | undefined;
     /** Absolute path that must resolve to a visible file or directory. */

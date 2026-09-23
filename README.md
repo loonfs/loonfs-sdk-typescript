@@ -1,7 +1,6 @@
 # LoonFS TypeScript SDK
 
-One package for LoonFS client, proxy, and server applications. SDK v0.3.x
-targets LoonFS API v0.3.x.
+One package for LoonFS client, proxy, and server applications.
 
 ## Install
 

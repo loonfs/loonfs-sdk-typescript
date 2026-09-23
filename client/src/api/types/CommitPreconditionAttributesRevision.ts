@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface CommitPreconditionAttributesRevision {
     /** Attribute revision observed by the caller. */
-    expected_attributes_revision_no: LoonFS.AttributeRevisionNo;
+    expected_attributes_revision_no: LoonFS.AttributesRevisionNo;
     /** Inode whose state the caller read. */
     inode_id: LoonFS.InodeId;
 }

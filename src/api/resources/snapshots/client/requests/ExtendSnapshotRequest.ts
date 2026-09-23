@@ -14,7 +14,7 @@ export interface ExtendSnapshotRequest {
     /** Namespace id */
     namespace_id: string;
     /** Snapshot id */
-    snapshot_id: LoonFS.SnapshotId;
+    snapshot_id: LoonFS.PinId;
     /** Requested lifetime from the server's current time, in milliseconds. */
     ttl_ms: number;
 }
