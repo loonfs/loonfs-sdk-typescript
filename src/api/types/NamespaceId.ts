@@ -3,7 +3,7 @@
 /**
  * Durable id for one namespace.
  *
- * A namespace id names successive filesystem generations. This id is not a display name.
+ * A namespace id names one lifetime. This id is not a display name.
  * Its serialized form is 1 to 128
  * lowercase ASCII letters, digits, dots, underscores, or hyphens, starting
  * with a letter or digit; the `loonfs-` prefix is reserved for system use.

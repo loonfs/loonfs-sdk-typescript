@@ -14,8 +14,6 @@ export interface Namespace {
     created_by: LoonFS.ActorId;
     /** Present only for a fork: the source it was forked from. */
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
-    /** Which generation of its id this namespace is. Recreating a deleted id increments it. */
-    generation: LoonFS.NamespaceGeneration;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
     /** Namespace ID. */

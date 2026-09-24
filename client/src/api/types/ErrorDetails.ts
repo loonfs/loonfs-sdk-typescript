@@ -54,6 +54,8 @@ export interface ErrorDetails {
     inode_id?: LoonFS.InodeId | undefined;
     /** Maximum writer sessions admitted by the node. */
     max_writer_sessions?: number | undefined;
+    /** The deleted namespace that caused the operation to fail. */
+    namespace_id?: LoonFS.NamespaceId | undefined;
     /** The index of the failed operation in the request. */
     operation_index?: number | undefined;
     /** Zero-based position of the failed request precondition. */
