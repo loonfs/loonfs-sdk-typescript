@@ -10,7 +10,7 @@ export interface DeletedObjectCounts {
     manifests: number;
     /** Unreferenced metadata segments deleted. */
     metadata_segments: number;
-    /** Successful deletion attempts under a retired namespace owner prefix. */
+    /** Listed content objects deleted from a retired namespace. */
     retired_content_objects: number;
     /** Upload-session control objects deleted after the reap window. */
     upload_sessions: number;

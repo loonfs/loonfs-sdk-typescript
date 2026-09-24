@@ -14,8 +14,6 @@ export interface NamespaceDiagnostics {
     current_manifest_no?: LoonFS.ManifestNo | undefined;
     /** Present only for a fork: the source it was forked from. */
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
-    /** Which generation of its id this namespace is. Recreating a deleted id increments it. */
-    generation: LoonFS.NamespaceGeneration;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
     /** Number of active user checkpoints, including expired records awaiting collection. */

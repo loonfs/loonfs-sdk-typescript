@@ -113,7 +113,6 @@ export * from "./NamespaceAccessModeUnrestricted.js";
 export * from "./NamespaceAccessUnrestricted.js";
 export * from "./NamespaceDiagnostics.js";
 export * from "./NamespaceForkBasis.js";
-export * from "./NamespaceGeneration.js";
 export * from "./NamespaceId.js";
 export * from "./ObjectTransferAccess.js";
 export * from "./ObjectTransferAccessPresignedUrl.js";

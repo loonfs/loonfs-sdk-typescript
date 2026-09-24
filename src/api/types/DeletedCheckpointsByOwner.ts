@@ -8,8 +8,6 @@ export interface DeletedCheckpointsByOwner {
     expired: number;
     /** Fork-owned records deleted because their target namespaces are gone. */
     fork: number;
-    /** Retired records deleted after their generations are reclaimed. */
-    retired: number;
     /** Snapshot-owned records deleted after expiry or namespace deletion. */
     snapshot: number;
 }
