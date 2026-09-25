@@ -4,10 +4,10 @@
  * Checkpoint record counts deleted by one garbage-collection pass, grouped by owner.
  */
 export interface DeletedCheckpointsByOwner {
-    /** User-owned records deleted after expiry or namespace deletion. */
-    expired: number;
     /** Fork-owned records deleted because their target namespaces are gone. */
     fork: number;
     /** Snapshot-owned records deleted after expiry or namespace deletion. */
     snapshot: number;
+    /** User-owned records deleted after expiry or namespace deletion. */
+    user: number;
 }

@@ -143,7 +143,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Creates a named, user-owned checkpoint record pinning the current namespace view. Every call mints a new record under a new id; the name is a label, not a key. The record is a garbage-collection root until it is deleted, so routine maintenance should flush the WAL instead. This is a maintenance operation, not a file mutation.
+     * Creates a user-owned checkpoint record pinning the current namespace view. It first folds any WAL tail after the current manifest. Every call creates a new record under a new id; the name is a label, not a key. The record retains its manifest until it is deleted, either explicitly or by collection after expiry plus grace, so routine maintenance should flush the WAL instead. This is a maintenance operation, not a file mutation.
      *
      * @param {LoonFS.maintenance.CreateCheckpointRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.

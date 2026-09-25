@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface CommitPreconditionPathBinding {
     /** Detects moves away and back. */
-    expected_binding_generation?: LoonFS.BindingGeneration | undefined;
+    expected_binding_version?: LoonFS.BindingVersion | undefined;
     /** Inode required at the path. */
     expected_inode_id: LoonFS.InodeId;
     /** Absolute path to check, including the root. */

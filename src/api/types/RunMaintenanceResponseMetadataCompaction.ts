@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one full metadata compaction.
+ * Result of one metadata compaction unit.
  */
 export interface RunMaintenanceResponseMetadataCompaction {
     /** The compaction outcome. */

@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemChangeDirectoryCreated {
     /** Opaque identifier for the binding created by this event. */
-    binding_generation: LoonFS.BindingGeneration;
+    binding_version: LoonFS.BindingVersion;
     /** User-facing spelling of the new entry. */
     display_name: LoonFS.DisplayName;
     /** Newly allocated namespace-scoped inode identity. */

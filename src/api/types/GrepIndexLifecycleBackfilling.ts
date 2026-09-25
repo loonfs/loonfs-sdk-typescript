@@ -6,6 +6,8 @@ import type * as LoonFS from "../index.js";
  * An initial scan of a pinned checkpoint that is not yet searchable.
  */
 export interface GrepIndexLifecycleBackfilling {
+    /** The namespace sequence that completes the backfill when reached. */
+    captured_seq: LoonFS.ChangeSeq;
     /** Checkpoint pinning the state being walked. */
     checkpoint_id: LoonFS.PinId;
     /** The inode after which the scan resumes, or `None` before the first page. */
@@ -16,6 +18,4 @@ export interface GrepIndexLifecycleBackfilling {
     next_run_no: LoonFS.RunNo;
     /** True while a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
-    /** The namespace sequence that completes the backfill when reached. */
-    target_seq: LoonFS.ChangeSeq;
 }

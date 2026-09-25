@@ -24,7 +24,7 @@ export interface PathEntryDirectory {
      */
     attributes_updated_by?: LoonFS.ActorId | undefined;
     /** The opaque ID for the current parent and name binding, or `None` for the namespace root. */
-    binding_generation?: LoonFS.BindingGeneration | undefined;
+    binding_version?: LoonFS.BindingVersion | undefined;
     /** The inode creation time in Unix milliseconds. */
     created_at_ms: number;
     /** Actor that created this inode, as supplied by the application. */

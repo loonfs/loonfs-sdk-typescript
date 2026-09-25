@@ -8,7 +8,7 @@ export * from "./AttributeKey.js";
 export * from "./Attributes.js";
 export * from "./AttributesRevisionNo.js";
 export * from "./AttributeValue.js";
-export * from "./BindingGeneration.js";
+export * from "./BindingVersion.js";
 export * from "./CapabilityDocument.js";
 export * from "./ChangeSeq.js";
 export * from "./Checksum.js";

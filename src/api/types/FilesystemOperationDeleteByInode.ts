@@ -8,8 +8,8 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationDeleteByInode {
     /** Whether a non-empty directory may be tombstoned recursively. */
     behavior?: LoonFS.DeleteDirectoryBehavior | undefined;
-    /** Binding generation required for the delete. */
-    expected_binding_generation: LoonFS.BindingGeneration;
+    /** Binding version required for the delete. */
+    expected_binding_version: LoonFS.BindingVersion;
     /** Inode to delete. */
     inode_id: LoonFS.InodeId;
 }

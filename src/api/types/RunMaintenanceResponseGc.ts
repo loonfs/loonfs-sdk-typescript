@@ -15,7 +15,7 @@ export interface RunMaintenanceResponseGc {
     /** The earliest future retirement deadline, pin deletion time, or upload cleanup time. */
     next_reclamation_at_ms?: number | undefined;
     /** The current tombstone's deletion time plus the configured retirement grace. */
-    reclaim_after_ms?: number | undefined;
+    reclaimable_at_ms?: number | undefined;
     /** Candidates retained at deletion time, grouped by reason. */
     retained: LoonFS.RetainedCandidates;
 }

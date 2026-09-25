@@ -10,6 +10,6 @@ export interface CapabilityDocument {
     features?: Record<string, boolean> | undefined;
     /** Advisory numeric limits clients may use to pre-validate requests. */
     limits?: Record<string, number> | undefined;
-    /** The protocol generation, currently `v0`. */
+    /** The protocol version, `v0`. */
     protocol_version: string;
 }

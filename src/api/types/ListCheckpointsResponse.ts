@@ -3,10 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One page of active checkpoint records.
+ * One page of existing checkpoint records, including expired records that
+ * collection has not yet deleted.
  */
 export interface ListCheckpointsResponse {
-    /** The active records in ascending checkpoint ID order. */
+    /** The records in ascending checkpoint ID order. */
     checkpoints: LoonFS.Checkpoint[];
     /** Namespace the records belong to. */
     namespace_id: LoonFS.NamespaceId;
