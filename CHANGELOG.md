@@ -1,11 +1,39 @@
-# Unreleased
+# SDK 0.4.0
 
-Regenerated from LoonFS `7183dce7478f8e504a34d3d361cfa8837784253f`.
-Updates capability limit names and namespace generation fields. `PinId` replaces
-`CheckpointId` and `SnapshotId`; `AttributesRevisionNo` replaces `AttributeRevisionNo`.
+Regenerated from LoonFS `dee06fcc4ad5d3d5122ff9b2d127bf7cd5db8324`. Targets LoonFS v0.4.x.
 
-Server and browser clients now clear request timers after failures and report
-SDK timeouts as `LoonFSTimeoutError`. Caller cancellation remains distinct.
+Breaking changes on the wire:
+
+- Namespace generations are gone. A namespace id has one lifetime, and
+  deleting it makes the id unusable. `Namespace.generation`,
+  `NamespaceDiagnostics.generation`, `ContentRef.owner_generation`, the
+  `NamespaceGeneration` type, and the GC counts for retired generation records
+  are removed. Creating a namespace answers `namespace_deleted` (410) for a
+  deleted id, and `ErrorDetails.namespace_id` names the namespace.
+- The binding token is `binding_version` on entries and change events,
+  `expected_binding_version` on inode-addressed moves and deletes and on the
+  `path_binding` precondition, and the mismatch error is
+  `binding_version_mismatch` with `expected_binding_version` and
+  `actual_binding_version` details. Tokens stay opaque.
+- GC reports rename `reclaim_after_ms` to `reclaimable_at_ms`, and the
+  `deleted_checkpoints_by_owner` counts are `user`, `snapshot`, and `fork`.
+  Namespace diagnostics name the writer as `active_writer_id`. A backfilling
+  grep index reports `captured_seq`.
+- Grep index garbage collection runs through `run_maintenance` with kind
+  `grep_gc`. The `gc_grep_index` operation and its request and response
+  types are removed.
+- Capability limit names changed. `PinId` replaces `CheckpointId` and `SnapshotId`;
+  `AttributesRevisionNo` replaces `AttributeRevisionNo`.
+
+Other changes:
+
+- Snapshot and checkpoint deletes are not retried after a transport error,
+  since a delete that landed would otherwise report not found. Callers handle
+  transport errors on those calls themselves.
+- The maintenance job kinds include `recover_administrator`.
+- Documentation strings follow the current specification wording.
+- Server and browser clients clear request timers after failures and report
+  SDK timeouts as `LoonFSTimeoutError`. Caller cancellation remains distinct.
 
 # SDK 0.3.0
 

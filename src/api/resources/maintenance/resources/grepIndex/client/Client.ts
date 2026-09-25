@@ -4,7 +4,6 @@ import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../Ba
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../../../BaseClient.js";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../../../core/headers.js";
 import * as core from "../../../../../../core/index.js";
-import { mergeAdditionalBodyParameters } from "../../../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../../../errors/index.js";
 import * as LoonFS from "../../../../../index.js";
@@ -340,115 +339,6 @@ export class GrepIndexClient {
             _response.rawResponse,
             "POST",
             "/v0/maintenance/namespaces/{namespace_id}/grep/index/enable",
-        );
-    }
-
-    /**
-     * Runs one explicit garbage-collection pass over only this namespace's grep-owned extension keyspace. A tombstoned or absent namespace has aged extension state reaped. Every call reads durable roots and completes one pass. Unreadable or invalid roots fail before deletion. Requires this deployment to maintain the grep index.
-     *
-     * @param {LoonFS.maintenance.GcGrepIndexRequest} request
-     * @param {GrepIndexClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link LoonFS.BadRequestError}
-     * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.InternalServerError}
-     * @throws {@link LoonFS.NotImplementedError}
-     * @throws {@link LoonFS.ServiceUnavailableError}
-     * @throws {@link errors.LoonFSError}
-     * @throws {@link errors.LoonFSTimeoutError}
-     *
-     * @example
-     *     await client.maintenance.grepIndex.gc({
-     *         namespace_id: "namespace_id",
-     *         body: {
-     *             "key": "value"
-     *         }
-     *     })
-     */
-    public gc(
-        request: LoonFS.maintenance.GcGrepIndexRequest,
-        requestOptions?: GrepIndexClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.GrepGcResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__gc(request, requestOptions));
-    }
-
-    private async __gc(
-        request: LoonFS.maintenance.GcGrepIndexRequest,
-        requestOptions?: GrepIndexClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.GrepGcResponse>> {
-        const { namespace_id: namespaceId, body: _body } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            mergeOnlyDefinedHeaders({
-                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
-                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
-            }),
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/grep/index/gc`,
-            ),
-            method: "POST",
-            headers: _headers,
-            contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: 0,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.GrepGcResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 401:
-                    throw new LoonFS.UnauthorizedError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 500:
-                    throw new LoonFS.InternalServerError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 501:
-                    throw new LoonFS.NotImplementedError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 503:
-                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "POST",
-            "/v0/maintenance/namespaces/{namespace_id}/grep/index/gc",
         );
     }
 }

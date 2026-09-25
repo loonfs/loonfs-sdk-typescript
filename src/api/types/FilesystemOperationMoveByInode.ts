@@ -12,8 +12,8 @@ export interface FilesystemOperationMoveByInode {
     destination_display_name: LoonFS.DisplayName;
     /** Destination directory. */
     destination_parent_inode_id: LoonFS.InodeId;
-    /** Binding generation required for the move. */
-    expected_binding_generation: LoonFS.BindingGeneration;
+    /** Binding version required for the move. */
+    expected_binding_version: LoonFS.BindingVersion;
     /** With `replace` behavior, the destination inode required by the request. */
     expected_destination_inode_id?: LoonFS.InodeId | undefined;
     /** With `replace` behavior and an inode precondition, the required content revision. */

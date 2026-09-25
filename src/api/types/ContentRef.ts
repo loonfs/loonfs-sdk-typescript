@@ -3,16 +3,18 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A reference to one immutable content object.
+ * Identifies one piece of immutable file content.
  *
- * The object must be durable before the reference is published.
+ * The owner namespace and content id name the content object that holds the
+ * bytes. A reference is not proof that the object exists: content committed
+ * inline has no object until a flush writes it.
  */
 export interface ContentRef {
     /** Mandatory checksum over the complete object. */
     checksum: LoonFS.Checksum;
-    /** Immutable identity of the referenced object. */
+    /** Immutable identity of the content; with the owner, it determines the object key. */
     content_id: LoonFS.ContentId;
-    /** Content strategy used by the referenced object. */
+    /** Content strategy used by the referenced content. */
     kind: LoonFS.ContentRefKind;
     /** Namespace that originally wrote the bytes. */
     owner_namespace_id: LoonFS.NamespaceId;

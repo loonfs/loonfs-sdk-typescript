@@ -8,17 +8,17 @@ import type * as LoonFS from "../index.js";
 export interface ErrorDetails {
     /** The Unix-millisecond time when the current writer acquired its epoch, when available. */
     active_acquired_at_ms?: number | undefined;
-    /** The writer ID recorded for the current epoch, when available. */
-    active_writer?: LoonFS.WriterId | undefined;
     /** Epoch that currently owns the namespace. */
     active_writer_epoch?: LoonFS.WriterEpoch | undefined;
+    /** The writer ID recorded for the current epoch, when available. */
+    active_writer_id?: LoonFS.WriterId | undefined;
     /** Access revision that is actually current for the inode. */
     actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** Current binding token; absent for the root, which has no binding. */
-    actual_binding_generation?: LoonFS.BindingGeneration | undefined;
-    /** Deletion generation actually active for the inode. */
+    actual_binding_version?: LoonFS.BindingVersion | undefined;
+    /** Deletion sequence actually active for the inode. */
     actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /** The actual namespace head sequence. */
     actual_head_seq?: LoonFS.ChangeSeq | undefined;
@@ -39,8 +39,8 @@ export interface ErrorDetails {
     /** Attribute revision the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** Opaque binding token supplied by the request. */
-    expected_binding_generation?: LoonFS.BindingGeneration | undefined;
-    /** Deletion generation the undelete expected to be active. */
+    expected_binding_version?: LoonFS.BindingVersion | undefined;
+    /** Deletion sequence the undelete expected to be active. */
     expected_deletion_seq?: LoonFS.ChangeSeq | undefined;
     /** The head sequence required by the request. */
     expected_head_seq?: LoonFS.ChangeSeq | undefined;

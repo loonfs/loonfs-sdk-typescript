@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface FilesystemChangeMoved {
     /** Opaque identifier for the binding created by this event. */
-    binding_generation: LoonFS.BindingGeneration;
+    binding_version: LoonFS.BindingVersion;
     /** Spelling of the new binding. */
     destination_display_name: LoonFS.DisplayName;
     /** Directory holding the new binding. */
