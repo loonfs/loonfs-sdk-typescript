@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one explicit grep index garbage-collection pass (maintenance API group).
+ * Counts from one grep index collection pass.
  */
-export interface GrepGcResponse {
+export interface RunMaintenanceResponseGrepGc {
     /** Other unreferenced grep objects deleted after the grace window. */
     deleted_other_objects: number;
     /** Unreferenced grep segments older than the minimum segment age. */

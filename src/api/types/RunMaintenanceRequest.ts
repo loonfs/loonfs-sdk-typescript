@@ -7,6 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export type RunMaintenanceRequest =
     | LoonFS.RunMaintenanceRequest.Gc
+    | LoonFS.RunMaintenanceRequest.GrepGc
     | LoonFS.RunMaintenanceRequest.Metadata
     | LoonFS.RunMaintenanceRequest.MetadataCompaction
     | LoonFS.RunMaintenanceRequest.RecoverAdministrator
@@ -15,6 +16,10 @@ export type RunMaintenanceRequest =
 export namespace RunMaintenanceRequest {
     export interface Gc extends LoonFS.RunMaintenanceRequestGc {
         kind: "gc";
+    }
+
+    export interface GrepGc extends LoonFS.RunMaintenanceRequestGrepGc {
+        kind: "grep_gc";
     }
 
     export interface Metadata extends LoonFS.RunMaintenanceRequestMetadata {
