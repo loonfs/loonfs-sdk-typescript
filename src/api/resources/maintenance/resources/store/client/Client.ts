@@ -30,6 +30,7 @@ export class StoreClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -93,6 +94,11 @@ export class StoreClient {
                     );
                 case 401:
                     throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 413:
+                    throw new LoonFS.ContentTooLargeError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );

@@ -1,6 +1,6 @@
 # SDK 0.4.0
 
-Regenerated from LoonFS `dee06fcc4ad5d3d5122ff9b2d127bf7cd5db8324`. Targets LoonFS v0.4.x.
+Regenerated from LoonFS `a94ea6b895bfdac7d18b22f3928fdff5960bef45`. Targets LoonFS v0.4.x.
 
 Breaking changes on the wire:
 
@@ -27,6 +27,8 @@ Breaking changes on the wire:
 
 Other changes:
 
+- The nine operations that take a JSON body raise
+  `LoonFS.ContentTooLargeError` (413) when the body exceeds 2 MiB.
 - Snapshot and checkpoint deletes are not retried after a transport error,
   since a delete that landed would otherwise report not found. Callers handle
   transport errors on those calls themselves.
