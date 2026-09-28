@@ -8,7 +8,7 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationUndelete {
     /** Observed deletion sequence, which prevents cancelling a newer tombstone sequence. */
     deletion_seq: LoonFS.ChangeSeq;
-    /** The restore destination, or `None` to use the recorded binding. */
+    /** The restore destination. Omit it to use the recorded binding. */
     destination_path?: LoonFS.AbsolutePath | undefined;
     /** Deleted inode to make reachable again. */
     inode_id: LoonFS.InodeId;

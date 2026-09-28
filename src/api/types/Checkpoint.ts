@@ -19,5 +19,5 @@ export interface Checkpoint {
     /** Namespace that owns the checkpoint. */
     namespace_id: LoonFS.NamespaceId;
     /** Who owns the checkpoint, including the label carried by a user pin. */
-    owner: LoonFS.CheckpointOwnerSummary;
+    owner: LoonFS.CheckpointOwner;
 }

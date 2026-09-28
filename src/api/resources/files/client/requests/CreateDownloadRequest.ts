@@ -15,7 +15,7 @@ export interface CreateDownloadRequest {
     /** Absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /**
-     * Revision to read, or `None` for the path's current revision.
+     * Revision to read. Omit it for the path's current revision.
      * Cannot be combined with `snapshot_id`.
      */
     revision_no?: LoonFS.RevisionNo;

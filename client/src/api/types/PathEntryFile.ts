@@ -14,16 +14,16 @@ export interface PathEntryFile {
     /** The attribute revision this projection represents. */
     attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /**
-     * The latest attribute update time in Unix milliseconds, or `None` for the
+     * The latest attribute update time in Unix milliseconds, absent for the
      * initial empty state.
      */
     attributes_updated_at_ms?: number | undefined;
     /**
-     * The actor responsible for the latest attribute update, or `None` for the
+     * The actor responsible for the latest attribute update, absent for the
      * initial empty state.
      */
     attributes_updated_by?: LoonFS.ActorId | undefined;
-    /** The opaque ID for the current parent and name binding, or `None` for the namespace root. */
+    /** The opaque ID for the current parent and name binding, absent for the namespace root. */
     binding_version?: LoonFS.BindingVersion | undefined;
     /** Current content reference. */
     content_ref: LoonFS.ContentRef;
@@ -39,7 +39,7 @@ export interface PathEntryFile {
     inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Parent directory inode, or `None` for the root. */
+    /** Parent directory inode, absent for the root. */
     parent_inode_id?: LoonFS.InodeId | undefined;
     /** Absolute path as rendered from stored display names. */
     path: LoonFS.AbsolutePath;
