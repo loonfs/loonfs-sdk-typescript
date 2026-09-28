@@ -4,6 +4,6 @@
  * Write the object in parts through presigned part uploads.
  */
 export interface CreateUploadBodyDirectMultipart {
-    /** The byte length of every part except the last, or `None` for the server default. */
+    /** The byte length of every part except the last. Omit it for the server default. */
     part_size_bytes?: number | undefined;
 }

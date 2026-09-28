@@ -1,6 +1,6 @@
 # SDK 0.4.0
 
-Regenerated from LoonFS `a94ea6b895bfdac7d18b22f3928fdff5960bef45`. Targets LoonFS v0.4.x.
+Regenerated from LoonFS v0.4.0. Targets LoonFS API v0.4.x.
 
 Breaking changes on the wire:
 
@@ -28,6 +28,12 @@ Breaking changes on the wire:
 - `PinId` replaces `CheckpointId` and `SnapshotId`. `AttributesRevisionNo`
   replaces `AttributeRevisionNo`. `BindingVersion` replaces
   `BindingGeneration`.
+- `CheckpointOwner` replaces `CheckpointOwnerSummary`.
+
+Breaking changes in the proxy:
+
+- `createProxyHandler` requires the `authorize` hook and throws `TypeError`
+  without it. Returning `{}` forwards as the token holder.
 
 Other changes:
 

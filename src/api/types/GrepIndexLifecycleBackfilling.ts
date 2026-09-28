@@ -10,7 +10,7 @@ export interface GrepIndexLifecycleBackfilling {
     captured_seq: LoonFS.ChangeSeq;
     /** Checkpoint pinning the state being walked. */
     checkpoint_id: LoonFS.PinId;
-    /** The inode after which the scan resumes, or `None` before the first page. */
+    /** The inode after which the scan resumes, absent before the first page. */
     cursor_inode_id?: LoonFS.InodeId | undefined;
     /** Namespace the status describes. */
     namespace_id: LoonFS.NamespaceId;

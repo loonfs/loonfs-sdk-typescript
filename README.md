@@ -57,6 +57,10 @@ proxy. Never send a raw LoonFS server token to client code.
 Use `@loonfs/sdk/proxy` in your backend to create a fetch-compatible handler
 for client requests.
 
+Set `authorize` to check each request and set `Loonfs-Actor` on forwarded
+requests. The `authorize` hook is required; returning `{}` forwards as the token holder.
+Here, `authorizedActor` checks the application's session and namespace access.
+
 ```ts
 import { createProxyHandler } from "@loonfs/sdk/proxy";
 
@@ -65,6 +69,13 @@ const handle = createProxyHandler({
     token: process.env.LOONFS_TOKEN!,
     namespaceAliases: {
         "team-files": "namespace_123",
+    },
+    authorize: async (request, route) => {
+        const actorId = await authorizedActor(request, route.namespaceId);
+        if (!actorId) {
+            return new Response(null, { status: 403 });
+        }
+        return { actorId };
     },
 });
 

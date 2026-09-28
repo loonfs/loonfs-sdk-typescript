@@ -12,8 +12,8 @@ export interface ListChangesResponse {
     changes: LoonFS.Commit[];
     /** Namespace whose ordered commit stream was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Cursor to request when another page remains, or `None` at `through_seq`. */
+    /** Cursor to request when another page remains, absent at `through_seq`. */
     next_after_seq?: LoonFS.ChangeSeq | undefined;
-    /** Snapshot head through which this page was evaluated. */
+    /** Namespace head through which this page was evaluated. */
     through_seq: LoonFS.ChangeSeq;
 }

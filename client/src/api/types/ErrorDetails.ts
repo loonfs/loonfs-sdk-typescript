@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Optional machine-readable identifiers and state for an [`ApiError`].
+ * Optional machine-readable identifiers and state for an `ErrorResponse`.
  */
 export interface ErrorDetails {
     /** The Unix-millisecond time when the current writer acquired its epoch, when available. */

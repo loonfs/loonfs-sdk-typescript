@@ -3,8 +3,8 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A validated attribute map limited to [`MAX_ATTRIBUTE_ENTRIES`] entries and
- * [`MAX_ATTRIBUTES_TOTAL_BYTES`] total key and value UTF-8 bytes.
+ * A validated attribute map limited to 100 entries and 65,536 total key and
+ * value UTF-8 bytes.
  *
  * Construction and decoding reject values over these limits; an empty map
  * represents cleared attributes.
