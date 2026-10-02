@@ -16,7 +16,7 @@ export interface ErrorDetails {
     actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** Attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
-    /** Current binding token; absent for the root, which has no binding. */
+    /** Current binding token. */
     actual_binding_version?: LoonFS.BindingVersion | undefined;
     /** Deletion sequence actually active for the inode. */
     actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
@@ -52,14 +52,15 @@ export interface ErrorDetails {
     fenced_writer_epoch?: LoonFS.WriterEpoch | undefined;
     /** Inode the failed precondition or operation targeted. */
     inode_id?: LoonFS.InodeId | undefined;
-    /** Maximum writer sessions admitted by the node. */
-    max_writer_sessions?: number | undefined;
     /** The deleted namespace that caused the operation to fail. */
     namespace_id?: LoonFS.NamespaceId | undefined;
     /** The index of the failed operation in the request. */
     operation_index?: number | undefined;
     /** Zero-based position of the failed request precondition. */
     precondition_index?: number | undefined;
-    /** Oldest sequence still promised for incremental replay. */
+    /**
+     * Oldest position a change feed can resume after. The feed returns
+     * changes above it.
+     */
     retention_floor_seq?: LoonFS.ChangeSeq | undefined;
 }

@@ -5,8 +5,8 @@ import type * as LoonFS from "../index.js";
 /**
  * The current manifest already covered the captured WAL tail; this step published no manifest.
  */
-export interface WalFlushStepOutcomeAlreadyPublished {
-    /** Sequence this step attempted to flush through. */
+export interface WalFoldStepOutcomeAlreadyPublished {
+    /** Sequence this step attempted to fold through. */
     attempted_seq: LoonFS.ChangeSeq;
     /** The namespace's current manifest number. */
     current_manifest_no: LoonFS.ManifestNo;

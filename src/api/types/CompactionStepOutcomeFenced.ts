@@ -3,4 +3,4 @@
 /**
  * A newer runtime holds the compactor epoch.
  */
-export type ReorganizeStepOutcomeFenced = {};
+export type CompactionStepOutcomeFenced = {};

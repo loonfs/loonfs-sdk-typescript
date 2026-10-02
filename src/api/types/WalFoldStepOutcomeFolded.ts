@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The step flushed the WAL tail and published the next current manifest.
+ * The step folded the WAL tail and published the next current manifest.
  */
-export interface WalFlushStepOutcomeFlushed {
+export interface WalFoldStepOutcomeFolded {
     /** Sequence covered by the published manifest. */
     manifest_head_seq: LoonFS.ChangeSeq;
 }

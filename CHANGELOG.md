@@ -1,3 +1,21 @@
+# SDK 0.4.1
+
+Regenerated from LoonFS main after v0.4.0.
+
+Breaking changes on the wire:
+
+- Metadata maintenance reports rename `wal_flush` to `wal_fold` and
+  `reorganize` to `compaction`. The types are `WalFoldStepOutcome` and
+  `CompactionStepOutcome`. The fold outcome `flushed` is `folded`, and the
+  compaction outcome `compaction_required` is `metadata_compaction_required`.
+- The metadata maintenance request renames `max_wal_tail_segments` to
+  `max_wal_tail_objects`. Namespace diagnostics rename `wal_tail_segments` to
+  `wal_tail_objects`. GC reports rename the deleted object count
+  `wal_segments` to `wal_objects`.
+- The `Namespace` type is `NamespaceMetadata`.
+- `ErrorDetails` no longer has `max_writer_sessions`. The server has no
+  writer session limit.
+
 # SDK 0.4.0
 
 Regenerated from LoonFS v0.4.0. Targets LoonFS API v0.4.x.
