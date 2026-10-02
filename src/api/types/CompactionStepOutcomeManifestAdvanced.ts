@@ -3,4 +3,4 @@
 /**
  * Another publisher changed the current manifest before this step could publish.
  */
-export type ReorganizeStepOutcomeManifestAdvanced = {};
+export type CompactionStepOutcomeManifestAdvanced = {};

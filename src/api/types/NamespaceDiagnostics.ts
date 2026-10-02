@@ -16,14 +16,17 @@ export interface NamespaceDiagnostics {
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
     /** Current visible namespace sequence. */
     head_seq: LoonFS.ChangeSeq;
-    /** Number of active user checkpoints, including expired records awaiting collection. */
+    /** Number of user checkpoints, including expired records awaiting collection. */
     live_checkpoints: number;
     /** Number of snapshots that had not expired when diagnostics began. */
     live_snapshots: number;
     /** Namespace ID. */
     namespace_id: LoonFS.NamespaceId;
-    /** Oldest sequence still promised for incremental replay. */
+    /**
+     * Oldest position a change feed can resume after. The feed returns
+     * changes above it.
+     */
     retention_floor_seq: LoonFS.ChangeSeq;
-    /** Number of visible WAL segments after the current manifest. */
-    wal_tail_segments: number;
+    /** Number of visible WAL objects after the current manifest. */
+    wal_tail_objects: number;
 }

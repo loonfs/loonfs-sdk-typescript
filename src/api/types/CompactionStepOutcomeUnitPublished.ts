@@ -3,4 +3,4 @@
 /**
  * One family group was merged and a manifest published.
  */
-export type ReorganizeStepOutcomeUnitPublished = {};
+export type CompactionStepOutcomeUnitPublished = {};

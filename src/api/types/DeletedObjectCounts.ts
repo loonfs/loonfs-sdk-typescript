@@ -14,6 +14,6 @@ export interface DeletedObjectCounts {
     retired_content_objects: number;
     /** Upload-session control objects deleted after the reap window. */
     upload_sessions: number;
-    /** Unreferenced WAL segments deleted. */
-    wal_segments: number;
+    /** Unreferenced WAL objects deleted. */
+    wal_objects: number;
 }

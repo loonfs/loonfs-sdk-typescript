@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * Current state for one namespace.
  */
-export interface Namespace {
+export interface NamespaceMetadata {
     /** The namespace's access mode. */
     access: LoonFS.NamespaceAccessMode;
     /** Time the namespace was created, in Unix milliseconds. */
@@ -18,6 +18,9 @@ export interface Namespace {
     head_seq: LoonFS.ChangeSeq;
     /** Namespace ID. */
     namespace_id: LoonFS.NamespaceId;
-    /** Oldest sequence still promised for incremental replay. */
+    /**
+     * Oldest position a change feed can resume after. The feed returns
+     * changes above it.
+     */
     retention_floor_seq: LoonFS.ChangeSeq;
 }
