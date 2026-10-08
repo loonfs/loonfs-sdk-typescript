@@ -8,6 +8,7 @@ import type * as LoonFS from "../index.js";
  * Unknown fields are rejected, and fieldless variants require empty objects.
  */
 export type FilesystemOperation =
+    | LoonFS.FilesystemOperation.CopyByInode
     | LoonFS.FilesystemOperation.CopyPath
     | LoonFS.FilesystemOperation.CreateDirectory
     | LoonFS.FilesystemOperation.CreateDirectoryByInode
@@ -19,11 +20,18 @@ export type FilesystemOperation =
     | LoonFS.FilesystemOperation.PutFile
     | LoonFS.FilesystemOperation.PutFileRevisionByInode
     | LoonFS.FilesystemOperation.RestoreRevision
+    | LoonFS.FilesystemOperation.RestoreRevisionByInode
     | LoonFS.FilesystemOperation.Undelete
     | LoonFS.FilesystemOperation.UpdateAccess
-    | LoonFS.FilesystemOperation.UpdateAttributes;
+    | LoonFS.FilesystemOperation.UpdateAccessByInode
+    | LoonFS.FilesystemOperation.UpdateAttributes
+    | LoonFS.FilesystemOperation.UpdateAttributesByInode;
 
 export namespace FilesystemOperation {
+    export interface CopyByInode extends LoonFS.FilesystemOperationCopyByInode {
+        kind: "copy_by_inode";
+    }
+
     export interface CopyPath extends LoonFS.FilesystemOperationCopyPath {
         kind: "copy_path";
     }
@@ -68,6 +76,10 @@ export namespace FilesystemOperation {
         kind: "restore_revision";
     }
 
+    export interface RestoreRevisionByInode extends LoonFS.FilesystemOperationRestoreRevisionByInode {
+        kind: "restore_revision_by_inode";
+    }
+
     export interface Undelete extends LoonFS.FilesystemOperationUndelete {
         kind: "undelete";
     }
@@ -76,7 +88,15 @@ export namespace FilesystemOperation {
         kind: "update_access";
     }
 
+    export interface UpdateAccessByInode extends LoonFS.FilesystemOperationUpdateAccessByInode {
+        kind: "update_access_by_inode";
+    }
+
     export interface UpdateAttributes extends LoonFS.FilesystemOperationUpdateAttributes {
         kind: "update_attributes";
+    }
+
+    export interface UpdateAttributesByInode extends LoonFS.FilesystemOperationUpdateAttributesByInode {
+        kind: "update_attributes_by_inode";
     }
 }

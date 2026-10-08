@@ -16,4 +16,9 @@ export interface CreateNamespaceRequest {
     access?: LoonFS.NamespaceAccess;
     /** Durable namespace id to create. */
     namespace_id: LoonFS.NamespaceId;
+    /**
+     * How sibling names compare, fixed for the namespace's life. Defaults
+     * to `case_insensitive`.
+     */
+    naming?: LoonFS.NamespaceNaming;
 }

@@ -6,11 +6,10 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "ino_123",
- *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+ *         inode_id: "inode_id"
  *     }
  */
-export interface CreateDownloadByInodeRequest {
+export interface GetFileBytesByInodeRequest {
     /** Namespace id */
     namespace_id: string;
     /** File inode ID */

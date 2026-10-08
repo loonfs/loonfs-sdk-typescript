@@ -23,7 +23,7 @@ export class RunsClient {
     }
 
     /**
-     * Runs one maintenance job for the namespace. The body names the job with `kind`: `metadata`, `metadata_compaction`, `gc`, `grep_gc`, `retention`, or `recover_administrator`. The response carries the same `kind` and that job's result. A deleted namespace accepts only `gc` or `grep_gc`. A `grep_gc` call collects aged, unreferenced grep index objects and requires `maintenance.grep.index`. A `gc` call reads the current manifest and lists pins, then sweeps every family to the end. Each listing starts at the beginning. The call keeps no continuation.
+     * Runs one maintenance job for the namespace. The body names the job with `kind`: `metadata`, `metadata_compaction`, `gc`, `grep_gc`, `retention`, or `recover_administrator`. The response carries the same `kind` and that job's result. A deleted namespace accepts only `gc` or `grep_gc`. A `grep_gc` call collects aged, unreferenced grep index objects and requires `maintenance.grep.index`. A `gc` call reads the current manifest and lists pins, then sweeps every family to the end. Each listing starts at the beginning. The call keeps no continuation. A `retention` call advances the retention floor to the folded manifest head, or to the one target that `to_seq` or `cutoff_at_ms` names.
      *
      * @param {LoonFS.maintenance.CreateRunsRequest} request
      * @param {RunsClient.RequestOptions} requestOptions - Request-specific configuration.

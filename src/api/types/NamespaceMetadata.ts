@@ -18,6 +18,8 @@ export interface NamespaceMetadata {
     head_seq: LoonFS.ChangeSeq;
     /** Namespace ID. */
     namespace_id: LoonFS.NamespaceId;
+    /** How sibling names compare in the namespace. */
+    naming: LoonFS.NamespaceNaming;
     /**
      * Oldest position a change feed can resume after. The feed returns
      * changes above it.

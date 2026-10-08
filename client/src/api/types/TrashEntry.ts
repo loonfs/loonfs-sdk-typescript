@@ -16,6 +16,6 @@ export interface TrashEntry {
     deletion_seq: LoonFS.ChangeSeq;
     /** Inode hidden by the deletion. */
     inode_id: LoonFS.InodeId;
-    /** Whether the deleted root is a file or a directory. */
+    /** Whether the deleted root is a file or a directory; a newer server may report another kind. */
     inode_kind: LoonFS.InodeKind;
 }

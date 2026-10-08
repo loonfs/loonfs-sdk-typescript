@@ -589,7 +589,8 @@ export class FilesClient {
      * @example
      *     await client.files.grep({
      *         namespace_alias: "namespace_alias",
-     *         pattern: "pattern"
+     *         pattern: "pattern",
+     *         inode_id: "ino_123"
      *     })
      */
     public async grep(
@@ -603,6 +604,7 @@ export class FilesClient {
                     pattern,
                     case_insensitive: caseInsensitive,
                     path_prefix: pathPrefix,
+                    inode_id: inodeId,
                     allow_scan: allowScan,
                     allow_stale: allowStale,
                     limit,
@@ -612,6 +614,7 @@ export class FilesClient {
                     pattern,
                     case_insensitive: caseInsensitive,
                     path_prefix: pathPrefix,
+                    inode_id: inodeId,
                     allow_scan: allowScan,
                     allow_stale: allowStale,
                     limit,
