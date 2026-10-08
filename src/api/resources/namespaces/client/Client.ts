@@ -48,14 +48,14 @@ export class NamespacesClient {
     public create(
         request: LoonFS.CreateNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.Namespace> {
+    ): core.HttpResponsePromise<LoonFS.NamespaceMetadata> {
         return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
     private async __create(
         request: LoonFS.CreateNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.Namespace>> {
+    ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -87,7 +87,7 @@ export class NamespacesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.Namespace, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.NamespaceMetadata, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -147,14 +147,14 @@ export class NamespacesClient {
     public retrieve(
         request: LoonFS.GetNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.Namespace> {
+    ): core.HttpResponsePromise<LoonFS.NamespaceMetadata> {
         return core.HttpResponsePromise.fromPromise(this.__retrieve(request, requestOptions));
     }
 
     private async __retrieve(
         request: LoonFS.GetNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.Namespace>> {
+    ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
         const { namespace_id: namespaceId } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -184,7 +184,7 @@ export class NamespacesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.Namespace, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.NamespaceMetadata, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -349,14 +349,14 @@ export class NamespacesClient {
     public fork(
         request: LoonFS.ForkNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.Namespace> {
+    ): core.HttpResponsePromise<LoonFS.NamespaceMetadata> {
         return core.HttpResponsePromise.fromPromise(this.__fork(request, requestOptions));
     }
 
     private async __fork(
         request: LoonFS.ForkNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.Namespace>> {
+    ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
         const { namespace_id: namespaceId, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -389,7 +389,7 @@ export class NamespacesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.Namespace, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.NamespaceMetadata, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

@@ -234,7 +234,7 @@ export class GrepIndexClient {
     }
 
     /**
-     * Enables the namespace's grep index and asks this deployment's maintenance runner for the backfill's first step. The response reports the lifecycle and bookkeeping read after the transition: a fresh enable is `backfilling` with the sequence its checkpoint captured, while an already-enabled namespace answers with its current status. Idempotent. Requires this deployment to maintain the grep index.
+     * Enables the namespace's grep index. A deployment that runs maintenance builds the backfill on its next maintenance pass. The response reports the lifecycle and bookkeeping read after the transition: a fresh enable is `backfilling` with the sequence its checkpoint captured, while an already-enabled namespace answers with its current status. Idempotent. Requires this deployment to maintain the grep index.
      *
      * @param {LoonFS.maintenance.EnableGrepIndexRequest} request
      * @param {GrepIndexClient.RequestOptions} requestOptions - Request-specific configuration.

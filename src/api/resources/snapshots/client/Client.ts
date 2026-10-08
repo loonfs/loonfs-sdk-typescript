@@ -140,7 +140,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Creates a snapshot of the current namespace state. Every call creates a new snapshot.
+     * Creates a snapshot of the current namespace state. Every accepted call creates a new snapshot.
      *
      * @param {LoonFS.CreateSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.

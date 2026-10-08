@@ -3,4 +3,4 @@
 /**
  * No family group had enough delta runs to merge.
  */
-export type ReorganizeStepOutcomeNotNeeded = {};
+export type CompactionStepOutcomeNotNeeded = {};
