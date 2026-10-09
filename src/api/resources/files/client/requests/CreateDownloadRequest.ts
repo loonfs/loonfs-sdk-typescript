@@ -24,4 +24,11 @@ export interface CreateDownloadRequest {
      * Cannot be combined with `revision_no`.
      */
     snapshot_id?: LoonFS.PinId;
+    /**
+     * The first byte the grant reads. It names `[start_offset, size_bytes)`
+     * of the revision; a client that resumes asks for a new grant from the
+     * bytes it holds. Must be below the revision's size, except 0 for a
+     * revision of zero bytes.
+     */
+    start_offset?: number;
 }

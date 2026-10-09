@@ -72,6 +72,8 @@ export * from "./FilesystemChangeFileCreated.js";
 export * from "./FilesystemChangeMoved.js";
 export * from "./FilesystemChangeUndeleted.js";
 export * from "./FilesystemOperation.js";
+export * from "./FilesystemOperationAppendFile.js";
+export * from "./FilesystemOperationAppendFileByInode.js";
 export * from "./FilesystemOperationCopyByInode.js";
 export * from "./FilesystemOperationCopyPath.js";
 export * from "./FilesystemOperationCreateDirectory.js";

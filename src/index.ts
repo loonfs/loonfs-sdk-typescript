@@ -2,6 +2,7 @@ export * as LoonFS from "./api/index.js";
 export type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
 export { LoonFSClient } from "./transfers.js";
 export type {
+    AppendInput,
     DownloadInput,
     DownloadResult,
     DownloadStream,

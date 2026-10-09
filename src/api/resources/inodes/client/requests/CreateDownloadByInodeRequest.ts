@@ -17,4 +17,6 @@ export interface CreateDownloadByInodeRequest {
     inode_id: string;
     /** Use the file revision captured by this snapshot */
     snapshot_id?: LoonFS.PinId;
+    /** First byte the capability reads. Defaults to 0 and must be below the file's size, except 0 for a file of zero bytes */
+    start_offset?: number;
 }

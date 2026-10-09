@@ -386,7 +386,7 @@ export class InodesClient {
     }
 
     /**
-     * Authorizes a direct read of the current revision of a visible file inode, wherever it is bound, or of the revision a live snapshot captured. The request has no body and the response does not include a path.
+     * Authorizes a direct read of the current revision of a visible file inode, wherever it is bound, or of the revision a live snapshot captured. The capability reads exactly `[start_offset, size_bytes)`, as on the path route. The request has no body and the response does not include a path.
      *
      * @param {LoonFS.CreateDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -419,9 +419,15 @@ export class InodesClient {
         request: LoonFS.CreateDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.CreateDownloadByInodeResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, snapshot_id: snapshotId } = request;
+        const {
+            namespace_id: namespaceId,
+            inode_id: inodeId,
+            snapshot_id: snapshotId,
+            start_offset: startOffset,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             snapshot_id: snapshotId,
+            start_offset: startOffset,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -733,7 +739,7 @@ export class InodesClient {
     }
 
     /**
-     * Authorizes a direct read of one retained inode revision. The request has no body and the response does not include a path.
+     * Authorizes a direct read of one retained inode revision. The capability reads exactly `[start_offset, size_bytes)`, as on the path route. The request has no body and the response does not include a path.
      *
      * @param {LoonFS.CreateRevisionDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -766,7 +772,15 @@ export class InodesClient {
         request: LoonFS.CreateRevisionDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.CreateDownloadByInodeResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, revision_no: revisionNo } = request;
+        const {
+            namespace_id: namespaceId,
+            inode_id: inodeId,
+            revision_no: revisionNo,
+            start_offset: startOffset,
+        } = request;
+        const _queryParams: Record<string, unknown> = {
+            start_offset: startOffset,
+        };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -787,7 +801,11 @@ export class InodesClient {
             ),
             method: "POST",
             headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
