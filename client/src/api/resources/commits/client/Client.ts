@@ -44,9 +44,10 @@ export class CommitsClient {
      *         namespace_alias: "namespace_alias",
      *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
      *         operations: [{
-     *                 kind: "copy_path",
-     *                 destination_path: "/docs/report.txt",
-     *                 source_path: "/docs/report.txt"
+     *                 kind: "copy_by_inode",
+     *                 destination_display_name: "report.txt",
+     *                 destination_parent_inode_id: "ino_123",
+     *                 inode_id: "ino_123"
      *             }]
      *     })
      */

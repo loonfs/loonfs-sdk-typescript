@@ -15,6 +15,45 @@ Breaking changes on the wire:
 - The `Namespace` type is `NamespaceMetadata`.
 - `ErrorDetails` no longer has `max_writer_sessions`. The server has no
   writer session limit.
+- `create_download_by_inode` no longer takes `revision_no`. It authorizes a
+  read of the current revision of a visible file inode, or of the revision a
+  live snapshot captured when the request names `snapshot_id`. The new
+  `create_revision_download_by_inode` authorizes a read of one retained
+  revision. The client methods are `inodes.createDownload` and
+  `inodes.createRevisionDownload`.
+- `inodes.content` no longer takes `revision_no`. It calls the new
+  `get_file_bytes_by_inode`, which reads the current revision of a visible
+  file inode, or the revision a live snapshot captured when the request names
+  `snapshot_id`. `inodes.revisionContent` reads one retained revision
+  through `get_file_revision_bytes_by_inode`.
+
+Other changes:
+
+- Namespaces have a naming mode that sets how sibling names compare.
+  `NamespaceNaming` is `case_insensitive` or `case_sensitive`, and it is fixed
+  when the namespace is created. `CreateNamespaceRequest.naming` is optional
+  and defaults to `case_insensitive`. `NamespaceMetadata.naming` is required.
+- Commits accept four inode-addressed operations:
+  - `copy_by_inode` (`FilesystemOperationCopyByInode`)
+  - `restore_revision_by_inode` (`FilesystemOperationRestoreRevisionByInode`)
+  - `update_access_by_inode` (`FilesystemOperationUpdateAccessByInode`)
+  - `update_attributes_by_inode` (`FilesystemOperationUpdateAttributesByInode`)
+- Commits accept two inode-addressed preconditions:
+  - `inode_binding` (`CommitPreconditionInodeBinding`)
+  - `name_absence` (`CommitPreconditionNameAbsence`)
+- `FilesystemOperationUndelete` can name its destination with the optional
+  `destination_parent_inode_id` and `destination_display_name` instead of
+  `destination_path`.
+- `grep` takes an `inode_id` scope that limits matches to the inode's
+  descendants. It cannot be combined with `path_prefix`.
+- `RunMaintenanceRequestRetention` takes an optional target, `to_seq` or
+  `cutoff_at_ms`, but not both. Without a target, a `retention` run advances
+  the floor to the folded manifest head.
+- Newer servers may report other event kinds in `FilesystemChange`, and
+  clients ignore them. Newer servers may also report other inode kinds in
+  `PathEntry` and `TrashEntry`. Only the documentation changed. The generated
+  unions are unchanged.
+- Documentation strings follow the current specification wording.
 
 # SDK 0.4.0
 

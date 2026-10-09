@@ -6,6 +6,8 @@ import type * as LoonFS from "../index.js";
  * Metadata for one path returned by stat and directory listings.
  *
  * Attribute fields are included only when requested.
+ *
+ * Newer servers may report other inode kinds; clients read only the fields every entry carries.
  */
 export type PathEntry = LoonFS.PathEntry.Dir | LoonFS.PathEntry.File;
 

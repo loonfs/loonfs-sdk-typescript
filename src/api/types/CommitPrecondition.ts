@@ -11,6 +11,8 @@ export type CommitPrecondition =
     | LoonFS.CommitPrecondition.AccessRevision
     | LoonFS.CommitPrecondition.AttributesRevision
     | LoonFS.CommitPrecondition.FileRevision
+    | LoonFS.CommitPrecondition.InodeBinding
+    | LoonFS.CommitPrecondition.NameAbsence
     | LoonFS.CommitPrecondition.NamespaceHead
     | LoonFS.CommitPrecondition.PathAbsence
     | LoonFS.CommitPrecondition.PathBinding;
@@ -26,6 +28,14 @@ export namespace CommitPrecondition {
 
     export interface FileRevision extends LoonFS.CommitPreconditionFileRevision {
         kind: "file_revision";
+    }
+
+    export interface InodeBinding extends LoonFS.CommitPreconditionInodeBinding {
+        kind: "inode_binding";
+    }
+
+    export interface NameAbsence extends LoonFS.CommitPreconditionNameAbsence {
+        kind: "name_absence";
     }
 
     export interface NamespaceHead extends LoonFS.CommitPreconditionNamespaceHead {

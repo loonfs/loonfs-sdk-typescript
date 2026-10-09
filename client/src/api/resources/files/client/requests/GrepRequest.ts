@@ -4,7 +4,8 @@
  * @example
  *     {
  *         namespace_alias: "namespace_alias",
- *         pattern: "pattern"
+ *         pattern: "pattern",
+ *         inode_id: "ino_123"
  *     }
  */
 export interface GrepRequest {
@@ -14,8 +15,10 @@ export interface GrepRequest {
     pattern: string;
     /** Match case-insensitively (`true` or `false`). Defaults to `false`. */
     case_insensitive?: boolean;
-    /** Complete absolute path used to restrict matches. */
+    /** Complete absolute path used to restrict matches. Cannot be combined with `inode_id`. */
     path_prefix?: string;
+    /** Inode whose descendants restrict matches. Cannot be combined with `path_prefix`. */
+    inode_id?: string;
     /** Permit a capped exhaustive scan when the pattern has no required grams (`true` or `false`). Defaults to `false`. */
     allow_scan?: boolean;
     /** Return indexed-only results when the unindexed tail exceeds the scan budget (`true` or `false`). Defaults to `false`. */

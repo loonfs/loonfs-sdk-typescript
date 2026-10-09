@@ -7,14 +7,14 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         inode_id: "ino_123",
- *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+ *         revision_no: 1000000
  *     }
  */
-export interface CreateDownloadByInodeRequest {
+export interface CreateRevisionDownloadByInodeRequest {
     /** Namespace id */
     namespace_id: string;
     /** File inode ID */
     inode_id: string;
-    /** Use the file revision captured by this snapshot */
-    snapshot_id?: LoonFS.PinId;
+    /** Revision number */
+    revision_no: LoonFS.RevisionNo;
 }

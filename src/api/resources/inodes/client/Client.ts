@@ -280,6 +280,227 @@ export class InodesClient {
     }
 
     /**
+     * Reads and verifies the current revision of a visible file inode, wherever it is bound, or the revision a live snapshot captured. Unknown or hidden inodes answer `inode_not_found`.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     */
+    public content(
+        request: LoonFS.GetFileBytesByInodeRequest,
+        requestOptions?: InodesClient.RequestOptions,
+    ): core.HttpResponsePromise<core.BinaryResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__content(request, requestOptions));
+    }
+
+    private async __content(
+        request: LoonFS.GetFileBytesByInodeRequest,
+        requestOptions?: InodesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<core.BinaryResponse>> {
+        const { namespace_id: namespaceId, inode_id: inodeId, snapshot_id: snapshotId } = request;
+        const _queryParams: Record<string, unknown> = {
+            snapshot_id: snapshotId,
+        };
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher<core.BinaryResponse>({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/inodes/${core.url.encodePathParam(inodeId)}/content`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            responseType: "binary-response",
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/namespaces/{namespace_id}/inodes/{inode_id}/content",
+        );
+    }
+
+    /**
+     * Authorizes a direct read of the current revision of a visible file inode, wherever it is bound, or of the revision a live snapshot captured. The request has no body and the response does not include a path.
+     *
+     * @param {LoonFS.CreateDownloadByInodeRequest} request
+     * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.inodes.createDownload({
+     *         namespace_id: "namespace_id",
+     *         inode_id: "ino_123",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+     *     })
+     */
+    public createDownload(
+        request: LoonFS.CreateDownloadByInodeRequest,
+        requestOptions?: InodesClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.CreateDownloadByInodeResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
+    }
+
+    private async __createDownload(
+        request: LoonFS.CreateDownloadByInodeRequest,
+        requestOptions?: InodesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.CreateDownloadByInodeResponse>> {
+        const { namespace_id: namespaceId, inode_id: inodeId, snapshot_id: snapshotId } = request;
+        const _queryParams: Record<string, unknown> = {
+            snapshot_id: snapshotId,
+        };
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/inodes/${core.url.encodePathParam(inodeId)}/downloads`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.CreateDownloadByInodeResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespaces/{namespace_id}/inodes/{inode_id}/downloads",
+        );
+    }
+
+    /**
      * Returns retained revisions for a file inode without requiring a current path.
      *
      * @param {LoonFS.ListFileRevisionsByInodeRequest} request
@@ -425,14 +646,14 @@ export class InodesClient {
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      */
-    public content(
+    public revisionContent(
         request: LoonFS.GetFileRevisionBytesByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): core.HttpResponsePromise<core.BinaryResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__content(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__revisionContent(request, requestOptions));
     }
 
-    private async __content(
+    private async __revisionContent(
         request: LoonFS.GetFileRevisionBytesByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
@@ -514,7 +735,7 @@ export class InodesClient {
     /**
      * Authorizes a direct read of one retained inode revision. The request has no body and the response does not include a path.
      *
-     * @param {LoonFS.CreateDownloadByInodeRequest} request
+     * @param {LoonFS.CreateRevisionDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -528,21 +749,21 @@ export class InodesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.inodes.createDownload({
+     *     await client.inodes.createRevisionDownload({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_123",
      *         revision_no: 1000000
      *     })
      */
-    public createDownload(
-        request: LoonFS.CreateDownloadByInodeRequest,
+    public createRevisionDownload(
+        request: LoonFS.CreateRevisionDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.CreateDownloadByInodeResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__createDownload(request, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__createRevisionDownload(request, requestOptions));
     }
 
-    private async __createDownload(
-        request: LoonFS.CreateDownloadByInodeRequest,
+    private async __createRevisionDownload(
+        request: LoonFS.CreateRevisionDownloadByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.CreateDownloadByInodeResponse>> {
         const { namespace_id: namespaceId, inode_id: inodeId, revision_no: revisionNo } = request;
