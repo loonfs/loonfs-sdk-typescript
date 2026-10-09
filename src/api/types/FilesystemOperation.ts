@@ -8,6 +8,8 @@ import type * as LoonFS from "../index.js";
  * Unknown fields are rejected, and fieldless variants require empty objects.
  */
 export type FilesystemOperation =
+    | LoonFS.FilesystemOperation.AppendFile
+    | LoonFS.FilesystemOperation.AppendFileByInode
     | LoonFS.FilesystemOperation.CopyByInode
     | LoonFS.FilesystemOperation.CopyPath
     | LoonFS.FilesystemOperation.CreateDirectory
@@ -28,6 +30,14 @@ export type FilesystemOperation =
     | LoonFS.FilesystemOperation.UpdateAttributesByInode;
 
 export namespace FilesystemOperation {
+    export interface AppendFile extends LoonFS.FilesystemOperationAppendFile {
+        kind: "append_file";
+    }
+
+    export interface AppendFileByInode extends LoonFS.FilesystemOperationAppendFileByInode {
+        kind: "append_file_by_inode";
+    }
+
     export interface CopyByInode extends LoonFS.FilesystemOperationCopyByInode {
         kind: "copy_by_inode";
     }

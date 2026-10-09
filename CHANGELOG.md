@@ -26,6 +26,13 @@ Breaking changes on the wire:
   file inode, or the revision a live snapshot captured when the request names
   `snapshot_id`. `inodes.revisionContent` reads one retained revision
   through `get_file_revision_bytes_by_inode`.
+- A download grant reads exactly `[start_offset, size_bytes)` of the
+  revision. It signs that range, and `access.headers` carries it as
+  `range`. A client sends the grant's headers unchanged and adds no `Range`
+  of its own, so one grant no longer serves ranged, resumed, or parallel
+  reads. A client that resumes asks for a new grant with `start_offset`. A
+  grant for a revision of zero bytes signs no range. The download helpers
+  already send the grant's headers unchanged.
 
 Other changes:
 
@@ -49,6 +56,38 @@ Other changes:
 - `RunMaintenanceRequestRetention` takes an optional target, `to_seq` or
   `cutoff_at_ms`, but not both. Without a target, a `retention` run advances
   the floor to the folded manifest head.
+- Commits accept two append operations. Each adds bytes to the end of a file
+  as its next revision:
+  - `append_file` (`FilesystemOperationAppendFile`)
+  - `append_file_by_inode` (`FilesystemOperationAppendFileByInode`)
+- `append_file` takes `path` and `inline_content`, and optionally
+  `expected_inode_id` and `expected_revision_no`. `append_file_by_inode`
+  takes `inode_id` and `inline_content`, and optionally
+  `expected_revision_no`. `inline_content` carries 1 byte to 256 KiB as
+  base64. A larger append raises `LoonFS.ContentTooLargeError` (413). An
+  append to content with no recorded digest to continue raises
+  `LoonFS.NotImplementedError` (501).
+- `files.append` adds 1 byte to 256 KiB to the end of a file in one
+  `create_commit` request with an `append_file` operation, so an append needs
+  no upload. Server and browser clients both have it, and
+  `@loonfs/sdk/server` and `@loonfs/sdk/client` export its `AppendInput`. It
+  refuses empty content and content over 256 KiB before it sends anything.
+  Pass `commit_id` explicitly if you may retry. `append_file_by_inode` has no
+  helper and goes through `commits.create`.
+- Download grants take an optional `start_offset`, the first byte the grant
+  reads. It defaults to 0 and must be below the revision's size, except 0
+  for a revision of zero bytes. `CreateDownloadRequest.start_offset` is a
+  body field, and `create_download_by_inode` and
+  `create_revision_download_by_inode` take it as a query parameter. The
+  client methods are `files.createDownload`, `inodes.createDownload`, and
+  `inodes.createRevisionDownload`.
+- The download helpers make no request for a grant of zero bytes. They
+  return empty content.
+- GC reports add the deleted object count `temporary_objects`, for store
+  temporary objects deleted once older than the grace window.
+  `content_objects` now counts content objects that no retained view names,
+  deleted once older than the grace window. Before, it counted content
+  reclaimed through completed upload sessions.
 - Newer servers may report other event kinds in `FilesystemChange`, and
   clients ignore them. Newer servers may also report other inode kinds in
   `PathEntry` and `TrashEntry`. Only the documentation changed. The generated

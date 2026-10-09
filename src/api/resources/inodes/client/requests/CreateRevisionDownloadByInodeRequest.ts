@@ -17,4 +17,6 @@ export interface CreateRevisionDownloadByInodeRequest {
     inode_id: string;
     /** Revision number */
     revision_no: LoonFS.RevisionNo;
+    /** First byte the capability reads. Defaults to 0 and must be below the revision's size, except 0 for a revision of zero bytes */
+    start_offset?: number;
 }
