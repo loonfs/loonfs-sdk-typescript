@@ -6,14 +6,14 @@ import type * as LoonFS from "../index.js";
  * A short-lived capability to read one inode revision.
  */
 export interface CreateDownloadByInodeResponse {
-    /** Short-lived provider access without the raw object key. */
-    access: LoonFS.ObjectTransferAccess;
     /** Content identity, size, and checksum. */
     content_ref: LoonFS.ContentRef;
     /** File inode being read. */
     inode_id: LoonFS.InodeId;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
+    /** The revision's bytes from the requested offset, in order. */
+    ranges: LoonFS.DownloadRange[];
     /** Revision being read. */
     revision_no: LoonFS.RevisionNo;
 }

@@ -1,3 +1,36 @@
+# SDK 0.5.0
+
+Regenerated from LoonFS main 29f44d4cd.
+
+Breaking changes on the wire:
+
+- Path and inode download responses replace `access` with required ordered
+  `ranges`. Each `DownloadRange` carries `start_offset`, `length`, and its
+  own signed `access`, and together the ranges cover the requested revision
+  suffix across immutable extents. Transfer helpers read them in order and
+  verify the whole value at the end.
+- Every open upload session names `checksum_algorithm`, including
+  `service_proxied`, and the field is required.
+- `ChecksumAlgorithm` allows only `crc64nvme` and `crc32c`; `sha256` is
+  gone. Every content reference, including inline writes, uploads, copies,
+  restores, and appends, uses the deployment's store algorithm.
+- A store shape offers a fixed set of upload modes: S3-shaped stores offer
+  direct PUT and multipart, GCS-shaped stores offer direct PUT only, and the
+  local store proxies. Helpers select from the advertised capabilities.
+- Appends combine the base checksum with the appended bytes; the
+  `not_supported` answer for a base without a digest is gone, and a base in
+  another algorithm reports `namespace_corrupt`.
+
+Handwritten layers:
+
+- Downloads validate the range list before any signed request, read one
+  range at a time, check each response before opening the next, and verify
+  the complete file at the end. Resume pins the revision and verifies the
+  retained prefix plus the downloaded suffix.
+- The three languages share helper names, verification order, and error
+  wording. SHA-256 code and optional-algorithm branches are removed.
+- The browser proxy strips the browser's `Host` header.
+
 # SDK 0.4.1
 
 Regenerated from LoonFS main after v0.4.0.

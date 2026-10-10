@@ -4,7 +4,7 @@
  * Object counts deleted by one garbage-collection pass, grouped by family.
  */
 export interface DeletedObjectCounts {
-    /** Content reclaimed through completed upload sessions. */
+    /** Content objects no retained view names, deleted once older than the grace window. */
     content_objects: number;
     /** Unreferenced manifests deleted. */
     manifests: number;
@@ -12,6 +12,8 @@ export interface DeletedObjectCounts {
     metadata_segments: number;
     /** Listed content objects deleted from a retired namespace. */
     retired_content_objects: number;
+    /** Store temporary objects deleted once older than the grace window. */
+    temporary_objects: number;
     /** Upload-session control objects deleted after the reap window. */
     upload_sessions: number;
     /** Unreferenced WAL objects deleted. */
