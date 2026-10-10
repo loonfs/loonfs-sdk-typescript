@@ -9,7 +9,7 @@ import type * as LoonFS from "../../../../index.js";
  *         upload_id: "upload_id",
  *         parts: [{
  *                 checksum: {
- *                     algorithm: "sha256",
+ *                     algorithm: "crc64nvme",
  *                     value: "value"
  *                 },
  *                 part_number: 1

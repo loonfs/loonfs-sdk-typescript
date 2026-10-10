@@ -3,19 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A presigned URL for one content object.
- *
- * The URL expires at `access.expires_at_ms`; later path changes do not change the object.
+ * Signed object ranges for one revision.
  */
 export interface CreateDownloadResponse {
-    /** Short-lived read capability the client uses without learning the raw object key. */
-    access: LoonFS.ObjectTransferAccess;
-    /** The identity, byte length, and checksum of the object to download. */
+    /** The identity, byte length, and checksum of the revision's bytes. */
     content_ref: LoonFS.ContentRef;
     /** Namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** Absolute path as rendered from stored display names. */
     path: LoonFS.AbsolutePath;
+    /** The revision's bytes from the requested offset, in order. */
+    ranges: LoonFS.DownloadRange[];
     /** Revision the capability reads, resolved from the request. */
     revision_no: LoonFS.RevisionNo;
 }
