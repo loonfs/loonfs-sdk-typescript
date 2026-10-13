@@ -8,10 +8,9 @@ import type * as LoonFS from "../../../../index.js";
  *         namespace_id: "namespace_id",
  *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
  *         operations: [{
- *                 kind: "copy_by_inode",
- *                 destination_display_name: "report.txt",
- *                 destination_parent_inode_id: "ino_123",
- *                 inode_id: "ino_123"
+ *                 kind: "append_file",
+ *                 inline_content: "inline_content",
+ *                 path: "/docs/report.txt"
  *             }]
  *     }
  */

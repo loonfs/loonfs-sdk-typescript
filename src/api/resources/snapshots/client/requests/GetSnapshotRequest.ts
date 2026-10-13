@@ -6,15 +6,12 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "inode_id",
- *         revision_no: 1000000
+ *         snapshot_id: "pin_00000000000000000001-0000000000000002"
  *     }
  */
-export interface GetFileRevisionBytesByInodeRequest {
+export interface GetSnapshotRequest {
     /** Namespace id */
     namespace_id: string;
-    /** File inode ID */
-    inode_id: string;
-    /** Revision number */
-    revision_no: LoonFS.RevisionNo;
+    /** Snapshot id */
+    snapshot_id: LoonFS.PinId;
 }

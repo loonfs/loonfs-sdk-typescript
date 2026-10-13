@@ -11,14 +11,14 @@ import type * as LoonFS from "../../../../index.js";
  *             mode: "direct_multipart",
  *             content: {
  *                 checksum: {
- *                     algorithm: "sha256",
+ *                     algorithm: "crc64nvme",
  *                     value: "value"
  *                 },
  *                 size_bytes: 1000000
  *             },
  *             parts: [{
  *                     checksum: {
- *                         algorithm: "sha256",
+ *                         algorithm: "crc64nvme",
  *                         value: "value"
  *                     },
  *                     etag: "etag",

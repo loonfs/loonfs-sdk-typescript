@@ -232,6 +232,93 @@ export class SnapshotsClient {
     }
 
     /**
+     * Returns one live snapshot, as the snapshot listing returns it. A missing id, or the id of a pin that isn't a snapshot, returns snapshot_not_found, and an expired snapshot returns snapshot_gone.
+     *
+     * @param {LoonFS.GetSnapshotRequest} request
+     * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.snapshots.retrieve({
+     *         namespace_alias: "namespace_alias",
+     *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+     *     })
+     */
+    public retrieve(
+        request: LoonFS.GetSnapshotRequest,
+        requestOptions?: SnapshotsClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.Snapshot> {
+        return core.HttpResponsePromise.fromPromise(this.__retrieve(request, requestOptions));
+    }
+
+    private async __retrieve(
+        request: LoonFS.GetSnapshotRequest,
+        requestOptions?: SnapshotsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.Snapshot>> {
+        const { namespace_alias: namespaceAlias, snapshot_id: snapshotId } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespace-aliases/${core.url.encodePathParam(namespaceAlias)}/snapshots/${core.url.encodePathParam(snapshotId)}`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.Snapshot, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/namespace-aliases/{namespace_alias}/snapshots/{snapshot_id}",
+        );
+    }
+
+    /**
      * Deletes a snapshot pin. A missing id returns snapshot_not_found.
      *
      * @param {LoonFS.DeleteSnapshotRequest} request

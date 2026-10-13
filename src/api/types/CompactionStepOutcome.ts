@@ -6,13 +6,17 @@ import type * as LoonFS from "../index.js";
  * What the bounded compaction part of a maintenance pass did.
  */
 export type CompactionStepOutcome =
+    | LoonFS.CompactionStepOutcome.BoundedMergePublished
     | LoonFS.CompactionStepOutcome.Fenced
     | LoonFS.CompactionStepOutcome.ManifestAdvanced
     | LoonFS.CompactionStepOutcome.MetadataCompactionRequired
-    | LoonFS.CompactionStepOutcome.NotNeeded
-    | LoonFS.CompactionStepOutcome.UnitPublished;
+    | LoonFS.CompactionStepOutcome.NotNeeded;
 
 export namespace CompactionStepOutcome {
+    export interface BoundedMergePublished extends LoonFS.CompactionStepOutcomeBoundedMergePublished {
+        outcome: "bounded_merge_published";
+    }
+
     export interface Fenced extends LoonFS.CompactionStepOutcomeFenced {
         outcome: "fenced";
     }
@@ -27,9 +31,5 @@ export namespace CompactionStepOutcome {
 
     export interface NotNeeded extends LoonFS.CompactionStepOutcomeNotNeeded {
         outcome: "not_needed";
-    }
-
-    export interface UnitPublished extends LoonFS.CompactionStepOutcomeUnitPublished {
-        outcome: "unit_published";
     }
 }

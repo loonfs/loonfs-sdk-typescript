@@ -9,5 +9,5 @@ export interface StoreProbeResponse {
     /** The check results in execution order. */
     checks: LoonFS.StoreProbeCheckResult[];
     /** The server-generated label for this probe run and its objects. */
-    run_id: string;
+    run_id: LoonFS.ProbeRunId;
 }

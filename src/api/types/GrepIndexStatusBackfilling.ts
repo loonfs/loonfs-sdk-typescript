@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * An initial scan of a pinned checkpoint that is not yet searchable.
  */
-export interface GrepIndexLifecycleBackfilling {
+export interface GrepIndexStatusBackfilling {
     /** The namespace sequence that completes the backfill when reached. */
     captured_seq: LoonFS.ChangeSeq;
     /** Checkpoint pinning the state being walked. */

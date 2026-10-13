@@ -63,6 +63,7 @@ const PROXY_ROUTE_TABLE: readonly ProxyRouteTemplate[] = [
     { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/snapshots" },
     { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/snapshots" },
     { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/snapshots/{snapshot_id}/extend" },
+    { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/snapshots/{snapshot_id}" },
     { method: "DELETE", template: "/v0/namespace-aliases/{namespace_alias}/snapshots/{snapshot_id}" },
     { method: "POST", template: "/v0/namespace-aliases/{namespace_alias}/uploads" },
     { method: "GET", template: "/v0/namespace-aliases/{namespace_alias}/uploads/{upload_id}" },
@@ -211,6 +212,7 @@ function forwardedHeaders(source: Headers, extra: readonly string[]): Headers {
 
 // Do not forward application cookies to LoonFS.
 const REQUEST_STRIPPED_HEADERS = [
+    "host",
     "cookie",
     "loonfs-actor",
     "loonfs-subject",

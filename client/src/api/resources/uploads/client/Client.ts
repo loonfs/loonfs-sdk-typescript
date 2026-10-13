@@ -330,14 +330,14 @@ export class UploadsClient {
      *             mode: "direct_multipart",
      *             content: {
      *                 checksum: {
-     *                     algorithm: "sha256",
+     *                     algorithm: "crc64nvme",
      *                     value: "value"
      *                 },
      *                 size_bytes: 1000000
      *             },
      *             parts: [{
      *                     checksum: {
-     *                         algorithm: "sha256",
+     *                         algorithm: "crc64nvme",
      *                         value: "value"
      *                     },
      *                     etag: "etag",
@@ -552,7 +552,7 @@ export class UploadsClient {
      *         upload_id: "upload_id",
      *         parts: [{
      *                 checksum: {
-     *                     algorithm: "sha256",
+     *                     algorithm: "crc64nvme",
      *                     value: "value"
      *                 },
      *                 part_number: 1

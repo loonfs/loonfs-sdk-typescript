@@ -8,15 +8,15 @@ import type * as LoonFS from "../index.js";
 export type GrepIndex = LoonFS.GrepIndex.Active | LoonFS.GrepIndex.Backfilling | LoonFS.GrepIndex.Disabled;
 
 export namespace GrepIndex {
-    export interface Active extends LoonFS.GrepIndexLifecycleActive {
+    export interface Active extends LoonFS.GrepIndexStatusActive {
         status: "active";
     }
 
-    export interface Backfilling extends LoonFS.GrepIndexLifecycleBackfilling {
+    export interface Backfilling extends LoonFS.GrepIndexStatusBackfilling {
         status: "backfilling";
     }
 
-    export interface Disabled extends LoonFS.GrepIndexLifecycleDisabled {
+    export interface Disabled extends LoonFS.GrepIndexStatusDisabled {
         status: "disabled";
     }
 }

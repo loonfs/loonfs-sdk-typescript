@@ -10,10 +10,13 @@ export interface ListChangesResponse {
     after_seq: LoonFS.ChangeSeq;
     /** Logical commits after `after_seq`, ordered by ascending namespace sequence. */
     changes: LoonFS.Commit[];
+    /** Namespace head sequence this page was read at. */
+    head_seq: LoonFS.ChangeSeq;
     /** Namespace whose ordered commit stream was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Cursor to request when another page remains, absent at `through_seq`. */
+    /**
+     * Cursor to request when another page remains, absent on the page that
+     * reaches `head_seq`.
+     */
     next_after_seq?: LoonFS.ChangeSeq | undefined;
-    /** Namespace head through which this page was evaluated. */
-    through_seq: LoonFS.ChangeSeq;
 }

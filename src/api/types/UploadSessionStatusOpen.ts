@@ -8,8 +8,8 @@ import type * as LoonFS from "../index.js";
 export interface UploadSessionStatusOpen {
     /** Present for `direct_put` sessions; minted fresh on every read. */
     access?: LoonFS.ObjectTransferAccess | undefined;
-    /** Present for `direct_put` and `direct_multipart` sessions. */
-    checksum_algorithm?: LoonFS.ChecksumAlgorithm | undefined;
+    /** The store's content checksum algorithm. */
+    checksum_algorithm: LoonFS.ChecksumAlgorithm;
     /** Present after content is staged in a `service_proxied` session. */
     content_ref?: LoonFS.ContentRef | undefined;
     /** The Unix-millisecond time after which cleanup may abort the session. */

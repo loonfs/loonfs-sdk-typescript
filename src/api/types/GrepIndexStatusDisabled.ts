@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * No index is maintained for this namespace.
  */
-export interface GrepIndexLifecycleDisabled {
+export interface GrepIndexStatusDisabled {
     /** Namespace the status describes. */
     namespace_id: LoonFS.NamespaceId;
     /** Run number the index allocates next. */
