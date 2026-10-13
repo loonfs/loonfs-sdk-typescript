@@ -35,14 +35,14 @@ export class FilesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      */
     public content(
-        request: LoonFS.GetFileBytesRequest,
+        request: LoonFS.GetFileContentRequest,
         requestOptions?: FilesClient.RequestOptions,
     ): core.HttpResponsePromise<core.BinaryResponse> {
         return core.HttpResponsePromise.fromPromise(this.__content(request, requestOptions));
     }
 
     private async __content(
-        request: LoonFS.GetFileBytesRequest,
+        request: LoonFS.GetFileContentRequest,
         requestOptions?: FilesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
         const { namespace_id: namespaceId, path, revision_no: revisionNo, snapshot_id: snapshotId } = request;
@@ -128,7 +128,7 @@ export class FilesClient {
     }
 
     /**
-     * Authorizes one direct read of a file's content object and returns a short-lived presigned GET capability, the resolved revision, and the content reference the client checks the arriving bytes against. `Range` is outside the signature, so one grant serves ranged, resumed, and parallel reads. Deployments that cannot presign answer 501 `not_supported`; the proxied `GET /filesystem/content` route stays available and is capped by `download.service_proxied.max_content_bytes`.
+     * Returns ordered signed object ranges covering exactly `[start_offset, size_bytes)` of the selected revision. Each range carries its signed headers in `access.headers`, which the client sends unchanged. The client checks each range's length and the complete revision's checksum. A client that resumes asks for a new grant from its offset. Deployments that cannot presign answer 501 `not_supported`; the proxied `GET /filesystem/content` route stays available and is capped by `download.service_proxied.max_content_bytes`.
      *
      * @param {LoonFS.CreateDownloadRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.

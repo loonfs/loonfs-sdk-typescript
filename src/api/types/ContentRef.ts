@@ -3,14 +3,10 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Identifies one piece of immutable file content.
- *
- * The owner namespace and content id name the content object that holds the
- * bytes. A reference is not proof that the object exists: content committed
- * inline has no object until a fold writes it.
+ * Identifies a chain prefix by its owner, content id, size, and checksum.
  */
 export interface ContentRef {
-    /** Mandatory checksum over the complete object. */
+    /** Mandatory checksum over the referenced bytes. */
     checksum: LoonFS.Checksum;
     /** Immutable identity of the content; with the owner, it determines the object key. */
     content_id: LoonFS.ContentId;
@@ -18,6 +14,6 @@ export interface ContentRef {
     kind: LoonFS.ContentRefKind;
     /** Namespace that originally wrote the bytes. */
     owner_namespace_id: LoonFS.NamespaceId;
-    /** Complete byte length of the referenced content. */
+    /** Byte length of the referenced bytes, a prefix of the content object. */
     size_bytes: number;
 }

@@ -250,6 +250,101 @@ export class CheckpointsClient {
     }
 
     /**
+     * Returns one existing pin as the checkpoint listing returns it, including an expired pin that collection has not deleted. A missing id returns checkpoint_not_found.
+     *
+     * @param {LoonFS.maintenance.GetCheckpointRequest} request
+     * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.maintenance.checkpoints.retrieve({
+     *         namespace_id: "namespace_id",
+     *         checkpoint_id: "checkpoint_id"
+     *     })
+     */
+    public retrieve(
+        request: LoonFS.maintenance.GetCheckpointRequest,
+        requestOptions?: CheckpointsClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.Checkpoint> {
+        return core.HttpResponsePromise.fromPromise(this.__retrieve(request, requestOptions));
+    }
+
+    private async __retrieve(
+        request: LoonFS.maintenance.GetCheckpointRequest,
+        requestOptions?: CheckpointsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.Checkpoint>> {
+        const { namespace_id: namespaceId, checkpoint_id: checkpointId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints/${core.url.encodePathParam(checkpointId)}`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.Checkpoint, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/maintenance/namespaces/{namespace_id}/checkpoints/{checkpoint_id}",
+        );
+    }
+
+    /**
      * Deletes a user-owned checkpoint pin. A missing id returns checkpoint_not_found. Garbage collection can reclaim its unreferenced manifest and runs.
      *
      * @param {LoonFS.maintenance.DeleteCheckpointRequest} request

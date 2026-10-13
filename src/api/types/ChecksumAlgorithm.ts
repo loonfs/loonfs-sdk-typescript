@@ -2,7 +2,6 @@
 
 /** A supported checksum algorithm. */
 export const ChecksumAlgorithm = {
-    Sha256: "sha256",
     Crc64Nvme: "crc64nvme",
     Crc32C: "crc32c",
 } as const;

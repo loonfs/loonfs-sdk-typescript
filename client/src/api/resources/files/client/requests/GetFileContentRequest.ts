@@ -5,13 +5,13 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_alias: "namespace_alias",
  *         path: "path"
  *     }
  */
-export interface GetFileBytesRequest {
-    /** Namespace id */
-    namespace_id: string;
+export interface GetFileContentRequest {
+    /** Application namespace alias */
+    namespace_alias: string;
     /** Absolute file path */
     path: string;
     /** Optional prior revision number; cannot be combined with snapshot_id */

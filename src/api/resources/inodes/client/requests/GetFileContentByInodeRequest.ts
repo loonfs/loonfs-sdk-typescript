@@ -9,7 +9,7 @@ import type * as LoonFS from "../../../../index.js";
  *         inode_id: "inode_id"
  *     }
  */
-export interface GetFileBytesByInodeRequest {
+export interface GetFileContentByInodeRequest {
     /** Namespace id */
     namespace_id: string;
     /** File inode ID */

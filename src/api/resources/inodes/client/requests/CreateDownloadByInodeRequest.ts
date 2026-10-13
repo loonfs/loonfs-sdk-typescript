@@ -6,8 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "ino_123",
- *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+ *         inode_id: "ino_123"
  *     }
  */
 export interface CreateDownloadByInodeRequest {
@@ -15,6 +14,11 @@ export interface CreateDownloadByInodeRequest {
     namespace_id: string;
     /** File inode ID */
     inode_id: string;
-    /** Use the file revision captured by this snapshot */
+    /** Read the file revision captured by this snapshot. */
     snapshot_id?: LoonFS.PinId;
+    /**
+     * The first byte the grant reads. Defaults to 0 and must be below the
+     * file's size, except 0 for a file of zero bytes.
+     */
+    start_offset?: number;
 }

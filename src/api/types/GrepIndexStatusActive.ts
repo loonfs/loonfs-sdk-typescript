@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * An index following the change feed through its searchable watermark.
  */
-export interface GrepIndexLifecycleActive {
+export interface GrepIndexStatusActive {
     /** Sequence of the commit at the index cursor. */
     built_through_seq: LoonFS.ChangeSeq;
     /** Namespace the status describes. */
@@ -14,7 +14,7 @@ export interface GrepIndexLifecycleActive {
      * The next change-event offset within `built_through_seq`, or zero when the
      * whole commit is indexed.
      */
-    next_event_index?: number | undefined;
+    next_event_index: number;
     /** Run number the index allocates next. */
     next_run_no: LoonFS.RunNo;
     /** True while a partitioned segment reorganization is in progress. */

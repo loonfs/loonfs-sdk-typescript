@@ -1,13 +1,59 @@
-# SDK 0.4.1
+# SDK 0.5.0
 
-Regenerated from LoonFS main after v0.4.0.
+Regenerated from LoonFS main 76ba9db01.
 
 Breaking changes on the wire:
 
+- Path and inode download responses replace `access` with required ordered
+  `ranges`. Each `DownloadRange` carries `start_offset`, `length`, and its
+  own signed `access`, and together the ranges cover the requested revision
+  suffix across immutable extents. Transfer helpers read them in order and
+  verify the whole value at the end.
+- `create_download_by_inode` no longer takes `revision_no`. It authorizes a
+  read of the current revision of a visible file inode, or of the revision a
+  live snapshot captured when the request names `snapshot_id`. The new
+  `create_revision_download_by_inode` authorizes a read of one retained
+  revision. Both take their options in a JSON body: `snapshot_id` and
+  `start_offset` for the first, and `start_offset` for the second. The inode
+  and revision stay in the path. A request with options in the query string
+  or no body returns 400. The client methods are `inodes.createDownload` and
+  `inodes.createRevisionDownload`.
+- `inodes.content` no longer takes `revision_no`. It calls the new
+  `get_file_content_by_inode`, which reads the current revision of a visible
+  file inode, or the revision a live snapshot captured when the request names
+  `snapshot_id`. `inodes.revisionContent` reads one retained revision
+  through `get_file_revision_content_by_inode`. The path read operation is
+  `get_file_content`, and `files.content` keeps its name. The request types
+  are `LoonFS.GetFileContentRequest`, `LoonFS.GetFileContentByInodeRequest`,
+  and `LoonFS.GetFileRevisionContentByInodeRequest`.
+- Every open upload session names `checksum_algorithm`, including
+  `service_proxied`, and the field is required.
+- `ChecksumAlgorithm` allows only `crc64nvme` and `crc32c`; `sha256` is
+  gone. Every content reference, including inline writes, uploads, copies,
+  restores, and appends, uses the deployment's store algorithm.
+- A store shape offers a fixed set of upload modes: S3-shaped stores offer
+  direct PUT and multipart, GCS-shaped stores offer direct PUT only, and the
+  local store proxies. Helpers select from the advertised capabilities.
+- Appends combine the base checksum with the appended bytes; the
+  `not_supported` answer for a base without a digest is gone, and a base in
+  another algorithm reports `namespace_corrupt`.
+- `ListChangesResponse.through_seq` is `head_seq`, and it holds the
+  namespace head the page was read at on every page. The old field held the
+  head only on the final page. Resume a listing only from `next_after_seq`.
+  A client that resumes from `head_seq` skips changes.
+- Every cursor, binding version, and content token uses a new encoding. The
+  values stay opaque. A value issued before the upgrade is rejected with
+  `invalid_request`. Restart the listing, read the entry again, or read the
+  upload session again to get a new value.
+- The `BindingVersion` pattern is `^[A-Za-z0-9_-]+$` instead of lowercase
+  hex.
 - Metadata maintenance reports rename `wal_flush` to `wal_fold` and
   `reorganize` to `compaction`. The types are `WalFoldStepOutcome` and
-  `CompactionStepOutcome`. The fold outcome `flushed` is `folded`, and the
-  compaction outcome `compaction_required` is `metadata_compaction_required`.
+  `CompactionStepOutcome`. The fold outcome `flushed` is `folded`. The
+  compaction outcome `compaction_required` is `metadata_compaction_required`,
+  and `unit_published` is `bounded_merge_published`. The type is
+  `LoonFS.CompactionStepOutcomeBoundedMergePublished`, and the union member
+  is `LoonFS.CompactionStepOutcome.BoundedMergePublished`.
 - The metadata maintenance request renames `max_wal_tail_segments` to
   `max_wal_tail_objects`. Namespace diagnostics rename `wal_tail_segments` to
   `wal_tail_objects`. GC reports rename the deleted object count
@@ -15,24 +61,31 @@ Breaking changes on the wire:
 - The `Namespace` type is `NamespaceMetadata`.
 - `ErrorDetails` no longer has `max_writer_sessions`. The server has no
   writer session limit.
-- `create_download_by_inode` no longer takes `revision_no`. It authorizes a
-  read of the current revision of a visible file inode, or of the revision a
-  live snapshot captured when the request names `snapshot_id`. The new
-  `create_revision_download_by_inode` authorizes a read of one retained
-  revision. The client methods are `inodes.createDownload` and
-  `inodes.createRevisionDownload`.
-- `inodes.content` no longer takes `revision_no`. It calls the new
-  `get_file_bytes_by_inode`, which reads the current revision of a visible
-  file inode, or the revision a live snapshot captured when the request names
-  `snapshot_id`. `inodes.revisionContent` reads one retained revision
-  through `get_file_revision_bytes_by_inode`.
+- The grep index status types are `GrepIndexStatusActive`,
+  `GrepIndexStatusBackfilling`, and `GrepIndexStatusDisabled`. They replace
+  the three `GrepIndexLifecycle` types.
+- `GrepIndexStatusActive.next_event_index` and
+  `ObjectTransferAccessPresignedUrl.headers` are required. An omitted field
+  always means the field does not apply.
+- The capability limit `snapshot.max_lifetime_ms` is `snapshot.max_age_ms`.
 
 Other changes:
 
+- `snapshots.retrieve` (`get_snapshot`) returns one live snapshot. A missing
+  id returns `snapshot_not_found`, and an expired snapshot returns
+  `snapshot_gone`. Both clients provide it. On the server client,
+  `maintenance.checkpoints.retrieve` (`get_checkpoint`) returns one pin as
+  the checkpoint listing returns it.
+- The proxy forwards `GET` requests for one snapshot, so browser clients can
+  retrieve a snapshot.
 - Namespaces have a naming mode that sets how sibling names compare.
   `NamespaceNaming` is `case_insensitive` or `case_sensitive`, and it is fixed
   when the namespace is created. `CreateNamespaceRequest.naming` is optional
   and defaults to `case_insensitive`. `NamespaceMetadata.naming` is required.
+- Commits accept `append_file` (`FilesystemOperationAppendFile`) and
+  `append_file_by_inode` (`FilesystemOperationAppendFileByInode`). Each one
+  adds 1 byte to 256 KiB of inline content to a file as its next revision.
+  An append over 256 KiB returns 413.
 - Commits accept four inode-addressed operations:
   - `copy_by_inode` (`FilesystemOperationCopyByInode`)
   - `restore_revision_by_inode` (`FilesystemOperationRestoreRevisionByInode`)
@@ -49,11 +102,47 @@ Other changes:
 - `RunMaintenanceRequestRetention` takes an optional target, `to_seq` or
   `cutoff_at_ms`, but not both. Without a target, a `retention` run advances
   the floor to the folded manifest head.
+- The three download grant requests take an optional `start_offset`. A grant
+  covers the revision from `start_offset` to its end.
+- GC reports count deleted temporary objects in the required
+  `DeletedObjectCounts.temporary_objects`.
+- `StoreProbeResponse.run_id` has the type `ProbeRunId`. A run ID is `probe_`
+  followed by 32 lowercase hex digits.
+- The new error code `store_contention` (503) reports that a write to a
+  namespace control object used every compare-and-swap attempt it was
+  allowed. The response includes `Retry-After: 1`, and the client retries
+  it under the same rules as `server_busy`.
+- An error caused by a JSON body field names the field in `param` as a JSON
+  Pointer, such as `/start_offset`. An invalid grep pattern reports `param`
+  as `pattern`.
+- `not_deleted` reports `expected_deletion_seq` and `actual_deletion_seq`
+  when a live deletion exists at a different sequence.
+- The store probe accepts JSON bodies up to 2 MiB.
 - Newer servers may report other event kinds in `FilesystemChange`, and
   clients ignore them. Newer servers may also report other inode kinds in
   `PathEntry` and `TrashEntry`. Only the documentation changed. The generated
   unions are unchanged.
 - Documentation strings follow the current specification wording.
+
+Handwritten layers:
+
+- Downloads validate the range list before any signed request, read the
+  ranges in order, check each range's length, and verify the complete file
+  at the end. Resume pins the revision and verifies the retained prefix plus
+  the downloaded suffix.
+- Downloads keep up to four range responses open: the range being read and
+  up to three requested after it. A file stored in many small extents no
+  longer waits one round trip per range. Each download can use up to four
+  connections. Early exit cancels pending requests and closes held
+  responses. A failed request for a later range is reported when the reader
+  reaches that range, after the earlier bytes are delivered. A failure in
+  the stream aborts the transfer, so range requests in flight reject instead
+  of running on.
+- `files.append` appends 1 byte to 256 KiB to a file in one commit through
+  `append_file`. Both clients provide it.
+- The three languages share helper names, verification order, and error
+  wording. SHA-256 code and optional-algorithm branches are removed.
+- The browser proxy strips the browser's `Host` header.
 
 # SDK 0.4.0
 
