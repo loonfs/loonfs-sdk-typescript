@@ -3,11 +3,12 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Proof that a specific `content_ref` may be used in a later commit.
+ * A signed token that shows a `content_ref` was verified in a completed upload, so a later
+ * commit can use that reference.
  */
 export interface ContentToken {
-    /** Content authorized by this token. */
+    /** The content that this token authorizes. */
     content_ref: LoonFS.ContentRef;
-    /** The opaque server-signed token that clients must not parse. */
+    /** The opaque token that the server signed. Clients must not parse it. */
     token: string;
 }

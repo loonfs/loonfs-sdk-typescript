@@ -10,10 +10,10 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface ForkNamespaceRequest {
-    /** Source namespace id */
+    /** The source namespace ID. */
     namespace_id: string;
-    /** Durable namespace id for the fork target. */
+    /** The durable ID of the new namespace that the fork creates. */
     new_namespace_id: LoonFS.NamespaceId;
-    /** Fork from this live snapshot instead of the current head. */
+    /** A live snapshot to fork from. Without it, the fork starts from the current head. */
     snapshot_id?: LoonFS.PinId;
 }

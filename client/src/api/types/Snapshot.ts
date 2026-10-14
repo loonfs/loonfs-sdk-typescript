@@ -6,16 +6,16 @@ import type * as LoonFS from "../index.js";
  * A live snapshot.
  */
 export interface Snapshot {
-    /** Namespace sequence captured by the snapshot. */
+    /** The namespace sequence that the snapshot captured. */
     captured_seq: LoonFS.ChangeSeq;
-    /** Time the snapshot record was created, in Unix milliseconds. */
+    /** The time the snapshot record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** When the snapshot expires, in Unix milliseconds. */
+    /** The time the snapshot expires, in Unix milliseconds. */
     expires_at_ms: number;
-    /** Snapshot label. */
+    /** The snapshot's label. */
     name: string;
-    /** Namespace whose state the snapshot captured. */
+    /** The namespace whose state the snapshot captured. */
     namespace_id: LoonFS.NamespaceId;
-    /** Snapshot id. */
+    /** The snapshot ID. */
     snapshot_id: LoonFS.PinId;
 }

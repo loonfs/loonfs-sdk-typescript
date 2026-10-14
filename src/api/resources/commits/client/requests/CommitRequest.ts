@@ -15,16 +15,16 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CommitRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Caller-supplied idempotency key for the whole request. */
+    /** The caller's idempotency key for the whole request. */
     commit_id: LoonFS.CommitId;
-    /** The proofs for new external content references in this request. */
+    /** One content token for each uploaded `content_ref` that the request uses. */
     content_tokens?: LoonFS.ContentToken[];
-    /** The caller annotation that forms part of the commit identity. */
+    /** An annotation from the caller. The message is part of the commit's identity. */
     message?: string;
-    /** The non-empty ordered operations to commit atomically. */
+    /** The operations to commit atomically, in order. The list can't be empty. */
     operations: LoonFS.FilesystemOperation[];
-    /** Ordered admission conditions evaluated before any operations. */
+    /** The conditions that the server checks, in order, before it runs any operation. */
     preconditions?: LoonFS.CommitPrecondition[];
 }

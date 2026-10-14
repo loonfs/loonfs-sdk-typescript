@@ -3,19 +3,22 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Change-feed response after a cursor.
+ * The commits after a change feed cursor.
  */
 export interface ListChangesResponse {
-    /** Exclusive cursor supplied by the caller, or the endpoint's initial position. */
+    /**
+     * The exclusive cursor that this page starts after. It's the cursor that the caller supplied,
+     * or the endpoint's initial position.
+     */
     after_seq: LoonFS.ChangeSeq;
-    /** Logical commits after `after_seq`, ordered by ascending namespace sequence. */
+    /** The logical commits after `after_seq`, in ascending namespace sequence order. */
     changes: LoonFS.Commit[];
-    /** Namespace head sequence this page was read at. */
+    /** The namespace head sequence that this page was read at. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace whose ordered commit stream was read. */
+    /** The namespace whose change feed was read. */
     namespace_id: LoonFS.NamespaceId;
     /**
-     * Cursor to request when another page remains, absent on the page that
+     * The cursor for the next page, when another page remains. It's absent on the page that
      * reaches `head_seq`.
      */
     next_after_seq?: LoonFS.ChangeSeq | undefined;

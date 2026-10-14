@@ -3,21 +3,24 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One immutable file revision.
+ * One immutable revision of a file.
  */
 export interface FileRevision {
-    /** Commit ID for this revision. */
+    /** The ID of the commit that created this revision. */
     commit_id: LoonFS.CommitId;
-    /** The commit time in Unix milliseconds; `committed_seq` defines commit order. */
+    /**
+     * The time the revision was committed, in Unix milliseconds. Commit order comes from
+     * `committed_seq`, not from this time.
+     */
     committed_at_ms: number;
-    /** Actor responsible for this revision, as supplied by the application. */
+    /** The actor responsible for this revision, as the application supplied it. */
     committed_by: LoonFS.ActorId;
-    /** Namespace sequence that created this revision. */
+    /** The namespace sequence of the commit that created this revision. */
     committed_seq: LoonFS.ChangeSeq;
-    /** Content stored for this revision. */
+    /** The content stored for this revision. */
     content_ref: LoonFS.ContentRef;
-    /** File inode that owns this revision. */
+    /** The file inode that this revision belongs to. */
     inode_id: LoonFS.InodeId;
-    /** Revision number within the file inode. */
+    /** The revision number within the file inode. */
     revision_no: LoonFS.RevisionNo;
 }

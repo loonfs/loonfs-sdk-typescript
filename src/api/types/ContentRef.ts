@@ -3,17 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Identifies a chain prefix by its owner, content id, size, and checksum.
+ * A reference to a prefix of one content chain, by its owner, content ID, size, and checksum.
  */
 export interface ContentRef {
-    /** Mandatory checksum over the referenced bytes. */
+    /** The required checksum of the referenced bytes. */
     checksum: LoonFS.Checksum;
-    /** Immutable identity of the content; with the owner, it determines the object key. */
+    /**
+     * The immutable identity of the content. The content ID and the owner together determine the
+     * object key.
+     */
     content_id: LoonFS.ContentId;
-    /** Content strategy used by the referenced content. */
+    /** The kind of content reference. The format defines one kind, `blob_v1`. */
     kind: LoonFS.ContentRefKind;
-    /** Namespace that originally wrote the bytes. */
+    /** The namespace that originally wrote the bytes. */
     owner_namespace_id: LoonFS.NamespaceId;
-    /** Byte length of the referenced bytes, a prefix of the content object. */
+    /** The length of the referenced bytes, which are a prefix of the content object. */
     size_bytes: number;
 }

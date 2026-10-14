@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Restores a root administrator.
+ * A job that restores a root administrator.
  */
 export interface RunMaintenanceRequestRecoverAdministrator {
-    /** Principal receiving administrator rights. */
+    /** The principal that receives administrator rights. */
     principal_id: LoonFS.PrincipalId;
 }

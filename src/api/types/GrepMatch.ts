@@ -3,21 +3,21 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One line-oriented match.
+ * One match and the line that contains it.
  */
 export interface GrepMatch {
-    /** Byte offset of the match within the file. */
+    /** The match's byte offset within the file. */
     byte_offset: number;
-    /** Durable identity of the matched file. */
+    /** The matched file's durable inode ID. */
     inode_id: LoonFS.InodeId;
-    /** The matching line, truncated to the server's line cap. */
+    /** The matching line, truncated to the server's maximum line length. */
     line: string;
-    /** One-based line number of the match. */
+    /** The match's line number, counting from 1. */
     line_number: number;
-    /** True when `line` was truncated. */
+    /** Whether the server truncated `line`. */
     line_truncated: boolean;
-    /** The file's absolute path, derived at the snapshot. */
+    /** The file's absolute path in the view that the search read. */
     path: LoonFS.AbsolutePath;
-    /** The matched revision (the newest visible one at the snapshot). */
+    /** The matched revision, which is the file's newest revision visible to the search. */
     revision_no: LoonFS.RevisionNo;
 }

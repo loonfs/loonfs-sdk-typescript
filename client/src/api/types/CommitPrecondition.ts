@@ -3,9 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Admission conditions checked against the candidate's pre-state before its operations.
- * The pre-state head sequence is the last admitted commit's sequence in the batch,
- * or the batch's base head sequence when no earlier candidate was admitted.
+ * A condition that a commit must meet before its operations run.
+ *
+ * The server checks each condition against the state before the commit. When several commits are
+ * applied as one batch, that state's head sequence is the sequence of the last commit admitted
+ * earlier in the batch, or the batch's starting head sequence if no earlier commit was admitted.
  */
 export type CommitPrecondition =
     | LoonFS.CommitPrecondition.AccessRevision

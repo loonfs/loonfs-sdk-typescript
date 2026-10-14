@@ -6,12 +6,12 @@ import type * as LoonFS from "../index.js";
  * A directory was created.
  */
 export interface FilesystemChangeDirectoryCreated {
-    /** Opaque identifier for the binding created by this event. */
+    /** The binding that this event created. The value is opaque. */
     binding_version: LoonFS.BindingVersion;
-    /** User-facing spelling of the new entry. */
+    /** The display name of the new entry. */
     display_name: LoonFS.DisplayName;
-    /** Newly allocated namespace-scoped inode identity. */
+    /** The newly allocated inode, unique within the namespace. */
     inode_id: LoonFS.InodeId;
-    /** Directory the new entry was bound under. */
+    /** The directory that the new entry was bound under. */
     parent_inode_id: LoonFS.InodeId;
 }

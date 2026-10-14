@@ -8,10 +8,13 @@
  *     }
  */
 export interface CreateCheckpointRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** The non-unique label recorded on the checkpoint. */
+    /** A label to record on the checkpoint. Labels don't need to be unique. */
     name: string;
-    /** The checkpoint lifetime in milliseconds. Omit it to keep the checkpoint until it is deleted. */
+    /**
+     * The checkpoint's lifetime in milliseconds. Omit it to keep the checkpoint until it's
+     * deleted.
+     */
     ttl_ms?: number;
 }

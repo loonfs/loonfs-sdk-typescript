@@ -3,16 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Replace the access row of a visible inode. The root inode is a valid
- * target.
+ * An operation that replaces the access row of a visible inode.
+ *
+ * The root inode is a valid target.
  */
 export interface FilesystemOperationUpdateAccessByInode {
-    /** Whether the directory stops inheritance from its ancestors. */
+    /** Whether the directory stops inheriting grants from its ancestors. */
     boundary: boolean;
     /** The access revision that must still be current. */
     expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
-    /** The inode's complete direct grants after this update. */
+    /** Every direct grant that the inode has after this update. */
     grants: LoonFS.AccessGrants;
-    /** Visible file or directory to update. */
+    /** The visible file or directory to update. */
     inode_id: LoonFS.InodeId;
 }

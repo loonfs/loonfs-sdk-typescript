@@ -218,7 +218,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Marks a namespace as deleted. The id can never be created or forked into again.
+     * Marks a namespace as deleted. The namespace ID can never be used again to create or fork a namespace.
      *
      * @param {LoonFS.DeleteNamespaceRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -325,7 +325,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Creates a new namespace from the source current head or a live snapshot.
+     * Creates a new namespace from the source namespace's current head or from a live snapshot.
      *
      * @param {LoonFS.ForkNamespaceRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.

@@ -6,6 +6,6 @@ import type * as LoonFS from "../index.js";
  * Concurrent updates prevented every publication attempt.
  */
 export interface WalFoldStepOutcomeRetriesExhausted {
-    /** Head sequence observed before the step ran. */
+    /** The head sequence observed before the step ran. */
     observed_head_seq: LoonFS.ChangeSeq;
 }

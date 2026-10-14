@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires a visible inode with the content revision the caller read.
+ * A requirement that the inode is visible and has the content revision that the caller read.
  */
 export interface CommitPreconditionFileRevision {
-    /** Content revision observed by the caller. */
+    /** The content revision that the caller observed. */
     expected_revision_no: LoonFS.RevisionNo;
-    /** Inode whose state the caller read. */
+    /** The inode whose state the caller read. */
     inode_id: LoonFS.InodeId;
 }

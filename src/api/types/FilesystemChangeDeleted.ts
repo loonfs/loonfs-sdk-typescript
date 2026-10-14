@@ -6,8 +6,8 @@ import type * as LoonFS from "../index.js";
  * A file or directory subtree was deleted.
  */
 export interface FilesystemChangeDeleted {
-    /** Directory binding removed by the deletion. */
+    /** The directory binding that the deletion removed. */
     deleted_binding: LoonFS.DirectoryBinding;
-    /** Inode at the root of the deleted subtree. */
+    /** The inode at the root of the deleted subtree. */
     inode_id: LoonFS.InodeId;
 }

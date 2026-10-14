@@ -3,14 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Create one directory.
+ * An operation that creates one directory.
  */
 export interface FilesystemOperationCreateDirectory {
     /**
-     * Whether to create missing ancestor directories while requiring the final
-     * component to be new.
+     * Whether the operation creates any missing ancestor directories. The final path component
+     * must still be new.
      */
     parents?: boolean | undefined;
-    /** Absolute destination path, rejected when invalid or already bound. */
+    /**
+     * The absolute path of the new directory. The operation fails if the path is invalid or
+     * already bound.
+     */
     path: LoonFS.AbsolutePath;
 }

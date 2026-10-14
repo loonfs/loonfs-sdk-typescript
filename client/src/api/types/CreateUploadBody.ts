@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Selects the transport for a new upload session.
+ * The transport for a new upload session.
  */
 export type CreateUploadBody =
     | LoonFS.CreateUploadBody.DirectMultipart

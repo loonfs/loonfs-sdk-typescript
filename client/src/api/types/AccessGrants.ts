@@ -3,8 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A validated map from principal to rights, limited to 1,000 entries and
- * 65,536 bytes of principal ids. No entry has an empty set of rights. Decoding
- * rejects repeated principals.
+ * A map from each principal to its rights.
+ *
+ * The map can have at most 1,000 entries and 65,536 bytes of principal IDs, and no entry has an
+ * empty set of rights. Decoding rejects a repeated principal.
  */
 export type AccessGrants = Record<string, LoonFS.AccessRights>;

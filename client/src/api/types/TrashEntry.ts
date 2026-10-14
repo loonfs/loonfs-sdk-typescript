@@ -3,19 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One recoverable deletion and its removed directory binding.
+ * One recoverable deletion and the directory binding that it removed.
  */
 export interface TrashEntry {
-    /** Time of the deletion, in Unix milliseconds. */
+    /** The time of the deletion, in Unix milliseconds. */
     deleted_at_ms: number;
-    /** Directory binding removed by the deletion. */
+    /** The directory binding that the deletion removed. */
     deleted_binding: LoonFS.DirectoryBinding;
-    /** Actor responsible for the deletion. */
+    /** The actor responsible for the deletion. */
     deleted_by: LoonFS.ActorId;
-    /** Commit sequence that identifies this deletion. */
+    /** The commit sequence that identifies this deletion. */
     deletion_seq: LoonFS.ChangeSeq;
-    /** Inode hidden by the deletion. */
+    /** The inode that the deletion hides. */
     inode_id: LoonFS.InodeId;
-    /** Whether the deleted root is a file or a directory; a newer server may report another kind. */
+    /** Whether the deleted root is a file or a directory. A newer server can return another kind. */
     inode_kind: LoonFS.InodeKind;
 }

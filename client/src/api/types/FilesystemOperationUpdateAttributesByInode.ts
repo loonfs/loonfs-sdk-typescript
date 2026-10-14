@@ -3,18 +3,18 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Write and remove attributes on a visible inode.
+ * An operation that writes and removes attributes on a visible inode.
  */
 export interface FilesystemOperationUpdateAttributesByInode {
     /** The attribute revision that must still be current. */
     expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
-    /** Visible file or directory to update. */
+    /** The visible file or directory to update. */
     inode_id: LoonFS.InodeId;
-    /** The attribute keys to remove, including duplicates that validation must reject. */
+    /** The attribute keys to remove. The server rejects a list that repeats a key. */
     remove?: LoonFS.AttributeKey[] | undefined;
     /**
-     * The attributes to write, replacing values for matching keys and leaving
-     * other keys unchanged.
+     * The attributes to write. A new value replaces the current value of the same key, and
+     * other keys don't change.
      */
     set?: Record<string, LoonFS.AttributeValue> | undefined;
 }

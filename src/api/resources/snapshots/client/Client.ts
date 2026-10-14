@@ -23,7 +23,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Lists live snapshots in snapshot-id order. Deleted and expired snapshots are omitted.
+     * Lists live snapshots in snapshot ID order. The list leaves out deleted and expired snapshots.
      *
      * @param {LoonFS.ListSnapshotsRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -251,7 +251,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Returns one live snapshot, as the snapshot listing returns it. A missing id, or the id of a pin that isn't a snapshot, returns snapshot_not_found, and an expired snapshot returns snapshot_gone.
+     * Returns one live snapshot, as the snapshot listing returns it. A missing ID, or the ID of a pin that isn't a snapshot, returns `snapshot_not_found`, and an expired snapshot returns `snapshot_gone`.
      *
      * @param {LoonFS.GetSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -349,7 +349,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Deletes a snapshot pin. A missing id returns snapshot_not_found.
+     * Deletes a snapshot pin. A missing ID returns `snapshot_not_found`.
      *
      * @param {LoonFS.DeleteSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.

@@ -8,8 +8,8 @@
  *     }
  */
 export interface GetUploadRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Upload session id */
+    /** The upload session ID. */
     upload_id: string;
 }

@@ -8,12 +8,12 @@
  *     }
  */
 export interface ListFileRevisionsByInodeRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** File inode ID */
+    /** The file's inode ID. */
     inode_id: string;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** Opaque file-revisions page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
 }

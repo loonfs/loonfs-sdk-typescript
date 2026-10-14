@@ -3,17 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Signed object ranges for one revision.
+ * The signed object ranges for one revision.
  */
 export interface CreateDownloadResponse {
     /** The identity, byte length, and checksum of the revision's bytes. */
     content_ref: LoonFS.ContentRef;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Absolute path as rendered from stored display names. */
+    /** The absolute path, built from the stored display names. */
     path: LoonFS.AbsolutePath;
-    /** The revision's bytes from the requested offset, in order. */
+    /** The ranges that cover the revision's bytes from the requested offset, in order. */
     ranges: LoonFS.DownloadRange[];
-    /** Revision the capability reads, resolved from the request. */
+    /** The revision that the capability reads, as resolved from the request. */
     revision_no: LoonFS.RevisionNo;
 }

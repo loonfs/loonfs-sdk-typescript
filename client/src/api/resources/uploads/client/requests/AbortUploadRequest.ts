@@ -10,6 +10,6 @@
 export interface AbortUploadRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Upload session id */
+    /** The upload session ID. */
     upload_id: string;
 }

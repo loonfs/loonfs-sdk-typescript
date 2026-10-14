@@ -6,16 +6,16 @@ import type * as LoonFS from "../index.js";
  * A file and its first revision were created.
  */
 export interface FilesystemChangeFileCreated {
-    /** Opaque identifier for the binding created by this event. */
+    /** The binding that this event created. The value is opaque. */
     binding_version: LoonFS.BindingVersion;
-    /** Content of the first revision. */
+    /** The content of the first revision. */
     content_ref: LoonFS.ContentRef;
-    /** User-facing spelling of the new entry. */
+    /** The display name of the new entry. */
     display_name: LoonFS.DisplayName;
-    /** Newly allocated namespace-scoped inode identity. */
+    /** The newly allocated inode, unique within the namespace. */
     inode_id: LoonFS.InodeId;
-    /** Directory the new entry was bound under. */
+    /** The directory that the new entry was bound under. */
     parent_inode_id: LoonFS.InodeId;
-    /** First revision number. */
+    /** The file's first revision number. */
     revision_no: LoonFS.RevisionNo;
 }

@@ -7,6 +7,6 @@
  *     }
  */
 export interface GetGrepIndexRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
 }

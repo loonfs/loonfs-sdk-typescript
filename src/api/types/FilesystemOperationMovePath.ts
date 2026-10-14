@@ -3,17 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Move one path to another path.
+ * An operation that moves a file or directory from one path to another.
  */
 export interface FilesystemOperationMovePath {
-    /** Whether an existing destination file may be replaced. */
+    /** Whether the operation can replace an existing destination file. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** Absolute destination whose parent must be visible and writable. */
+    /** The absolute destination path. The destination's parent must be visible and writable. */
     destination_path: LoonFS.AbsolutePath;
-    /** With `replace` behavior, the destination inode required by the request. */
+    /** The inode that the destination path must contain. It applies only with `replace` behavior. */
     expected_destination_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode precondition, the required content revision. */
+    /**
+     * The content revision that must be the destination file's current revision. It applies only
+     * with `replace` behavior and requires `expected_destination_inode_id`.
+     */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Absolute source path that must resolve to a visible inode. */
+    /** The absolute source path, which must resolve to a visible inode. */
     source_path: LoonFS.AbsolutePath;
 }

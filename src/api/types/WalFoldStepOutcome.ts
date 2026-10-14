@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What the WAL fold part of a maintenance pass did.
+ * What the WAL fold step of a maintenance pass did.
  */
 export type WalFoldStepOutcome =
     | LoonFS.WalFoldStepOutcome.AlreadyPublished

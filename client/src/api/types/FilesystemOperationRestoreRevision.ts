@@ -3,11 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Restore an older revision as the current revision for a path.
+ * An operation that restores an older revision as the current revision of the file at a path.
  */
 export interface FilesystemOperationRestoreRevision {
-    /** Absolute path that must resolve to a visible file. */
+    /** The absolute path, which must resolve to a visible file. */
     path: LoonFS.AbsolutePath;
-    /** Existing historical revision whose content will be copied into a new current revision. */
+    /**
+     * An existing older revision. The operation copies its content into a new current
+     * revision.
+     */
     source_revision_no: LoonFS.RevisionNo;
 }

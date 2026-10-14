@@ -3,64 +3,75 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Optional machine-readable identifiers and state for an `ErrorResponse`.
+ * The machine-readable identifiers and state that explain an error response.
+ *
+ * Every field is optional.
  */
 export interface ErrorDetails {
-    /** The Unix-millisecond time when the current writer acquired its epoch, when available. */
+    /**
+     * The time the current writer acquired its epoch, in Unix milliseconds. It's present when the
+     * current manifest records a writer.
+     */
     active_acquired_at_ms?: number | undefined;
-    /** Epoch that currently owns the namespace. */
+    /** The namespace's current writer epoch. */
     active_writer_epoch?: LoonFS.WriterEpoch | undefined;
-    /** The writer ID recorded for the current epoch, when available. */
+    /** The writer of the current epoch. It's present when the current manifest records a writer. */
     active_writer_id?: LoonFS.WriterId | undefined;
-    /** Access revision that is actually current for the inode. */
+    /** The access revision that is actually current for the inode. */
     actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
-    /** Attribute revision that is actually current for the inode. */
+    /** The attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
-    /** Current binding token. */
+    /** The current binding token. */
     actual_binding_version?: LoonFS.BindingVersion | undefined;
-    /** Deletion sequence actually active for the inode. */
+    /** The deletion sequence that is actually active for the inode. */
     actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
-    /** The actual namespace head sequence. */
+    /** The namespace's actual head sequence. */
     actual_head_seq?: LoonFS.ChangeSeq | undefined;
-    /** The path actually contained this inode. */
+    /** The inode that the path actually contained. */
     actual_inode_id?: LoonFS.InodeId | undefined;
-    /** Revision that is actually current; absent when the inode has none. */
+    /** The revision that is actually current. It's absent when the inode has no current revision. */
     actual_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Change-feed cursor the request asked to resume after. */
+    /** The `after_seq` value from the change feed request. */
     after_seq?: LoonFS.ChangeSeq | undefined;
-    /** Idempotency key of the commit the error concerns. */
+    /** The idempotency key of the commit that the error is about. */
     commit_id?: LoonFS.CommitId | undefined;
-    /** The fingerprint of the mutation that landed under `commit_id`, present with `committed_seq`. */
+    /**
+     * The fingerprint of the mutation that was committed under `commit_id`. This field is present
+     * exactly when `committed_seq` is present.
+     */
     committed_fingerprint?: string | undefined;
-    /** The sequence where this commit ID already landed, when recorded by a durable receipt. */
+    /**
+     * The sequence that `commit_id` was already committed at. The server includes it when a
+     * durable commit receipt records that commit.
+     */
     committed_seq?: LoonFS.ChangeSeq | undefined;
-    /** Access revision the request expected to be current. */
+    /** The access revision that the request expected to be current. */
     expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
-    /** Attribute revision the request expected to be current. */
+    /** The attribute revision that the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
-    /** Opaque binding token supplied by the request. */
+    /** The opaque binding token that the request supplied. */
     expected_binding_version?: LoonFS.BindingVersion | undefined;
-    /** Deletion sequence the undelete expected to be active. */
+    /** The deletion sequence that the undelete expected to be active. */
     expected_deletion_seq?: LoonFS.ChangeSeq | undefined;
-    /** The head sequence required by the request. */
+    /** The head sequence that the request required. */
     expected_head_seq?: LoonFS.ChangeSeq | undefined;
-    /** The request expected the path to contain this inode. */
+    /** The inode that the request expected the path to contain. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** Revision the request expected to be current. */
+    /** The revision that the request expected to be current. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Epoch the failing writer session held when it was displaced. */
+    /** The epoch of the failed writer session at the time another writer displaced it. */
     fenced_writer_epoch?: LoonFS.WriterEpoch | undefined;
-    /** Inode the failed precondition or operation targeted. */
+    /** The inode that the failed precondition or operation targeted. */
     inode_id?: LoonFS.InodeId | undefined;
     /** The deleted namespace that caused the operation to fail. */
     namespace_id?: LoonFS.NamespaceId | undefined;
     /** The index of the failed operation in the request. */
     operation_index?: number | undefined;
-    /** Zero-based position of the failed request precondition. */
+    /** The zero-based position of the failed request precondition. */
     precondition_index?: number | undefined;
     /**
-     * Oldest position a change feed can resume after. The feed returns
-     * changes above it.
+     * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
+     * or any later one, and the feed returns the changes committed after it.
      */
     retention_floor_seq?: LoonFS.ChangeSeq | undefined;
 }

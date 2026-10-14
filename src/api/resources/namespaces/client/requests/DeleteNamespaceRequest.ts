@@ -9,8 +9,8 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface DeleteNamespaceRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Delete only if the namespace head is still at this sequence */
+    /** The head sequence that the namespace must still have for the delete to succeed. */
     expected_head_seq?: LoonFS.ChangeSeq;
 }

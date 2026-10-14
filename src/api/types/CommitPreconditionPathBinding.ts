@@ -3,13 +3,16 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires the path to retain the binding the caller read.
+ * A requirement that the path still has the binding that the caller read.
  */
 export interface CommitPreconditionPathBinding {
-    /** Detects moves away and back. */
+    /**
+     * The binding version that the path must also have, if set. This check detects an inode
+     * that was moved away from the path and then back.
+     */
     expected_binding_version?: LoonFS.BindingVersion | undefined;
-    /** Inode required at the path. */
+    /** The inode that the path must be bound to. */
     expected_inode_id: LoonFS.InodeId;
-    /** Absolute path to check, including the root. */
+    /** The absolute path to check, which can be the root. */
     path: LoonFS.AbsolutePath;
 }

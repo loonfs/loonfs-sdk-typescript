@@ -3,15 +3,15 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One trash listing page: the namespace's recoverable deletions.
+ * One page of the namespace's recoverable deletions.
  */
 export interface ListTrashResponse {
-    /** Recoverable deletions, oldest deletion first. */
+    /** The recoverable deletions, oldest first. */
     entries: LoonFS.TrashEntry[];
-    /** Head sequence this page was evaluated at. */
+    /** The head sequence that this page was evaluated at. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Present when another page follows. */
+    /** The cursor for the next page. It's present when another page follows. */
     next_cursor?: string | undefined;
 }
