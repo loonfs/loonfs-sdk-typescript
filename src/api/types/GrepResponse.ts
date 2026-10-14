@@ -3,19 +3,22 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One content-search page.
+ * One page of content search results.
  */
 export interface GrepResponse {
-    /** Commits at or below this sequence were answered from the index. */
+    /**
+     * The last sequence that the index covers. The server searched the commits at or below this
+     * sequence through the index.
+     */
     built_through_seq: LoonFS.ChangeSeq;
-    /** The namespace head sequence used to evaluate this page. */
+    /** The namespace head sequence that the server used to evaluate this page. */
     head_seq: LoonFS.ChangeSeq;
-    /** The matches in ascending `(inode_id, byte_offset)` order. */
+    /** The matches, in ascending `(inode_id, byte_offset)` order. */
     matches: LoonFS.GrepMatch[];
-    /** Namespace searched. */
+    /** The namespace that was searched. */
     namespace_id: LoonFS.NamespaceId;
-    /** Present when another page follows. */
+    /** The cursor for the next page. It's present when another page follows. */
     next_cursor?: string | undefined;
-    /** Whether revisions after `built_through_seq` were scanned exhaustively. */
+    /** Whether the server scanned every revision after `built_through_seq`. */
     tail_scanned: boolean;
 }

@@ -3,8 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A set of rights. Encoded as distinct names in `read`, `history`, `write`,
- * `create`, `remove`, `share`, `manage`, `admin` order. Decoding accepts any
- * order and rejects repeated names.
+ * A set of rights.
+ *
+ * The set is encoded as distinct right names in `read`, `history`, `write`, `create`, `remove`,
+ * `share`, `manage`, `admin` order. Decoding accepts any order and rejects a repeated name.
  */
 export type AccessRights = LoonFS.AccessRight[];

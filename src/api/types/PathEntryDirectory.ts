@@ -3,42 +3,42 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A directory without a revision payload.
+ * A directory, which has no revision fields.
  */
 export interface PathEntryDirectory {
     /**
-     * The complete attribute map at `attributes_revision_no`, including an empty map
-     * for the initial state.
+     * The complete attribute map at `attributes_revision_no`. The map is empty before the first
+     * update.
      */
     attributes?: LoonFS.Attributes | undefined;
-    /** The attribute revision this projection represents. */
+    /** The attribute revision that these attributes come from. */
     attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /**
-     * The latest attribute update time in Unix milliseconds, absent for the
-     * initial empty state.
+     * The time of the latest attribute update, in Unix milliseconds. It's absent before the first
+     * update.
      */
     attributes_updated_at_ms?: number | undefined;
-    /**
-     * The actor responsible for the latest attribute update, absent for the
-     * initial empty state.
-     */
+    /** The actor responsible for the latest attribute update. It's absent before the first update. */
     attributes_updated_by?: LoonFS.ActorId | undefined;
-    /** The opaque ID for the current parent and name binding, absent for the namespace root. */
+    /**
+     * The opaque ID of the current binding of the entry's parent and name. It's absent for the
+     * namespace root.
+     */
     binding_version?: LoonFS.BindingVersion | undefined;
-    /** The inode creation time in Unix milliseconds. */
+    /** The time the inode was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** Actor that created this inode, as supplied by the application. */
+    /** The actor that created this inode, as the application supplied it. */
     created_by: LoonFS.ActorId;
-    /** Stored display name for this path component, absent for the nameless root. */
+    /** The stored display name of this path component. It's absent for the root, which has no name. */
     display_name?: LoonFS.DisplayName | undefined;
-    /** Namespace head sequence this answer was read from. */
+    /** The namespace head sequence that this response was read at. */
     head_seq: LoonFS.ChangeSeq;
-    /** Stable inode identity for this item. */
+    /** The entry's stable inode ID. */
     inode_id: LoonFS.InodeId;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Parent directory inode, absent for the root. */
+    /** The parent directory's inode. It's absent for the root. */
     parent_inode_id?: LoonFS.InodeId | undefined;
-    /** Absolute path as rendered from stored display names. */
+    /** The absolute path, built from the stored display names. */
     path: LoonFS.AbsolutePath;
 }

@@ -3,19 +3,22 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Final: the content is durable and verified.
+ * A session that ended with durable, verified content.
  */
 export interface UploadSessionStatusCompleted {
-    /** Unix-millisecond stamp of the completion. */
+    /** The time the session completed, in Unix milliseconds. */
     completed_at_ms: number;
-    /** Verified content selected by this session. */
+    /** The verified content that the session completed with. */
     content_ref: LoonFS.ContentRef;
-    /** Fresh proof for a later commit, absent after the token minting window closes. */
+    /**
+     * A new content token, which a later commit can use to reference the content. It's absent
+     * after the window for issuing tokens closes.
+     */
     content_token?: LoonFS.ContentToken | undefined;
-    /** Transport selected when the session began. */
+    /** The transport that was selected when the session began. */
     mode: LoonFS.UploadMode;
-    /** Namespace that owns the session. */
+    /** The namespace that the session belongs to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Session represented by this view. */
+    /** The upload session ID. */
     upload_id: LoonFS.UploadId;
 }

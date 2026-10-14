@@ -12,7 +12,7 @@ import type * as LoonFS from "../../../../../../index.js";
  *     }
  */
 export interface CreateRunsRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
     body: LoonFS.RunMaintenanceRequest;
 }

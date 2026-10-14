@@ -10,10 +10,10 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface GetFileContentByInodeRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** File inode ID */
+    /** The file's inode ID. */
     inode_id: string;
-    /** Use the file revision captured by this snapshot */
+    /** The snapshot whose captured file revision to read. */
     snapshot_id?: LoonFS.PinId;
 }

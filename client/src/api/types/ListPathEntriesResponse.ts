@@ -3,17 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One directory listing and the namespace head used to read it.
+ * One page of a directory's entries, with the namespace head that the read used.
  */
 export interface ListPathEntriesResponse {
-    /** The directory entries in canonical name-key order. */
+    /** The directory entries, in canonical name key order. */
     entries: LoonFS.PathEntry[];
-    /** Namespace head sequence this listing was read from. */
+    /** The namespace head sequence that this listing was read at. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Cursor for the next page, if more entries remain. */
+    /** The cursor for the next page, if more entries remain. */
     next_cursor?: string | undefined;
-    /** Absolute path of the listed directory. */
+    /** The absolute path of the listed directory. */
     path: LoonFS.AbsolutePath;
 }

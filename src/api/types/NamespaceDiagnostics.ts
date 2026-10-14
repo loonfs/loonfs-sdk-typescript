@@ -3,30 +3,36 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Namespace state and storage details used by maintenance.
+ * A namespace's state and the storage details that maintenance uses.
  */
 export interface NamespaceDiagnostics {
-    /** Time the namespace was created, in Unix milliseconds. */
+    /** The time the namespace was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** Actor that created the namespace, as supplied by the application. */
+    /** The actor that created the namespace, as the application supplied it. */
     created_by: LoonFS.ActorId;
-    /** The namespace's current manifest number. */
+    /** The number of the namespace's current manifest. */
     current_manifest_no?: LoonFS.ManifestNo | undefined;
-    /** Present only for a fork: the source it was forked from. */
+    /**
+     * The namespace and sequence this namespace was forked from. Only a forked namespace has this
+     * field.
+     */
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
-    /** Current visible namespace sequence. */
+    /** The sequence of the namespace's newest visible commit. */
     head_seq: LoonFS.ChangeSeq;
-    /** Number of user checkpoints, including expired records awaiting collection. */
+    /**
+     * The number of user checkpoints, including expired records that garbage collection hasn't
+     * deleted yet.
+     */
     live_checkpoints: number;
-    /** Number of snapshots that had not expired when diagnostics began. */
+    /** The number of snapshots that hadn't expired when the diagnostics read began. */
     live_snapshots: number;
-    /** Namespace ID. */
+    /** The namespace ID. */
     namespace_id: LoonFS.NamespaceId;
     /**
-     * Oldest position a change feed can resume after. The feed returns
-     * changes above it.
+     * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
+     * or any later one, and the feed returns the changes committed after it.
      */
     retention_floor_seq: LoonFS.ChangeSeq;
-    /** Number of visible WAL objects after the current manifest. */
+    /** The number of visible WAL objects after the current manifest. */
     wal_tail_objects: number;
 }

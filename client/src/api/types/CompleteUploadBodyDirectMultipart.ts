@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Complete a direct multipart upload.
+ * The completion of a direct multipart upload.
  */
 export interface CompleteUploadBodyDirectMultipart {
-    /** Expected length and checksum of the assembled object. */
+    /** The expected length and checksum of the assembled object. */
     content: LoonFS.UploadContentClaim;
-    /** Uploaded parts in ascending part order. */
+    /** The uploaded parts, in ascending part order. */
     parts: LoonFS.CompletedUploadPart[];
 }

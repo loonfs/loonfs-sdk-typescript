@@ -117,7 +117,7 @@ export class FilesClient {
     }
 
     /**
-     * Returns ordered signed object ranges covering exactly `[start_offset, size_bytes)` of the selected revision. Each range carries its signed headers in `access.headers`, which the client sends unchanged. The client checks each range's length and the complete revision's checksum. A client that resumes asks for a new grant from its offset. Deployments that cannot presign answer 501 `not_supported`; the proxied `GET /filesystem/content` route stays available and is capped by `download.service_proxied.max_content_bytes`.
+     * Returns ordered, signed object ranges that cover exactly `[start_offset, size_bytes)` of the selected revision. Each range includes its signed headers in `access.headers`, and the client sends them unchanged. The client checks each range's length and the complete revision's checksum. To resume a download, a client asks for a new grant from its current offset. A deployment that can't presign URLs returns 501 `not_supported`. The proxied `GET /filesystem/content` route is still available, up to the `download.service_proxied.max_content_bytes` limit.
      *
      * @param {LoonFS.CreateDownloadRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -451,7 +451,7 @@ export class FilesClient {
     }
 
     /**
-     * Resolves the current path to a file inode and returns revisions for that file. If the file could be renamed, use the inode revision API for stable identity.
+     * Resolves the current path to a file inode and returns that file's revisions. If the file might be renamed, use the inode revisions route, which identifies the file by a stable ID.
      *
      * @param {LoonFS.ListFileRevisionsRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -571,7 +571,7 @@ export class FilesClient {
     }
 
     /**
-     * Searches file content with a regular expression, accelerated by the namespace's grep index. Matches are verified against the real pattern and returned in ascending `(inode_id, byte_offset)` order; revisions committed after the index watermark are scanned exhaustively unless `allow_stale` skips them. Requires this deployment to serve grep and the namespace to carry a materialized active grep index.
+     * Searches file content with a regular expression, using the namespace's grep index to narrow the candidates. The server checks each candidate against the full pattern and returns matches in ascending `(inode_id, byte_offset)` order. It scans every revision committed after the index watermark, unless `allow_stale` skips them. The deployment must serve grep, and the namespace must have a materialized, active grep index.
      *
      * @param {LoonFS.GrepRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.

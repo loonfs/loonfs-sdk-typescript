@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Response carrying one capability per requested part.
+ * One capability for each requested part.
  */
 export interface SignUploadPartsResponse {
-    /** Namespace that owns the upload session. */
+    /** The namespace that the upload session belongs to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Capabilities in the order the request asked for them. */
+    /** The capabilities, in the order that the request asked for them. */
     parts: LoonFS.SignedUploadPart[];
-    /** Session the parts belong to. */
+    /** The session that the parts belong to. */
     upload_id: LoonFS.UploadId;
 }

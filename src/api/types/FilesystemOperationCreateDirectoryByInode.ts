@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Create a directory under an existing parent inode.
+ * An operation that creates a directory under an existing parent inode.
  */
 export interface FilesystemOperationCreateDirectoryByInode {
-    /** New directory name. */
+    /** The name of the new directory. */
     display_name: LoonFS.DisplayName;
-    /** Parent directory. */
+    /** The parent directory. */
     parent_inode_id: LoonFS.InodeId;
 }

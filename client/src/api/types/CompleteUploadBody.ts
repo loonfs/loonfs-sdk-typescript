@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Completes an upload using the mode that started it.
+ * A request to complete an upload, in the mode that started it.
  */
 export type CompleteUploadBody =
     | LoonFS.CompleteUploadBody.DirectMultipart

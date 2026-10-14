@@ -6,6 +6,6 @@ import type * as LoonFS from "../index.js";
  * The step folded the WAL tail and published the next current manifest.
  */
 export interface WalFoldStepOutcomeFolded {
-    /** Sequence covered by the published manifest. */
+    /** The last sequence that the published manifest includes. */
     manifest_head_seq: LoonFS.ChangeSeq;
 }

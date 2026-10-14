@@ -9,22 +9,22 @@
  *     }
  */
 export interface GrepRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Pattern in the Rust `regex` crate's dialect. Its UTF-8 encoding must be at most 1024 bytes. */
+    /** The search pattern, in the Rust `regex` crate's syntax. Its UTF-8 encoding must be at most 1024 bytes. */
     pattern: string;
-    /** Match case-insensitively (`true` or `false`). Defaults to `false`. */
+    /** Whether matching ignores case. The default is `false`. */
     case_insensitive?: boolean;
-    /** Complete absolute path used to restrict matches. Cannot be combined with `inode_id`. */
+    /** A complete absolute path that limits matches to its descendants. It can't be combined with `inode_id`. */
     path_prefix?: string;
-    /** Inode whose descendants restrict matches. Cannot be combined with `path_prefix`. */
+    /** An inode that limits matches to its descendants. It can't be combined with `path_prefix`. */
     inode_id?: string;
-    /** Permit a capped exhaustive scan when the pattern has no required grams (`true` or `false`). Defaults to `false`. */
+    /** Whether a pattern with no required literal bytes can use a capped exhaustive scan. The default is `false`. */
     allow_scan?: boolean;
-    /** Return indexed-only results when the unindexed tail exceeds the scan budget (`true` or `false`). Defaults to `false`. */
+    /** Whether the server returns results from the index alone when the unindexed tail exceeds the scan budget. The default is `false`. */
     allow_stale?: boolean;
-    /** Maximum matches per page */
+    /** The maximum number of matches per page. */
     limit?: number;
-    /** Opaque grep page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
 }

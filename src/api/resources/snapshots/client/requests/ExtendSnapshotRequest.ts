@@ -11,10 +11,10 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface ExtendSnapshotRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Snapshot id */
+    /** The snapshot ID. */
     snapshot_id: LoonFS.PinId;
-    /** Requested lifetime from the server's current time, in milliseconds. */
+    /** The new lifetime in milliseconds, counted from the server's current time. */
     ttl_ms: number;
 }

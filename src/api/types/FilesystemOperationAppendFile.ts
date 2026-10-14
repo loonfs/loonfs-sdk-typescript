@@ -3,15 +3,15 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Add bytes to the end of a file as its next revision.
+ * An operation that adds bytes to the end of a file as its next revision.
  */
 export interface FilesystemOperationAppendFile {
     /** The inode that the path must still resolve to. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** With an inode precondition, the content revision that must still be current. */
+    /** The content revision that must still be current. It requires `expected_inode_id`. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
-    /** The bytes to add as base64, from 1 byte to 256 KiB. */
+    /** The bytes to add, as base64, from 1 byte to 256 KiB. */
     inline_content: string;
-    /** Absolute path that must resolve to a visible file. */
+    /** The absolute path, which must resolve to a visible file. */
     path: LoonFS.AbsolutePath;
 }

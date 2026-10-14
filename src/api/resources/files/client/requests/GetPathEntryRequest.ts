@@ -11,12 +11,12 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface GetPathEntryRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Absolute filesystem path */
+    /** The absolute path to read. */
     path: string;
-    /** Project the inode's attribute map and revision (`true` or `false`). Defaults to `true`: a stat answers for one path and a map is capped at 64 KiB. */
+    /** Whether the response includes the inode's attribute map and attribute revision. The default is `true`, because a stat reads one path and a map is at most 64 KiB. */
     include_attributes?: boolean;
-    /** Use the path state captured by this snapshot */
+    /** The snapshot whose captured path state to read. */
     snapshot_id?: LoonFS.PinId;
 }

@@ -3,13 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Delete an inode if its current binding matches.
+ * An operation that deletes an inode if its current binding version is
+ * `expected_binding_version`.
  */
 export interface FilesystemOperationDeleteByInode {
-    /** Whether a non-empty directory may be tombstoned recursively. */
+    /** Whether the operation can recursively delete a non-empty directory. */
     behavior?: LoonFS.DeleteDirectoryBehavior | undefined;
-    /** Binding version required for the delete. */
+    /** The binding version that the inode must currently have for the delete to succeed. */
     expected_binding_version: LoonFS.BindingVersion;
-    /** Inode to delete. */
+    /** The inode to delete. */
     inode_id: LoonFS.InodeId;
 }

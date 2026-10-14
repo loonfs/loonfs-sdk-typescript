@@ -3,17 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A short-lived capability to read one inode revision.
+ * A short-lived capability to read one revision of an inode.
  */
 export interface CreateDownloadByInodeResponse {
-    /** Content identity, size, and checksum. */
+    /** The content's identity, size, and checksum. */
     content_ref: LoonFS.ContentRef;
-    /** File inode being read. */
+    /** The file inode being read. */
     inode_id: LoonFS.InodeId;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** The revision's bytes from the requested offset, in order. */
+    /** The ranges that cover the revision's bytes from the requested offset, in order. */
     ranges: LoonFS.DownloadRange[];
-    /** Revision being read. */
+    /** The revision being read. */
     revision_no: LoonFS.RevisionNo;
 }

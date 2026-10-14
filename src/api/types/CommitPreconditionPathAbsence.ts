@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires no visible entry at the full path.
+ * A requirement that no visible entry exists at the full path.
  */
 export interface CommitPreconditionPathAbsence {
-    /** Absolute path to check, including the root. */
+    /** The absolute path to check, which can be the root. */
     path: LoonFS.AbsolutePath;
 }

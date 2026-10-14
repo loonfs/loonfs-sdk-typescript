@@ -10,25 +10,25 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CreateDownloadRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Absolute path of the file to read. */
+    /** The absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /**
-     * Revision to read. Omit it for the path's current revision.
-     * Cannot be combined with `snapshot_id`.
+     * The revision to read. Omit it to read the path's current revision. It can't be combined with
+     * `snapshot_id`.
      */
     revision_no?: LoonFS.RevisionNo;
     /**
-     * Read the file revision captured by this snapshot.
-     * Cannot be combined with `revision_no`.
+     * A snapshot to read the file from. The download reads the revision that the snapshot
+     * captured. It can't be combined with `revision_no`.
      */
     snapshot_id?: LoonFS.PinId;
     /**
-     * The first byte the grant reads. It names `[start_offset, size_bytes)`
-     * of the revision; a client that resumes asks for a new grant from the
-     * bytes it holds. Must be below the revision's size, except 0 for a
-     * revision of zero bytes.
+     * The first byte that the grant reads. The grant covers the revision's bytes from
+     * `start_offset` up to `size_bytes`, so a client that resumes a download asks for a new grant
+     * that starts after the bytes it already has. The offset must be less than the revision's
+     * size. For a revision of zero bytes, it must be 0.
      */
     start_offset?: number;
 }

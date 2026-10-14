@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires no visible entry with the name under the parent inode.
+ * A requirement that no visible entry with this name exists under the parent inode.
  */
 export interface CommitPreconditionNameAbsence {
-    /** Name to check. */
+    /** The name to check. */
     display_name: LoonFS.DisplayName;
-    /** Directory to check. */
+    /** The directory to check. */
     parent_inode_id: LoonFS.InodeId;
 }

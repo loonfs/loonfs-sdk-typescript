@@ -3,15 +3,15 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Final: the session selected no content and its object is gone.
+ * A session that was aborted before it completed. Its object no longer exists.
  */
 export interface UploadSessionStatusAborted {
-    /** Unix-millisecond stamp of the abort. */
+    /** The time the session was aborted, in Unix milliseconds. */
     aborted_at_ms: number;
-    /** Transport selected when the session began. */
+    /** The transport that was selected when the session began. */
     mode: LoonFS.UploadMode;
-    /** Namespace that owns the session. */
+    /** The namespace that the session belongs to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Session represented by this view. */
+    /** The upload session ID. */
     upload_id: LoonFS.UploadId;
 }

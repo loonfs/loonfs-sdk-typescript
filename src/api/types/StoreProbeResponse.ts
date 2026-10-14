@@ -3,11 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The ordered results from one store contract probe.
+ * The results of one store contract probe, in order.
  */
 export interface StoreProbeResponse {
-    /** The check results in execution order. */
+    /** The check results, in the order that the checks ran. */
     checks: LoonFS.StoreProbeCheckResult[];
-    /** The server-generated label for this probe run and its objects. */
+    /**
+     * The ID of this probe run. The server generates the ID and writes the probe's temporary
+     * objects under it.
+     */
     run_id: LoonFS.ProbeRunId;
 }

@@ -3,19 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The selected run window was replaced in a published manifest.
+ * A streaming compaction merged the selected window and published the next manifest.
  */
 export interface MetadataCompactionOutcomePublished {
-    /** Input bytes read by the compaction. */
+    /** The input bytes that the compaction read. */
     input_bytes: number;
-    /** Manifest published by the compaction. */
+    /** The manifest that the compaction published. */
     manifest_no: LoonFS.ManifestNo;
-    /** Output bytes written by the compaction. */
+    /** The output bytes that the compaction wrote. */
     output_bytes: number;
-    /** Output segments written by the compaction. */
+    /** The output segments that the compaction wrote. */
     output_segments: number;
-    /** Rows read by the compaction. */
+    /** The rows that the compaction read. */
     rows_read: number;
-    /** Rows written by the compaction. */
+    /** The rows that the compaction wrote. */
     rows_written: number;
 }

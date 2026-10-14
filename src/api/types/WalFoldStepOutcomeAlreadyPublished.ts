@@ -3,11 +3,12 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The current manifest already covered the captured WAL tail; this step published no manifest.
+ * The current manifest already included the captured WAL tail, so this step didn't publish a
+ * manifest.
  */
 export interface WalFoldStepOutcomeAlreadyPublished {
-    /** Sequence this step attempted to fold through. */
+    /** The sequence that this step tried to fold through. */
     attempted_seq: LoonFS.ChangeSeq;
-    /** The namespace's current manifest number. */
+    /** The number of the namespace's current manifest. */
     current_manifest_no: LoonFS.ManifestNo;
 }

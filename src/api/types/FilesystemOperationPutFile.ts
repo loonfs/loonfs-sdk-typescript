@@ -3,20 +3,27 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Create or replace one file from uploaded or inline content.
- * Requires exactly one of `content_ref` and `inline_content`.
+ * An operation that creates or replaces one file from uploaded or inline content.
+ *
+ * The operation requires exactly one of `content_ref` and `inline_content`.
  */
 export interface FilesystemOperationPutFile {
-    /** Whether an existing file may receive a new revision instead of causing a conflict. */
+    /** Whether the operation adds a new revision to an existing file or fails with a conflict. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** Uploaded content covered by a token; mutually exclusive with `inline_content`. */
+    /**
+     * The uploaded content, which a content token must cover. Set this field or
+     * `inline_content`, but not both.
+     */
     content_ref?: LoonFS.ContentRef | undefined;
-    /** With `replace` behavior, the request requires the path to contain this inode. */
+    /** The inode that the path must contain. It applies only with `replace` behavior. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode precondition, the request requires this content revision. */
+    /**
+     * The content revision that must be the file's current revision. It applies only with
+     * `replace` behavior and requires `expected_inode_id`.
+     */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Complete file bytes as base64; mutually exclusive with `content_ref`. */
+    /** The complete file bytes as base64. Set this field or `content_ref`, but not both. */
     inline_content?: string | undefined;
-    /** Absolute destination path; missing ancestors are created automatically. */
+    /** The absolute destination path. The operation creates any missing ancestor directories. */
     path: LoonFS.AbsolutePath;
 }

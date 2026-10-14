@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * One filesystem operation.
  *
- * Unknown fields are rejected, and fieldless variants require empty objects.
+ * The server rejects unknown fields, and a variant without fields requires an empty object.
  */
 export type FilesystemOperation =
     | LoonFS.FilesystemOperation.AppendFile

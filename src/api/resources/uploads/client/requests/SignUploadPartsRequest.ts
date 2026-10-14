@@ -17,10 +17,10 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface SignUploadPartsRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Upload session id */
+    /** The upload session ID. */
     upload_id: string;
-    /** The parts to authorize; repeated part numbers replace their previous uploads. */
+    /** The parts to authorize. A repeated part number replaces the earlier upload of that part. */
     parts: LoonFS.UploadPartChecksumClaim[];
 }

@@ -3,19 +3,22 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Copy a file inode to a name under a parent inode.
+ * An operation that copies a file inode to a new name under a parent inode.
  */
 export interface FilesystemOperationCopyByInode {
-    /** Whether an existing destination file may be replaced. */
+    /** Whether the operation can replace an existing destination file. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** Name of the copy. */
+    /** The name of the copy. */
     destination_display_name: LoonFS.DisplayName;
-    /** Destination directory. */
+    /** The destination directory. */
     destination_parent_inode_id: LoonFS.InodeId;
-    /** With `replace` behavior, the destination inode required by the request. */
+    /** The inode that the destination path must contain. It applies only with `replace` behavior. */
     expected_destination_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode precondition, the required content revision. */
+    /**
+     * The content revision that must be the destination file's current revision. It applies only
+     * with `replace` behavior and requires `expected_destination_inode_id`.
+     */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
-    /** File to copy. */
+    /** The file to copy. */
     inode_id: LoonFS.InodeId;
 }

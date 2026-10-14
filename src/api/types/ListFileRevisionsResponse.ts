@@ -3,17 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Response for listing file revisions.
+ * One page of a file's revisions.
  */
 export interface ListFileRevisionsResponse {
-    /** Namespace head sequence used for the read. */
+    /** The namespace head sequence that the read used. */
     head_seq: LoonFS.ChangeSeq;
-    /** File inode whose revisions were returned. */
+    /** The file inode whose revisions were returned. */
     inode_id: LoonFS.InodeId;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Opaque cursor for the next page, if more revisions are available. */
+    /** An opaque cursor for the next page, if more revisions are available. */
     next_cursor?: string | undefined;
-    /** Retained revisions in order. */
+    /** The retained revisions, in order. */
     revisions: LoonFS.FileRevision[];
 }

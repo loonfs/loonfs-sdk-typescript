@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of one metadata compaction unit.
+ * The result of one unit of metadata compaction.
  */
 export interface RunMaintenanceResponseMetadataCompaction {
-    /** The compaction outcome. */
+    /** The outcome of the compaction. */
     compaction: LoonFS.MetadataCompactionOutcome;
-    /** Namespace compacted by this run. */
+    /** The namespace that this run compacted. */
     namespace_id: LoonFS.NamespaceId;
 }

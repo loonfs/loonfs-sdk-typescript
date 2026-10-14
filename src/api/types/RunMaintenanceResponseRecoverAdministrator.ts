@@ -6,12 +6,12 @@ import type * as LoonFS from "../index.js";
  * The committed administrator recovery.
  */
 export interface RunMaintenanceResponseRecoverAdministrator {
-    /** Root access revision after recovery. */
+    /** The root's access revision after the recovery. */
     access_revision_no: LoonFS.AccessRevisionNo;
-    /** Recovery commit id. */
+    /** The ID of the recovery commit. */
     commit_id: LoonFS.CommitId;
-    /** Sequence assigned to the recovery commit. */
+    /** The sequence of the recovery commit. */
     committed_seq: LoonFS.ChangeSeq;
-    /** Namespace whose root grants changed. */
+    /** The namespace whose root grants changed. */
     namespace_id: LoonFS.NamespaceId;
 }

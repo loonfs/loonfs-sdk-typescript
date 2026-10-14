@@ -11,10 +11,10 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface GetFileRevisionContentByInodeRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** File inode ID */
+    /** The file's inode ID. */
     inode_id: string;
-    /** Revision number */
+    /** The revision number. */
     revision_no: LoonFS.RevisionNo;
 }

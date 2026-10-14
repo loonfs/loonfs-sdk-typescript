@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The source a forked namespace started from.
+ * The source namespace and sequence that a forked namespace started from.
  */
 export interface NamespaceForkBasis {
-    /** Source sequence the fork captured. */
+    /** The source namespace's sequence that the fork captured. */
     source_head_seq: LoonFS.ChangeSeq;
-    /** Namespace the fork was taken from. */
+    /** The namespace that the fork was taken from. */
     source_namespace_id: LoonFS.NamespaceId;
 }

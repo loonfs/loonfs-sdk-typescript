@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A namespace's access mode as reported, without its genesis grants.
+ * A namespace's access mode, without the grants that the namespace was created with.
  */
 export type NamespaceAccessMode = LoonFS.NamespaceAccessMode.Acl | LoonFS.NamespaceAccessMode.Unrestricted;
 

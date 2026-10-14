@@ -13,10 +13,10 @@ import type * as LoonFS from "../../../../index.js";
 export interface ListChangesRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Return committed changes after this sequence */
+    /** The sequence after which to return committed changes. */
     after_seq: LoonFS.ChangeSeq;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** End the feed at this snapshot's captured sequence */
+    /** A snapshot to read the feed from. The feed ends at the sequence that the snapshot captured. */
     snapshot_id?: LoonFS.PinId;
 }

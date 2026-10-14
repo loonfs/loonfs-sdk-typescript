@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A namespace's access mode, fixed at creation.
+ * A namespace's access mode, which can't be changed after the namespace is created.
  */
 export type NamespaceAccess = LoonFS.NamespaceAccess.Acl | LoonFS.NamespaceAccess.Unrestricted;
 

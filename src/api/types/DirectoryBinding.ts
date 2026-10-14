@@ -6,10 +6,10 @@ import type * as LoonFS from "../index.js";
  * A directory entry's parent and name.
  */
 export interface DirectoryBinding {
-    /** Name shown to users. */
+    /** The name that users see. */
     display_name: LoonFS.DisplayName;
-    /** Name used to look up the entry. */
+    /** The name key that lookups use to find the entry. */
     name_key: LoonFS.NameKey;
-    /** Parent directory containing the entry. */
+    /** The parent directory that contains the entry. */
     parent_inode_id: LoonFS.InodeId;
 }

@@ -3,19 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * HTTP error body used by LoonFS APIs.
+ * The JSON body that LoonFS APIs return with an HTTP error status.
  */
 export interface ErrorResponse {
-    /** The stable machine-readable error code as a string. */
+    /** The stable, machine-readable error code. */
     code: string;
-    /** The optional machine-readable context for the error code. */
+    /** Optional machine-readable context for the error code. */
     details?: LoonFS.ErrorDetails | undefined;
-    /** The capability feature key for a `not_supported` error. */
+    /** The capability feature that isn't supported, when the code is `not_supported`. */
     feature?: string | undefined;
-    /** Human-readable error message. */
+    /** A human-readable description of the error. */
     message: string;
-    /** The invalid JSON Pointer, parameter name, CLI flag, or CLI argument. */
+    /** The invalid input, as a JSON Pointer, a parameter name, a CLI flag, or a CLI argument. */
     param?: string | undefined;
-    /** The request correlation ID also sent in the `x-request-id` response header. */
+    /** The request ID. The server also sends this ID in the `x-request-id` response header. */
     request_id?: string | undefined;
 }

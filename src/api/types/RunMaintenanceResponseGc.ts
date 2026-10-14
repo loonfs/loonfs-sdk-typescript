@@ -3,19 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Counts and deadlines from one collection call.
+ * The counts and deadlines from one garbage collection call.
  */
 export interface RunMaintenanceResponseGc {
-    /** Objects the pass deleted, split by object family. */
+    /** The objects that the pass deleted, counted by object family. */
     deleted: LoonFS.DeletedObjectCounts;
-    /** The checkpoint records deleted by the pass, grouped by owner. */
+    /** The checkpoint records that the pass deleted, counted by owner. */
     deleted_checkpoints_by_owner: LoonFS.DeletedCheckpointsByOwner;
-    /** Namespace the pass ran against. */
+    /** The namespace that the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
     /** The earliest future retirement deadline, pin deletion time, or upload cleanup time. */
     next_reclamation_at_ms?: number | undefined;
-    /** The current tombstone's deletion time plus the configured retirement grace. */
+    /** The deletion time of the current tombstone plus the configured retirement grace. */
     reclaimable_at_ms?: number | undefined;
-    /** Candidates retained at deletion time, grouped by reason. */
+    /** The candidates that the pass kept at deletion time, counted by reason. */
     retained: LoonFS.RetainedCandidates;
 }

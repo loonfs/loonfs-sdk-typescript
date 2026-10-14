@@ -3,20 +3,27 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Restore the deletion identified by `inode_id` and `deletion_seq`.
- * Name the destination with `destination_path`, or with
- * `destination_parent_inode_id` and `destination_display_name`; omit
- * both to use the recorded binding.
+ * An operation that restores the deletion that `inode_id` and `deletion_seq` identify.
+ *
+ * To choose the destination, set `destination_path`, or set `destination_parent_inode_id` and
+ * `destination_display_name`. If you set neither, the undelete uses the parent and name
+ * recorded with the deletion.
  */
 export interface FilesystemOperationUndelete {
-    /** Observed deletion sequence, which prevents cancelling a newer tombstone sequence. */
+    /**
+     * The deletion sequence that the caller observed. It prevents the undelete from cancelling
+     * a newer deletion of the inode.
+     */
     deletion_seq: LoonFS.ChangeSeq;
-    /** Name to restore under `destination_parent_inode_id`. */
+    /** The inode's name in `destination_parent_inode_id`. */
     destination_display_name?: LoonFS.DisplayName | undefined;
-    /** Directory to restore into; requires `destination_display_name`. */
+    /** The directory to restore the inode into. It requires `destination_display_name`. */
     destination_parent_inode_id?: LoonFS.InodeId | undefined;
-    /** Absolute restore destination; cannot be combined with a parent inode destination. */
+    /**
+     * The absolute path to restore the inode to. It can't be combined with
+     * `destination_parent_inode_id`.
+     */
     destination_path?: LoonFS.AbsolutePath | undefined;
-    /** Deleted inode to make reachable again. */
+    /** The deleted inode to make reachable again. */
     inode_id: LoonFS.InodeId;
 }

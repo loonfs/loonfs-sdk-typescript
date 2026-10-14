@@ -3,17 +3,18 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One directory listing addressed by parent inode and the namespace head used to read it.
+ * One page of a directory's children, addressed by the parent inode, with the namespace head that
+ * the read used.
  */
 export interface ListInodeChildrenResponse {
-    /** The directory entries in canonical name-key order. */
+    /** The directory entries, in canonical name key order. */
     entries: LoonFS.PathEntry[];
-    /** Namespace head sequence this listing was read from. */
+    /** The namespace head sequence that this listing was read at. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace that was read. */
+    /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
-    /** Cursor for the next page, if more entries remain. */
+    /** The cursor for the next page, if more entries remain. */
     next_cursor?: string | undefined;
-    /** Directory inode whose children were returned. */
+    /** The directory inode whose children were returned. */
     parent_inode_id: LoonFS.InodeId;
 }

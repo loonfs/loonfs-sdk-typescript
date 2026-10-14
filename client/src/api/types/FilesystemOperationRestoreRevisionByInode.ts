@@ -3,11 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Restore an older revision as the current revision of a file inode.
+ * An operation that restores an older revision as the current revision of a file inode.
  */
 export interface FilesystemOperationRestoreRevisionByInode {
-    /** Visible file to restore. */
+    /** The visible file to restore. */
     inode_id: LoonFS.InodeId;
-    /** Existing historical revision whose content will be copied into a new current revision. */
+    /**
+     * An existing older revision. The operation copies its content into a new current
+     * revision.
+     */
     source_revision_no: LoonFS.RevisionNo;
 }

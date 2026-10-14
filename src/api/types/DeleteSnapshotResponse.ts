@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Identifies the snapshot record that was deleted.
+ * The snapshot record that was deleted.
  */
 export interface DeleteSnapshotResponse {
-    /** Namespace the snapshot belonged to. */
+    /** The namespace that the snapshot belonged to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Deleted snapshot record. */
+    /** The ID of the deleted snapshot record. */
     snapshot_id: LoonFS.PinId;
 }

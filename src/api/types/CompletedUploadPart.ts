@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One uploaded part accepted by the object-store provider.
+ * One uploaded part that the object store provider accepted.
  */
 export interface CompletedUploadPart {
-    /** Checksum the part was signed and accepted with. */
+    /** The checksum that the part was signed and accepted with. */
     checksum: LoonFS.Checksum;
-    /** Entity tag the provider returned for the accepted part. */
+    /** The entity tag that the provider returned for the accepted part. */
     etag: string;
-    /** One-based part number. */
+    /** The part number, counting from 1. */
     part_number: number;
 }

@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Complete a direct-PUT upload.
+ * The completion of a direct PUT upload.
  */
 export interface CompleteUploadBodyDirectPut {
-    /** Expected length and checksum of the stored object. */
+    /** The expected length and checksum of the stored object. */
     content: LoonFS.UploadContentClaim;
 }

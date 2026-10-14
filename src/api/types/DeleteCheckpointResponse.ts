@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Identifies the checkpoint record that was deleted.
+ * The checkpoint record that was deleted.
  */
 export interface DeleteCheckpointResponse {
-    /** Deleted checkpoint record. */
+    /** The ID of the deleted checkpoint record. */
     checkpoint_id: LoonFS.PinId;
-    /** Namespace the checkpoint belonged to. */
+    /** The namespace that the checkpoint belonged to. */
     namespace_id: LoonFS.NamespaceId;
 }
