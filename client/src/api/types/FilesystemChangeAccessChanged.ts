@@ -3,16 +3,17 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * An inode's access row was replaced. `grants` is the complete
- * direct grant map after the update.
+ * An inode's access row was replaced.
+ *
+ * `grants` is the complete direct grant map after the update.
  */
 export interface FilesystemChangeAccessChanged {
-    /** Revision published by the update. */
+    /** The access revision that the update published. */
     access_revision_no: LoonFS.AccessRevisionNo;
-    /** Whether the directory stops inheritance from its ancestors. */
+    /** Whether the directory stops inheriting grants from its ancestors. */
     boundary: boolean;
-    /** The inode's complete direct grants after this update. */
+    /** Every direct grant that the inode has after this update. */
     grants: LoonFS.AccessGrants;
-    /** Inode whose access state advanced. */
+    /** The inode whose access row changed. */
     inode_id: LoonFS.InodeId;
 }

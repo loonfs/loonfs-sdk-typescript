@@ -11,8 +11,8 @@
 export interface CreateSnapshotRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** A label that does not need to be unique. */
+    /** The snapshot's label, which doesn't need to be unique. */
     name: string;
-    /** Snapshot lifetime from the current server time, in milliseconds. */
+    /** The snapshot's lifetime in milliseconds, counted from the server's current time. */
     ttl_ms: number;
 }

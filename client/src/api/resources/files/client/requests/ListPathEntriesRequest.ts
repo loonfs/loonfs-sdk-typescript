@@ -13,14 +13,14 @@ import type * as LoonFS from "../../../../index.js";
 export interface ListPathEntriesRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Absolute filesystem path */
+    /** The absolute path of the directory to list. */
     path: string;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** Opaque directory-list page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
-    /** Project each entry's attribute map and revision (`true` or `false`). Defaults to `false`: a page holds many entries and each map may be 64 KiB, so a listing does not carry them unless asked. */
+    /** Whether the response includes each entry's attribute map and attribute revision. The default is `false`, because a page can have many entries and each map can be up to 64 KiB. */
     include_attributes?: boolean;
-    /** Use the directory state captured by this snapshot */
+    /** The snapshot whose captured directory state to read. */
     snapshot_id?: LoonFS.PinId;
 }

@@ -3,14 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One page of existing checkpoint records, including expired records that
- * collection has not yet deleted.
+ * One page of checkpoint records, including expired records that garbage collection hasn't deleted
+ * yet.
  */
 export interface ListCheckpointsResponse {
-    /** The records in ascending checkpoint ID order. */
+    /** The records, in ascending checkpoint ID order. */
     checkpoints: LoonFS.Checkpoint[];
-    /** Namespace the records belong to. */
+    /** The namespace that the records belong to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Opaque cursor for the next page. */
+    /** An opaque cursor for the next page. */
     next_cursor?: string | undefined;
 }

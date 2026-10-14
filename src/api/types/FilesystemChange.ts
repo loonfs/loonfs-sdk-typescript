@@ -5,9 +5,10 @@ import type * as LoonFS from "../index.js";
 /**
  * One filesystem change within a commit.
  *
- * One request operation can produce multiple changes.
+ * One request operation can produce several changes.
  *
- * Newer servers may report other event kinds; clients ignore them.
+ * A newer server can return a change kind that isn't listed here. Clients should skip a change
+ * whose kind they don't recognize.
  */
 export type FilesystemChange =
     | LoonFS.FilesystemChange.AccessChanged

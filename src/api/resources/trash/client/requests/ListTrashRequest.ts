@@ -7,10 +7,10 @@
  *     }
  */
 export interface ListTrashRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** Opaque trash page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
 }

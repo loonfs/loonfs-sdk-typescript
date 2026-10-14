@@ -7,6 +7,6 @@
  *     }
  */
 export interface GetNamespaceDiagnosticsRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
 }

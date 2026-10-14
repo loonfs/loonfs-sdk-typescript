@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A checksum algorithm and its canonical lowercase hexadecimal value.
+ * A checksum algorithm and the checksum's canonical lowercase hexadecimal value.
  */
 export interface Checksum {
-    /** Algorithm that produced `value`. */
+    /** The algorithm that produced `value`. */
     algorithm: LoonFS.ChecksumAlgorithm;
-    /** The canonical lowercase hexadecimal checksum without a prefix. */
+    /** The checksum in canonical lowercase hexadecimal, without a prefix. */
     value: string;
 }

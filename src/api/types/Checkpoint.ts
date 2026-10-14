@@ -3,21 +3,24 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One checkpoint resource described by its durable record.
+ * One checkpoint, as its durable record stores it.
  */
 export interface Checkpoint {
-    /** Namespace sequence captured by the checkpoint. */
+    /** The namespace sequence that the checkpoint captured. */
     captured_seq: LoonFS.ChangeSeq;
-    /** Durable checkpoint id used to address the checkpoint for deletion. */
+    /** The checkpoint's durable ID. Use it to delete the checkpoint. */
     checkpoint_id: LoonFS.PinId;
-    /** Time the checkpoint record was created, in Unix milliseconds. */
+    /** The time the checkpoint record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** Expiry in Unix milliseconds; collection waits one further grace window. */
+    /**
+     * The time the checkpoint expires, in Unix milliseconds. Garbage collection waits one more
+     * grace window before it deletes the record.
+     */
     expires_at_ms?: number | undefined;
-    /** Manifest pinned by the checkpoint. */
+    /** The manifest that the checkpoint pins. */
     manifest_no: LoonFS.ManifestNo;
-    /** Namespace that owns the checkpoint. */
+    /** The namespace that the checkpoint belongs to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Who owns the checkpoint, including the label carried by a user pin. */
+    /** The checkpoint's owner. For a user pin, the owner includes the label. */
     owner: LoonFS.CheckpointOwner;
 }

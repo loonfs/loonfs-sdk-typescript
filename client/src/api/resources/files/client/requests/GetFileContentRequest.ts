@@ -12,10 +12,10 @@ import type * as LoonFS from "../../../../index.js";
 export interface GetFileContentRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Absolute file path */
+    /** The absolute path of the file to read. */
     path: string;
-    /** Optional prior revision number; cannot be combined with snapshot_id */
+    /** An earlier revision to read. It can't be combined with `snapshot_id`. */
     revision_no?: LoonFS.RevisionNo;
-    /** Use the file revision captured by this snapshot */
+    /** The snapshot whose captured file revision to read. */
     snapshot_id?: LoonFS.PinId;
 }

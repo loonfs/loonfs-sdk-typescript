@@ -3,9 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires the pre-state head sequence to equal `expected_head_seq`.
+ * A requirement that the head sequence before the commit equals `expected_head_seq`.
  */
 export interface CommitPreconditionNamespaceHead {
-    /** Sequence observed when the caller read its inputs. */
+    /** The head sequence that the caller observed when it read its inputs. */
     expected_head_seq: LoonFS.ChangeSeq;
 }

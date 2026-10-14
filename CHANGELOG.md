@@ -1,6 +1,6 @@
 # SDK 0.5.0
 
-Regenerated from LoonFS main 76ba9db01.
+Regenerated from LoonFS main 6a1146a8a.
 
 Breaking changes on the wire:
 

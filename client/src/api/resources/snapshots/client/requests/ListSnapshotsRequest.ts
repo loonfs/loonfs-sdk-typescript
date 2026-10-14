@@ -9,8 +9,8 @@
 export interface ListSnapshotsRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** Opaque snapshot-list page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
 }

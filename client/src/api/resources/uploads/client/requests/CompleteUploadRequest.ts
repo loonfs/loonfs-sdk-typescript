@@ -30,7 +30,7 @@ import type * as LoonFS from "../../../../index.js";
 export interface CompleteUploadRequest {
     /** Application namespace alias */
     namespace_alias: string;
-    /** Upload session id */
+    /** The upload session ID. */
     upload_id: string;
     body: LoonFS.CompleteUploadBody;
 }

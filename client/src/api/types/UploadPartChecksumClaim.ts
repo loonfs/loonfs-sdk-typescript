@@ -6,8 +6,11 @@ import type * as LoonFS from "../index.js";
  * One upload part number and its checksum.
  */
 export interface UploadPartChecksumClaim {
-    /** Checksum over this part's bytes. */
+    /** The checksum of this part's bytes. */
     checksum: LoonFS.Checksum;
-    /** One-based part number, at most the provider's 10,000-part limit. */
+    /**
+     * The part number, counting from 1. The number can't exceed the provider's limit of 10,000
+     * parts.
+     */
     part_number: number;
 }

@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Delete one path.
+ * An operation that deletes the file or directory at one path.
  */
 export interface FilesystemOperationDeletePath {
-    /** Whether a non-empty directory may be tombstoned recursively. */
+    /** Whether the operation can recursively delete a non-empty directory. */
     behavior?: LoonFS.DeleteDirectoryBehavior | undefined;
-    /** The inode that the path must still resolve to before deletion. */
+    /** The inode that the path must still resolve to before the delete. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** Absolute path that must resolve to a visible inode. */
+    /** The absolute path, which must resolve to a visible inode. */
     path: LoonFS.AbsolutePath;
 }

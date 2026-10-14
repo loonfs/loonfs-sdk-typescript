@@ -3,18 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Replace the access row of the inode one path resolves to. The root
- * path is a valid target.
+ * An operation that replaces the access row of the inode that a path resolves to.
+ *
+ * The root path is a valid target.
  */
 export interface FilesystemOperationUpdateAccess {
-    /** Whether the directory stops inheritance from its ancestors. */
+    /** Whether the directory stops inheriting grants from its ancestors. */
     boundary: boolean;
-    /** With an inode precondition, the access revision that must still be current. */
+    /** The access revision that must still be current. It requires `expected_inode_id`. */
     expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
     /** The inode that the path must still resolve to before the update. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** The inode's complete direct grants after this update. */
+    /** Every direct grant that the inode has after this update. */
     grants: LoonFS.AccessGrants;
-    /** Absolute path that must resolve to a visible file or directory. */
+    /** The absolute path, which must resolve to a visible file or directory. */
     path: LoonFS.AbsolutePath;
 }

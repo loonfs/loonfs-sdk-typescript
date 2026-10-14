@@ -6,8 +6,8 @@ import type * as LoonFS from "../index.js";
  * One authorized part upload.
  */
 export interface SignedUploadPart {
-    /** Short-lived write capability for that part. */
+    /** A short-lived write capability for this part. */
     access: LoonFS.ObjectTransferAccess;
-    /** Part number this capability writes. */
+    /** The part number that this capability writes. */
     part_number: number;
 }

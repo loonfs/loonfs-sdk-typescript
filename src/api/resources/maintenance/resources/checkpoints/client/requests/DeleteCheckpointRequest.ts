@@ -8,8 +8,8 @@
  *     }
  */
 export interface DeleteCheckpointRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Checkpoint id */
+    /** The checkpoint ID. */
     checkpoint_id: string;
 }

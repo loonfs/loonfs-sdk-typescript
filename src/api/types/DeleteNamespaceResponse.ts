@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of deleting a namespace.
+ * The result of deleting a namespace.
  */
 export interface DeleteNamespaceResponse {
-    /** The final committed sequence before the namespace was deleted. */
+    /** The last committed sequence before the namespace was deleted. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace whose history ended. */
+    /** The deleted namespace. */
     namespace_id: LoonFS.NamespaceId;
 }

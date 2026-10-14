@@ -6,10 +6,13 @@ import type * as LoonFS from "../index.js";
  * A file received a new current revision from a put or revision restore.
  */
 export interface FilesystemChangeContentChanged {
-    /** Immutable content published by the revision. */
+    /** The immutable content that the revision published. */
     content_ref: LoonFS.ContentRef;
-    /** File inode whose history advanced. */
+    /** The file inode whose history advanced. */
     inode_id: LoonFS.InodeId;
-    /** New monotonic position in that file's revision history. */
+    /**
+     * The file's new revision number, which is higher than the number of every earlier
+     * revision.
+     */
     revision_no: LoonFS.RevisionNo;
 }

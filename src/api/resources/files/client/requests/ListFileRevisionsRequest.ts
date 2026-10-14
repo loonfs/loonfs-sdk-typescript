@@ -8,12 +8,12 @@
  *     }
  */
 export interface ListFileRevisionsRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Absolute file path */
+    /** The absolute path of the file. */
     path: string;
-    /** Maximum page size */
+    /** The maximum page size. */
     limit?: number;
-    /** Opaque file-revisions page cursor */
+    /** The opaque cursor that the previous page returned. */
     cursor?: string;
 }

@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Client-facing direct transfer capability.
+ * A capability that lets a client transfer bytes directly to or from object storage.
  */
 export type ObjectTransferAccess = LoonFS.ObjectTransferAccess.PresignedUrl;
 

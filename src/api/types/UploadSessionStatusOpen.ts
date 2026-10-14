@@ -3,23 +3,29 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Accepting content until its lease passes.
+ * A session that accepts content until its lease ends.
  */
 export interface UploadSessionStatusOpen {
-    /** Present for `direct_put` sessions; minted fresh on every read. */
+    /**
+     * The capability for the direct PUT. It's present for `direct_put` sessions, and the
+     * server creates a new one on every read.
+     */
     access?: LoonFS.ObjectTransferAccess | undefined;
-    /** The store's content checksum algorithm. */
+    /** The checksum algorithm that the store uses for content. */
     checksum_algorithm: LoonFS.ChecksumAlgorithm;
-    /** Present after content is staged in a `service_proxied` session. */
+    /** The staged content. It's present after content is staged in a `service_proxied` session. */
     content_ref?: LoonFS.ContentRef | undefined;
-    /** The Unix-millisecond time after which cleanup may abort the session. */
+    /** The time after which cleanup can abort the session, in Unix milliseconds. */
     expires_at_ms: number;
-    /** Transport selected when the session began. */
+    /** The transport that was selected when the session began. */
     mode: LoonFS.UploadMode;
-    /** Namespace that owns the session. */
+    /** The namespace that the session belongs to. */
     namespace_id: LoonFS.NamespaceId;
-    /** Present for `direct_multipart` sessions. */
+    /**
+     * The size of every part except the last, in bytes. It's present for `direct_multipart`
+     * sessions.
+     */
     part_size_bytes?: number | undefined;
-    /** Session represented by this view. */
+    /** The upload session ID. */
     upload_id: LoonFS.UploadId;
 }

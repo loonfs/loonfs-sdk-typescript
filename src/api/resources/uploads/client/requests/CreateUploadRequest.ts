@@ -12,7 +12,7 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CreateUploadRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
     body: LoonFS.CreateUploadBody;
 }

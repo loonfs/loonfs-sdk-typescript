@@ -10,8 +10,8 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface DeleteSnapshotRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Snapshot id */
+    /** The snapshot ID. */
     snapshot_id: LoonFS.PinId;
 }

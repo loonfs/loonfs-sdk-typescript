@@ -3,7 +3,9 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The result of one maintenance job. The `kind` matches the request.
+ * The result of one maintenance job.
+ *
+ * The `kind` matches the request.
  */
 export type RunMaintenanceResponse =
     | LoonFS.RunMaintenanceResponse.Gc

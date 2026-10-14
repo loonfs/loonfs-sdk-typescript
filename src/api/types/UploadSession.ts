@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Current view of one upload session.
+ * The current state of one upload session.
  */
 export type UploadSession = LoonFS.UploadSession.Aborted | LoonFS.UploadSession.Completed | LoonFS.UploadSession.Open;
 

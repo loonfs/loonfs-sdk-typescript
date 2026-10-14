@@ -3,21 +3,25 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Move an inode if its current binding matches.
+ * An operation that moves an inode if its current binding version is
+ * `expected_binding_version`.
  */
 export interface FilesystemOperationMoveByInode {
-    /** Whether an existing destination file may be replaced. */
+    /** Whether the operation can replace an existing destination file. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /** New name. */
+    /** The inode's new name. */
     destination_display_name: LoonFS.DisplayName;
-    /** Destination directory. */
+    /** The destination directory. */
     destination_parent_inode_id: LoonFS.InodeId;
-    /** Binding version required for the move. */
+    /** The binding version that the inode must currently have for the move to succeed. */
     expected_binding_version: LoonFS.BindingVersion;
-    /** With `replace` behavior, the destination inode required by the request. */
+    /** The inode that the destination path must contain. It applies only with `replace` behavior. */
     expected_destination_inode_id?: LoonFS.InodeId | undefined;
-    /** With `replace` behavior and an inode precondition, the required content revision. */
+    /**
+     * The content revision that must be the destination file's current revision. It applies only
+     * with `replace` behavior and requires `expected_destination_inode_id`.
+     */
     expected_destination_revision_no?: LoonFS.RevisionNo | undefined;
-    /** Inode to move. */
+    /** The inode to move. */
     inode_id: LoonFS.InodeId;
 }

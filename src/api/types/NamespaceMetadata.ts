@@ -3,26 +3,29 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Current state for one namespace.
+ * The current state of one namespace.
  */
 export interface NamespaceMetadata {
     /** The namespace's access mode. */
     access: LoonFS.NamespaceAccessMode;
-    /** Time the namespace was created, in Unix milliseconds. */
+    /** The time the namespace was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** Actor that created the namespace, as supplied by the application. */
+    /** The actor that created the namespace, as the application supplied it. */
     created_by: LoonFS.ActorId;
-    /** Present only for a fork: the source it was forked from. */
+    /**
+     * The namespace and sequence this namespace was forked from. Only a forked namespace has this
+     * field.
+     */
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
-    /** Current visible namespace sequence. */
+    /** The sequence of the namespace's newest visible commit. */
     head_seq: LoonFS.ChangeSeq;
-    /** Namespace ID. */
+    /** The namespace ID. */
     namespace_id: LoonFS.NamespaceId;
-    /** How sibling names compare in the namespace. */
+    /** How the namespace compares sibling names. */
     naming: LoonFS.NamespaceNaming;
     /**
-     * Oldest position a change feed can resume after. The feed returns
-     * changes above it.
+     * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
+     * or any later one, and the feed returns the changes committed after it.
      */
     retention_floor_seq: LoonFS.ChangeSeq;
 }

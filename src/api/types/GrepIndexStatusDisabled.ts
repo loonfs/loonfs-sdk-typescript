@@ -6,10 +6,10 @@ import type * as LoonFS from "../index.js";
  * No index is maintained for this namespace.
  */
 export interface GrepIndexStatusDisabled {
-    /** Namespace the status describes. */
+    /** The namespace that the status describes. */
     namespace_id: LoonFS.NamespaceId;
-    /** Run number the index allocates next. */
+    /** The next run number that the index allocates. */
     next_run_no: LoonFS.RunNo;
-    /** True while a partitioned segment reorganization is in progress. */
+    /** Whether a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
 }

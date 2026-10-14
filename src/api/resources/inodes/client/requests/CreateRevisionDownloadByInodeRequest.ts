@@ -11,15 +11,15 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CreateRevisionDownloadByInodeRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** File inode ID */
+    /** The file's inode ID. */
     inode_id: string;
-    /** Revision number */
+    /** The revision number. */
     revision_no: LoonFS.RevisionNo;
     /**
-     * The first byte the grant reads. Defaults to 0 and must be below the
-     * revision's size, except 0 for a revision of zero bytes.
+     * The first byte that the grant reads. It defaults to 0 and must be less than the revision's
+     * size. For a revision of zero bytes, it must be 0.
      */
     start_offset?: number;
 }

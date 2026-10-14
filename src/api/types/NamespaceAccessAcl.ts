@@ -3,14 +3,14 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Access rows govern every operation.
+ * Access rows control every operation.
  */
 export interface NamespaceAccessAcl {
-    /** Identity domain the namespace's principal ids belong to. */
+    /** The identity domain that the namespace's principal IDs belong to. */
     principal_scope: LoonFS.PrincipalScope;
     /**
-     * The root inode's grants at genesis, normally `admin` for each
-     * initial administrator.
+     * The root inode's grants when the namespace is created. Usually each initial
+     * administrator has `admin`.
      */
     root_grants: LoonFS.AccessGrants;
 }

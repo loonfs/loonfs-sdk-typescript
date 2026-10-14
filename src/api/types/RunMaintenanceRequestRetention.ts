@@ -3,20 +3,19 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Advances the retention floor, to the folded manifest head unless the
- * request names a target.
+ * A job that advances the retention floor to the folded manifest head, or to the target that
+ * the request sets.
  */
 export interface RunMaintenanceRequestRetention {
     /**
-     * Advance the floor to the last commit committed at or before this Unix
-     * time in milliseconds. Commits are read upward from the floor, and the
-     * first one committed after this time ends the advance. Cannot be
-     * combined with `to_seq`.
+     * A Unix time in milliseconds. The floor advances to the last commit made at or before this
+     * time. LoonFS reads commits upward from the floor, and the first commit made after this time
+     * ends the advance. This field can't be combined with `to_seq`.
      */
     cutoff_at_ms?: number | undefined;
     /**
-     * Advance the floor to this sequence, or to the folded manifest head
-     * when that is lower. Cannot be combined with `cutoff_at_ms`.
+     * The sequence to advance the floor to. If the folded manifest head is lower, the floor
+     * advances to the head instead. This field can't be combined with `cutoff_at_ms`.
      */
     to_seq?: LoonFS.ChangeSeq | undefined;
 }

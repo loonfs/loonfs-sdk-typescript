@@ -3,20 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Write and remove attributes on the inode one path resolves to.
+ * An operation that writes and removes attributes on the inode that a path resolves to.
  */
 export interface FilesystemOperationUpdateAttributes {
-    /** With an inode precondition, the attribute revision that must still be current. */
+    /** The attribute revision that must still be current. It requires `expected_inode_id`. */
     expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** The inode that the path must still resolve to before the update. */
     expected_inode_id?: LoonFS.InodeId | undefined;
-    /** Absolute path that must resolve to a visible file or directory. */
+    /** The absolute path, which must resolve to a visible file or directory. */
     path: LoonFS.AbsolutePath;
-    /** The attribute keys to remove, including duplicates that validation must reject. */
+    /** The attribute keys to remove. The server rejects a list that repeats a key. */
     remove?: LoonFS.AttributeKey[] | undefined;
     /**
-     * The attributes to write, replacing values for matching keys and leaving
-     * other keys unchanged.
+     * The attributes to write. A new value replaces the current value of the same key, and
+     * other keys don't change.
      */
     set?: Record<string, LoonFS.AttributeValue> | undefined;
 }

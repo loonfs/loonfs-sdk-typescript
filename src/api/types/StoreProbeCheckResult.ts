@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One named contract check and what the store did with it.
+ * The result of one contract check.
  */
 export interface StoreProbeCheckResult {
     /** The expected and actual behavior for a failed check. */
     message?: string | undefined;
-    /** Stable check name. */
+    /** The check's stable name. */
     name: string;
-    /** What the store did. */
+    /** Whether the store passed the check, failed it, or doesn't support the capability. */
     outcome: LoonFS.StoreProbeCheckOutcome;
 }

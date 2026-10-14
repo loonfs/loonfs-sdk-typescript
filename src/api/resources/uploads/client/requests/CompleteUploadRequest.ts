@@ -28,9 +28,9 @@ import type * as LoonFS from "../../../../index.js";
  *     }
  */
 export interface CompleteUploadRequest {
-    /** Namespace id */
+    /** The namespace ID. */
     namespace_id: string;
-    /** Upload session id */
+    /** The upload session ID. */
     upload_id: string;
     body: LoonFS.CompleteUploadBody;
 }

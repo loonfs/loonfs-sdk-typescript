@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * What the bounded compaction part of a maintenance pass did.
+ * What the bounded compaction step of a maintenance pass did.
  */
 export type CompactionStepOutcome =
     | LoonFS.CompactionStepOutcome.BoundedMergePublished

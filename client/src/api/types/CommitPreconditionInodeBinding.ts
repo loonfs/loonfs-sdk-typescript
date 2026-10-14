@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Requires a visible inode to retain the binding the caller read.
+ * A requirement that a visible inode still has the binding that the caller read.
  */
 export interface CommitPreconditionInodeBinding {
-    /** Binding version observed by the caller. */
+    /** The binding version that the caller observed. */
     expected_binding_version: LoonFS.BindingVersion;
-    /** Inode whose binding the caller read. */
+    /** The inode whose binding the caller read. */
     inode_id: LoonFS.InodeId;
 }

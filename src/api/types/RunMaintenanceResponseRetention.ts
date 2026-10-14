@@ -3,11 +3,11 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of advancing the retention floor.
+ * The result of advancing the retention floor.
  */
 export interface RunMaintenanceResponseRetention {
-    /** Namespace whose retention floor was advanced. */
+    /** The namespace whose retention floor was advanced. */
     namespace_id: LoonFS.NamespaceId;
-    /** New minimum sequence for incremental replay. */
+    /** The new retention floor, which is the minimum sequence for incremental replay. */
     retention_floor_seq: LoonFS.ChangeSeq;
 }

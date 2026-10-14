@@ -3,12 +3,12 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Result of the WAL fold and one bounded compaction step.
+ * The result of the WAL fold and one bounded compaction step.
  */
 export interface RunMaintenanceResponseMetadata {
     /** What the bounded compaction step did. */
     compaction: LoonFS.CompactionStepOutcome;
-    /** Namespace maintained by this run. */
+    /** The namespace that this run maintained. */
     namespace_id: LoonFS.NamespaceId;
     /** What the WAL fold did. */
     wal_fold: LoonFS.WalFoldStepOutcome;

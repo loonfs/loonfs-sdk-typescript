@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * Add bytes to the end of a file inode as its next revision.
+ * An operation that adds bytes to the end of a file inode as its next revision.
  */
 export interface FilesystemOperationAppendFileByInode {
     /** The content revision that must still be current. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
-    /** The bytes to add as base64, from 1 byte to 256 KiB. */
+    /** The bytes to add, as base64, from 1 byte to 256 KiB. */
     inline_content: string;
-    /** File to append to. */
+    /** The file to append to. */
     inode_id: LoonFS.InodeId;
 }

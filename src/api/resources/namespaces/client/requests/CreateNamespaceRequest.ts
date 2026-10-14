@@ -10,15 +10,15 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface CreateNamespaceRequest {
     /**
-     * The access mode, fixed for the namespace's life. Defaults to
-     * unrestricted.
+     * The namespace's access mode, which can't be changed after the namespace is created. The
+     * default is unrestricted.
      */
     access?: LoonFS.NamespaceAccess;
-    /** Durable namespace id to create. */
+    /** The durable ID of the new namespace. */
     namespace_id: LoonFS.NamespaceId;
     /**
-     * How sibling names compare, fixed for the namespace's life. Defaults
-     * to `case_insensitive`.
+     * How the namespace compares sibling names. The mode can't be changed after the namespace is
+     * created, and it defaults to `case_insensitive`.
      */
     naming?: LoonFS.NamespaceNaming;
 }
