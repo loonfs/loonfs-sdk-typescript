@@ -19,6 +19,11 @@ export interface Commit {
     committed_seq: LoonFS.ChangeSeq;
     /** The semantic filesystem changes that the commit applied, in request order. */
     events: LoonFS.FilesystemChange[];
+    /**
+     * The fork and the range of its commits that the commit applied, when the commit is a merge.
+     * It's absent for every other commit.
+     */
+    merge?: LoonFS.Merge | undefined;
     /** The caller's optional annotation for the commit. */
     message?: string | undefined;
     /** The namespace that changed. */

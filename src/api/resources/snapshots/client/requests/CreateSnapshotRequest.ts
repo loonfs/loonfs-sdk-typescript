@@ -4,8 +4,7 @@
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         name: "name",
- *         ttl_ms: 1000000
+ *         name: "name"
  *     }
  */
 export interface CreateSnapshotRequest {
@@ -13,6 +12,9 @@ export interface CreateSnapshotRequest {
     namespace_id: string;
     /** The snapshot's label, which doesn't need to be unique. */
     name: string;
-    /** The snapshot's lifetime in milliseconds, counted from the server's current time. */
-    ttl_ms: number;
+    /**
+     * The snapshot's lifetime in milliseconds, counted from the server's current time. Omit it to
+     * keep the snapshot until it's deleted.
+     */
+    ttl_ms?: number;
 }

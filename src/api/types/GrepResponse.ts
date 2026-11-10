@@ -11,9 +11,15 @@ export interface GrepResponse {
      * sequence through the index.
      */
     built_through_seq: LoonFS.ChangeSeq;
-    /** The namespace head sequence that the server used to evaluate this page. */
+    /**
+     * The sequence that the server read the namespace at for this page. A first page reads at
+     * the namespace's head, and a later page reads at the first page's `head_seq`.
+     */
     head_seq: LoonFS.ChangeSeq;
-    /** The matches, in ascending `(inode_id, byte_offset)` order. */
+    /**
+     * The matches, ordered by the content value of each file's revision (its content ID and
+     * size), then by `inode_id`, and then by `byte_offset`.
+     */
     matches: LoonFS.GrepMatch[];
     /** The namespace that was searched. */
     namespace_id: LoonFS.NamespaceId;

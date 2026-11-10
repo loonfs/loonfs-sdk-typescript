@@ -5,7 +5,7 @@
  *
  * Reuse the same commit ID when you retry the same request. A commit ID is 1 to 128 lowercase
  * ASCII letters, digits, dots, underscores, or hyphens, and it starts with a letter or digit.
- * Generated commit IDs have the form `c_<32 lowercase hex>`, but callers can supply any value
- * that follows these rules.
+ * Generated commit IDs have the form `c_` followed by 26 lowercase Crockford base 32
+ * characters, but callers can supply any value that follows these rules.
  */
 export type CommitId = string;

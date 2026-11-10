@@ -42,7 +42,7 @@ export class CommitsClient {
      * @example
      *     await client.commits.create({
      *         namespace_id: "namespace_id",
-     *         commit_id: "c_f3a9c2d4b6e8417a90c5d2f8e1b7a6c0",
+     *         commit_id: "c_7kn71d9dq885x91hejz3gvf9p0",
      *         operations: [{
      *                 kind: "append_file",
      *                 inline_content: "inline_content",

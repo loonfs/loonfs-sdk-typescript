@@ -3,15 +3,18 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A live snapshot.
+ * A snapshot, which keeps one version of a namespace readable until it's deleted or expires.
  */
 export interface Snapshot {
     /** The namespace sequence that the snapshot captured. */
     captured_seq: LoonFS.ChangeSeq;
     /** The time the snapshot record was created, in Unix milliseconds. */
     created_at_ms: number;
-    /** The time the snapshot expires, in Unix milliseconds. */
-    expires_at_ms: number;
+    /**
+     * The time the snapshot expires, in Unix milliseconds. A snapshot without it doesn't expire.
+     * An expired snapshot can't be read, and it's listed until garbage collection deletes it.
+     */
+    expires_at_ms?: number | undefined;
     /** The snapshot's label. */
     name: string;
     /** The namespace whose state the snapshot captured. */

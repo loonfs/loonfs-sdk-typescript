@@ -26,7 +26,7 @@ export class InodesClient {
     }
 
     /**
-     * Returns the path entry for a visible inode, from the current state or a live snapshot. An unknown or hidden inode returns `inode_not_found`.
+     * Returns the path entry for a visible inode, from the current state or an unexpired snapshot. An unknown or hidden inode returns `inode_not_found`.
      *
      * @param {LoonFS.GetInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -42,7 +42,7 @@ export class InodesClient {
      * @example
      *     await client.inodes.retrieve({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123",
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
@@ -62,10 +62,14 @@ export class InodesClient {
             inode_id: inodeId,
             include_attributes: includeAttributes,
             snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
         } = request;
         const _queryParams: Record<string, unknown> = {
             include_attributes: includeAttributes,
             snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -138,7 +142,7 @@ export class InodesClient {
     }
 
     /**
-     * Lists one page of a directory's children, in canonical name key order, from the current state or a live snapshot. The request identifies the directory by its inode ID, so a listing and its later pages stay on the same directory even if the directory is renamed or moved at the same time.
+     * Lists one page of a directory's children, in canonical name key order, from the current state or an unexpired snapshot. The request identifies the directory by its inode ID, so a listing and its later pages stay on the same directory even if the directory is renamed or moved at the same time.
      *
      * @param {LoonFS.ListInodeChildrenRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -155,7 +159,7 @@ export class InodesClient {
      * @example
      *     await client.inodes.listChildren({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123",
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         snapshot_id: "pin_00000000000000000001-0000000000000002"
      *     })
      */
@@ -173,13 +177,19 @@ export class InodesClient {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    recursive,
                     snapshot_id: snapshotId,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    recursive,
                     snapshot_id: snapshotId,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -281,7 +291,7 @@ export class InodesClient {
     }
 
     /**
-     * Reads and verifies the current revision of a visible file inode, wherever the inode is bound, or the revision that a live snapshot captured. An unknown or hidden inode returns `inode_not_found`.
+     * Reads and verifies the current revision of a visible file inode, wherever the inode is bound, or the revision that an unexpired snapshot captured. A `Range` header asks for one byte range of the file instead. An unknown or hidden inode returns `inode_not_found`.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
@@ -289,6 +299,7 @@ export class InodesClient {
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.RangeNotSatisfiableError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -304,15 +315,25 @@ export class InodesClient {
         request: LoonFS.GetFileContentByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, snapshot_id: snapshotId } = request;
+        const {
+            namespace_id: namespaceId,
+            inode_id: inodeId,
+            snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
+            Range: range,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
             mergeOnlyDefinedHeaders({
+                Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
                 "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
                 "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
@@ -367,6 +388,11 @@ export class InodesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 416:
+                    throw new LoonFS.RangeNotSatisfiableError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -387,7 +413,7 @@ export class InodesClient {
     }
 
     /**
-     * Authorizes a direct read of the current revision of a visible file inode, wherever the inode is bound, or of the revision that a live snapshot captured. The capability reads exactly `[start_offset, size_bytes)`, as on the path route. The response doesn't include a path.
+     * Authorizes a direct read of the current revision of a visible file inode, wherever the inode is bound, or of the revision that an unexpired snapshot captured. The capability reads exactly `[start_offset, size_bytes)`, as on the path route. The response doesn't include a path.
      *
      * @param {LoonFS.CreateDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -406,7 +432,7 @@ export class InodesClient {
      * @example
      *     await client.inodes.createDownload({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123"
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw"
      *     })
      */
     public createDownload(
@@ -520,7 +546,7 @@ export class InodesClient {
      * @example
      *     await client.inodes.listRevisions({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123"
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw"
      *     })
      */
     public async listRevisions(
@@ -531,10 +557,19 @@ export class InodesClient {
             async (
                 request: LoonFS.ListFileRevisionsByInodeRequest,
             ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> => {
-                const { namespace_id: namespaceId, inode_id: inodeId, limit, cursor } = request;
+                const {
+                    namespace_id: namespaceId,
+                    inode_id: inodeId,
+                    limit,
+                    cursor,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
+                } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -636,7 +671,7 @@ export class InodesClient {
     }
 
     /**
-     * Reads and verifies one retained file revision by inode ID and revision number.
+     * Reads and verifies one retained file revision by inode ID and revision number, at the live head or in the state that a snapshot or a fork pin keeps. A `Range` header asks for one byte range of the revision instead.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
@@ -644,6 +679,7 @@ export class InodesClient {
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.RangeNotSatisfiableError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -659,12 +695,26 @@ export class InodesClient {
         request: LoonFS.GetFileRevisionContentByInodeRequest,
         requestOptions?: InodesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { namespace_id: namespaceId, inode_id: inodeId, revision_no: revisionNo } = request;
+        const {
+            namespace_id: namespaceId,
+            inode_id: inodeId,
+            revision_no: revisionNo,
+            snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
+            Range: range,
+        } = request;
+        const _queryParams: Record<string, unknown> = {
+            snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
+        };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
             mergeOnlyDefinedHeaders({
+                Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
                 "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
                 "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
@@ -680,7 +730,11 @@ export class InodesClient {
             ),
             method: "GET",
             headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
             responseType: "binary-response",
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
@@ -712,6 +766,11 @@ export class InodesClient {
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 416:
+                    throw new LoonFS.RangeNotSatisfiableError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
@@ -754,7 +813,7 @@ export class InodesClient {
      * @example
      *     await client.inodes.createRevisionDownload({
      *         namespace_id: "namespace_id",
-     *         inode_id: "ino_123",
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         revision_no: 1000000
      *     })
      */

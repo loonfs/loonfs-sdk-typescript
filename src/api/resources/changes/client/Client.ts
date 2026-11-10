@@ -54,11 +54,24 @@ export class ChangesClient {
         request: LoonFS.ListChangesRequest,
         requestOptions?: ChangesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.ListChangesResponse>> {
-        const { namespace_id: namespaceId, after_seq: afterSeq, limit, snapshot_id: snapshotId } = request;
-        const _queryParams: Record<string, unknown> = {
+        const {
+            namespace_id: namespaceId,
             after_seq: afterSeq,
+            split_commits: splitCommits,
+            event_index: eventIndex,
             limit,
             snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
+        } = request;
+        const _queryParams: Record<string, unknown> = {
+            after_seq: afterSeq,
+            split_commits: splitCommits,
+            event_index: eventIndex,
+            limit,
+            snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(

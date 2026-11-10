@@ -9,27 +9,18 @@ import type * as LoonFS from "../index.js";
  */
 export type RunMaintenanceResponse =
     | LoonFS.RunMaintenanceResponse.Gc
-    | LoonFS.RunMaintenanceResponse.GrepGc
     | LoonFS.RunMaintenanceResponse.Metadata
-    | LoonFS.RunMaintenanceResponse.MetadataCompaction
     | LoonFS.RunMaintenanceResponse.RecoverAdministrator
-    | LoonFS.RunMaintenanceResponse.Retention;
+    | LoonFS.RunMaintenanceResponse.Retention
+    | LoonFS.RunMaintenanceResponse.RetentionWindow;
 
 export namespace RunMaintenanceResponse {
     export interface Gc extends LoonFS.RunMaintenanceResponseGc {
         kind: "gc";
     }
 
-    export interface GrepGc extends LoonFS.RunMaintenanceResponseGrepGc {
-        kind: "grep_gc";
-    }
-
     export interface Metadata extends LoonFS.RunMaintenanceResponseMetadata {
         kind: "metadata";
-    }
-
-    export interface MetadataCompaction extends LoonFS.RunMaintenanceResponseMetadataCompaction {
-        kind: "metadata_compaction";
     }
 
     export interface RecoverAdministrator extends LoonFS.RunMaintenanceResponseRecoverAdministrator {
@@ -38,5 +29,9 @@ export namespace RunMaintenanceResponse {
 
     export interface Retention extends LoonFS.RunMaintenanceResponseRetention {
         kind: "retention";
+    }
+
+    export interface RetentionWindow extends LoonFS.RunMaintenanceResponseRetentionWindow {
+        kind: "retention_window";
     }
 }

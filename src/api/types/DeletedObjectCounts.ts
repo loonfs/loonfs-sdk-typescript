@@ -9,6 +9,11 @@ export interface DeletedObjectCounts {
      * older than the grace window.
      */
     content_objects: number;
+    /**
+     * The unreferenced extension segments, such as the grep index's segments, that the pass
+     * deleted.
+     */
+    extension_segments: number;
     /** The unreferenced manifests that the pass deleted. */
     manifests: number;
     /** The unreferenced metadata segments that the pass deleted. */

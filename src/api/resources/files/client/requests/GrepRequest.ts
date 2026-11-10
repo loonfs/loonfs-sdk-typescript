@@ -5,23 +5,35 @@
  *     {
  *         namespace_id: "namespace_id",
  *         pattern: "pattern",
- *         inode_id: "ino_123"
+ *         inode_id: "ino_000000r0000013kje0d47gc8kw"
  *     }
  */
 export interface GrepRequest {
     /** The namespace ID. */
     namespace_id: string;
-    /** The search pattern, in the Rust `regex` crate's syntax. Its UTF-8 encoding must be at most 1024 bytes. */
+    /**
+     * The search pattern, in the Rust `regex` crate's syntax. Its UTF-8 encoding must be at most
+     * 1024 bytes.
+     */
     pattern: string;
     /** Whether matching ignores case. The default is `false`. */
     case_insensitive?: boolean;
-    /** A complete absolute path that limits matches to its descendants. It can't be combined with `inode_id`. */
+    /**
+     * A complete absolute path that limits matches to its descendants. It can't be combined with
+     * `inode_id`.
+     */
     path_prefix?: string;
     /** An inode that limits matches to its descendants. It can't be combined with `path_prefix`. */
     inode_id?: string;
-    /** Whether a pattern with no required literal bytes can use a capped exhaustive scan. The default is `false`. */
+    /**
+     * Whether a pattern with no required literal bytes can use a capped exhaustive scan. The
+     * default is `false`.
+     */
     allow_scan?: boolean;
-    /** Whether the server returns results from the index alone when the unindexed tail exceeds the scan budget. The default is `false`. */
+    /**
+     * Whether the server returns results from the index alone when the unindexed tail exceeds the
+     * scan budget. The default is `false`.
+     */
     allow_stale?: boolean;
     /** The maximum number of matches per page. */
     limit?: number;

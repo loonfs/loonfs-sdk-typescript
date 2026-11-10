@@ -1,6 +1,6 @@
 # SDK 0.5.0
 
-Regenerated from LoonFS main 9c6b0419a.
+Regenerated from LoonFS main e9ddb9567.
 
 Breaking changes on the wire:
 
@@ -47,13 +47,15 @@ Breaking changes on the wire:
   upload session again to get a new value.
 - The `BindingVersion` pattern is `^[A-Za-z0-9_-]+$` instead of lowercase
   hex.
-- Metadata maintenance reports rename `wal_flush` to `wal_fold` and
-  `reorganize` to `compaction`. The types are `WalFoldStepOutcome` and
-  `CompactionStepOutcome`. The fold outcome `flushed` is `folded`. The
-  compaction outcome `compaction_required` is `metadata_compaction_required`,
-  and `unit_published` is `bounded_merge_published`. The type is
-  `LoonFS.CompactionStepOutcomeBoundedMergePublished`, and the union member
-  is `LoonFS.CompactionStepOutcome.BoundedMergePublished`.
+- The `metadata` maintenance report replaces `wal_flush` and `reorganize`
+  with the required `outcome` and `compaction_units` and the optional
+  `skipped`. `outcome` is a `MetadataMaintenanceOutcome`, `caught_up` or
+  `due`, and `skipped` lists `MetadataSkippedWork` values. The
+  `WalFlushStepOutcome` and `ReorganizeStepOutcome` types are removed.
+- The `metadata_compaction` and `grep_gc` maintenance kinds are removed,
+  together with their request and response types and the
+  `MetadataCompactionOutcome` types. A `metadata` run includes compaction,
+  and a `gc` run includes grep index collection.
 - The metadata maintenance request renames `max_wal_tail_segments` to
   `max_wal_tail_objects`. Namespace diagnostics rename `wal_tail_segments` to
   `wal_tail_objects`. GC reports rename the deleted object count
@@ -67,21 +69,68 @@ Breaking changes on the wire:
 - `GrepIndexStatusActive.next_event_index` and
   `ObjectTransferAccessPresignedUrl.headers` are required. An omitted field
   always means the field does not apply.
-- The capability limit `snapshot.max_lifetime_ms` is `snapshot.max_age_ms`.
+- The capability document no longer has these keys:
+  - `filesystem.namespaces.create`, `filesystem.namespaces.delete`, and
+    `filesystem.namespaces.fork`
+  - `filesystem.snapshots`
+  - `query.grep.default_limit` and `query.grep.max_limit`
+  - `snapshot.max_lifetime_ms`, `snapshot.max_ttl_ms`, and
+    `snapshot.max_live_per_namespace`
+- `create_checkpoint` and `delete_checkpoint` are removed, together with
+  `maintenance.checkpoints.create`, `maintenance.checkpoints.delete`,
+  `CreateCheckpointRequest`, and `DeleteCheckpointResponse`. A snapshot is the
+  one kind of user pin, and the checkpoint listing shows a snapshot with the
+  `user` owner and the snapshot's name. `CheckpointOwnerSnapshot`,
+  `DeletedCheckpointsByOwner.snapshot`, and
+  `NamespaceDiagnostics.live_checkpoints` are removed.
+- The error codes `checkpoint_not_found`, `snapshot_gone`, and
+  `snapshot_quota_exceeded` are removed. A read, fork, or extension of an
+  expired snapshot returns `snapshot_not_found`, and so does a retrieve of a
+  missing checkpoint. The server has no limit on live snapshots.
+- `CreateSnapshotRequest.ttl_ms` is optional, and a snapshot created without
+  it doesn't expire. `Snapshot.expires_at_ms` is optional. `ttl_ms` must be at
+  least 1 on create and extend, and an extension never moves the expiry
+  earlier.
+- Live reads default to `eventual` consistency unless the server's
+  `consistency` setting is `strong`. An eventual read uses the head that the
+  server confirmed last while that confirmation is younger than the maximum
+  staleness, so it can miss a recent commit. Set `consistency` to `strong` to
+  confirm the head before the read.
+- `ContentRef.owner_namespace_id` is removed. A fork family stores its
+  content under the family root's prefix, and the required
+  `NamespaceMetadata.family_root_id` names that root. A `content_token` is
+  valid only in the namespace where its upload session was completed.
+- `PathEntryFile.content_ref` is optional. Entry reads by path or by inode
+  include it, and directory listings leave it out.
+- Inode, content, and upload IDs are the prefix `ino_`, `con_`, or `upl_`
+  followed by 26 lowercase Crockford base 32 characters. Inode IDs were
+  decimal numbers, and content and upload IDs were 32 hex digits.
+- `GrepIndexStatusActive`, `GrepIndexStatusBackfilling`, and
+  `GrepIndexStatusDisabled` no longer have `next_run_no`, and the `RunNo`
+  type is removed.
+- `StoreProbeResponse.checks` holds `StoreProbeCheck` values, a union on
+  `outcome` with the members `passed`, `unsupported`, and `failed`. A failed
+  check has a `message`. `StoreProbeCheck` replaces `StoreProbeCheckResult`
+  and `StoreProbeCheckOutcome`.
+- The metadata maintenance request's `max_wal_tail_objects` must be at
+  least 1.
+- `@loonfs/sdk/client` is removed, together with its `LoonFSClient` export
+  and the `namespace_alias` addressing of the `/v0/namespace-aliases/`
+  routes. Import `LoonFSClient` from `@loonfs/sdk/server`. The same client
+  works in a backend and in a browser. In a browser, set `baseUrl` to the
+  application's proxy and `token` to the credential that the proxy's
+  `authorize` hook checks. The proxy replaces that credential with the
+  server token, so the server token stays in the backend.
 
 Other changes:
 
-- `snapshots.retrieve` (`get_snapshot`) returns one live snapshot. A missing
-  id returns `snapshot_not_found`, and an expired snapshot returns
-  `snapshot_gone`. Both clients provide it. On the server client,
-  `maintenance.checkpoints.retrieve` (`get_checkpoint`) returns one pin as
-  the checkpoint listing returns it.
-- The proxy forwards `GET` requests for one snapshot, so browser clients can
-  retrieve a snapshot.
-- Namespaces have a naming mode that sets how sibling names compare.
-  `NamespaceNaming` is `case_insensitive` or `case_sensitive`, and it is fixed
-  when the namespace is created. `CreateNamespaceRequest.naming` is optional
-  and defaults to `case_insensitive`. `NamespaceMetadata.naming` is required.
+- `snapshots.retrieve` (`get_snapshot`) returns one snapshot, including an
+  expired one that garbage collection hasn't deleted yet. A missing id
+  returns `snapshot_not_found`. `maintenance.checkpoints.retrieve`
+  (`get_checkpoint`) returns one pin as the checkpoint listing returns it,
+  and a missing id returns `snapshot_not_found`.
+- The proxy forwards `GET` requests for one snapshot, so a browser
+  application can retrieve a snapshot.
 - Commits accept `append_file` (`FilesystemOperationAppendFile`) and
   `append_file_by_inode` (`FilesystemOperationAppendFileByInode`). Each one
   adds 1 byte to 256 KiB of inline content to a file as its next revision.
@@ -107,11 +156,11 @@ Other changes:
 - GC reports count deleted temporary objects in the required
   `DeletedObjectCounts.temporary_objects`.
 - `StoreProbeResponse.run_id` has the type `ProbeRunId`. A run ID is `probe_`
-  followed by 32 lowercase hex digits.
+  followed by 26 lowercase Crockford base 32 characters.
 - The new error code `store_contention` (503) reports that a write to a
   namespace control object used every compare-and-swap attempt it was
-  allowed. The response includes `Retry-After: 1`, and the client retries
-  it under the same rules as `server_busy`.
+  allowed. The response has no `Retry-After` header, and the client doesn't
+  retry it. Back off before retrying the request.
 - An error caused by a JSON body field names the field in `param` as a JSON
   Pointer, such as `/start_offset`. An invalid grep pattern reports `param`
   as `pattern`.
@@ -122,6 +171,52 @@ Other changes:
   clients ignore them. Newer servers may also report other inode kinds in
   `PathEntry` and `TrashEntry`. Only the documentation changed. The generated
   unions are unchanged.
+- Forks can be merged and rebased. `merge_fork` (`namespaces.merge`) merges a
+  fork's commits into the namespace as one commit. `get_next_merge_range`
+  (`namespaces.nextMergeRange`) reports where the fork's next merge starts, as
+  a `NextMergeRangeResponse` union on `outcome` with the members `open`,
+  `range_start_below_floor`, and `fork_point_below_floor`. `rebase_fork`
+  (`namespaces.rebase`) replays a fork's unmerged commits into a new fork and
+  reports the conflicting changes as `MergeConflict` values. A merge commit
+  has `Commit.merge`, and a namespace that a rebase created has
+  `NamespaceForkBasis.rebased_from`.
+- `list_diff` (`diff.list`) returns a page of the inodes whose state differs
+  between two sequences, as `DiffEntry` values with a `DiffEntryKind`.
+- The new error codes are `merge_conflict` (409), `merge_range_conflict`
+  (409), `merge_too_large` (413), and `range_not_satisfiable` (416).
+  `ErrorDetails` adds `conflict`, `conflict_count`, `merge_bound`,
+  `split_at_seq`, `fork_point_seq`, `from_seq`, `source_namespace_id`,
+  `source_after_seq`, `expected_after_seq`, `actual_after_seq`, and
+  `size_bytes`. The client throws `LoonFS.ForbiddenError` for 403 and
+  `LoonFS.RangeNotSatisfiableError` for 416.
+- `grep` returns `rebootstrap_required` (409) when a later page's read
+  position is below the retention floor.
+- Live reads take an optional `consistency` (`ReadConsistency`, `eventual`
+  or `strong`) and `max_staleness_ms`. The three download grant requests
+  take the same fields in their bodies.
+- The three content reads take an optional `Range`, sent as the `Range`
+  header, and return one byte range of the file as 206 with `Content-Range`. A
+  range that starts at or past the end of the file returns
+  `range_not_satisfiable`.
+- `get_file_revision_content_by_inode` takes an optional `snapshot_id`.
+- `list_path_entries` and `list_inode_children` take an optional
+  `recursive`.
+- `list_changes` takes `split_commits` and `event_index`, and
+  `ListChangesResponse.next_event_index` resumes a page that ended inside a
+  commit. The capability key is `filesystem.changes.split_commits`.
+- `FilesystemChangeContentChanged.append_offset` reports where an append's
+  bytes begin.
+- A namespace can have a retention window. `CreateNamespaceRequest` and
+  `NamespaceMetadata` have the optional `retention_window_ms`, and the
+  `retention_window` maintenance kind sets or clears it.
+- `NamespaceForkBasis.source_pin_id` is required. A read can pass it as
+  `snapshot_id` to read the source namespace at the fork point.
+- GC reports have the required `listed_bytes` and
+  `DeletedObjectCounts.extension_segments`, and the optional `skipped`, a
+  list of `GcSkippedWork` values.
+- `delete_snapshot` is idempotent, and the client retries it.
+- The capability key `filesystem.merges` reports whether the deployment
+  serves merges.
 - Documentation strings follow the current specification wording.
 
 Handwritten layers:
@@ -139,10 +234,18 @@ Handwritten layers:
   the stream aborts the transfer, so range requests in flight reject instead
   of running on.
 - `files.append` appends 1 byte to 256 KiB to a file in one commit through
-  `append_file`. Both clients provide it.
+  `append_file`.
 - The three languages share helper names, verification order, and error
   wording. SHA-256 code and optional-algorithm branches are removed.
-- The browser proxy strips the browser's `Host` header.
+- The proxy strips the browser's `Host` header.
+- The proxy forwards `/v0/capabilities` and the namespace routes for files,
+  uploads, snapshots, changes, and grep with the path unchanged, and it
+  returns 404 for every other route. `namespaceAliases` and the
+  `/v0/namespace-aliases/` routes are removed. The `authorize` hook receives
+  the decoded namespace ID in `ProxyRouteContext.namespaceId`, and it checks
+  that the caller may use that namespace.
+- A proxied download whose entry read has no `content_ref` throws instead of
+  reading.
 
 # SDK 0.4.0
 

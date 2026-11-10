@@ -10,6 +10,11 @@ export interface RunMaintenanceResponseGc {
     deleted: LoonFS.DeletedObjectCounts;
     /** The checkpoint records that the pass deleted, counted by owner. */
     deleted_checkpoints_by_owner: LoonFS.DeletedCheckpointsByOwner;
+    /**
+     * The bytes of every object that the pass listed under the namespace, each object once, before
+     * the pass's deletes.
+     */
+    listed_bytes: number;
     /** The namespace that the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
     /** The earliest future retirement deadline, pin deletion time, or upload cleanup time. */
@@ -18,4 +23,6 @@ export interface RunMaintenanceResponseGc {
     reclaimable_at_ms?: number | undefined;
     /** The candidates that the pass kept at deletion time, counted by reason. */
     retained: LoonFS.RetainedCandidates;
+    /** The work that this pass skipped at a limit, by reason. Empty when the pass skipped nothing. */
+    skipped?: LoonFS.GcSkippedWork[] | undefined;
 }

@@ -8,7 +8,7 @@ import type * as LoonFS from "../index.js";
 export interface Checkpoint {
     /** The namespace sequence that the checkpoint captured. */
     captured_seq: LoonFS.ChangeSeq;
-    /** The checkpoint's durable ID. Use it to delete the checkpoint. */
+    /** The checkpoint's durable ID. For a user pin, it's also the snapshot's `snapshot_id`. */
     checkpoint_id: LoonFS.PinId;
     /** The time the checkpoint record was created, in Unix milliseconds. */
     created_at_ms: number;

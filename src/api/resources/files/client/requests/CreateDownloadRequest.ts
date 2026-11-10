@@ -12,6 +12,18 @@ import type * as LoonFS from "../../../../index.js";
 export interface CreateDownloadRequest {
     /** The namespace ID. */
     namespace_id: string;
+    /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency` set to `eventual`, how old the server's last confirmation of the head can
+     * be, in milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
     /** The absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /**

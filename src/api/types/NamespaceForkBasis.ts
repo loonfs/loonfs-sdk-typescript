@@ -6,8 +6,18 @@ import type * as LoonFS from "../index.js";
  * The source namespace and sequence that a forked namespace started from.
  */
 export interface NamespaceForkBasis {
+    /**
+     * The fork whose unmerged commits a rebase replays into this namespace. Only a namespace that
+     * a rebase created has this field.
+     */
+    rebased_from?: LoonFS.NamespaceRebasedFrom | undefined;
     /** The source namespace's sequence that the fork captured. */
     source_head_seq: LoonFS.ChangeSeq;
     /** The namespace that the fork was taken from. */
     source_namespace_id: LoonFS.NamespaceId;
+    /**
+     * The fork pin that keeps the source's state at `source_head_seq` readable. A read of the
+     * source namespace accepts it as `snapshot_id`.
+     */
+    source_pin_id: LoonFS.PinId;
 }

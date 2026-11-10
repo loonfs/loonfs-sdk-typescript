@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "ino_123",
+ *         inode_id: "ino_000000r0000013kje0d47gc8kw",
  *         snapshot_id: "pin_00000000000000000001-0000000000000002"
  *     }
  */
@@ -15,8 +15,23 @@ export interface GetInodeRequest {
     namespace_id: string;
     /** The inode ID. */
     inode_id: string;
-    /** Whether the response includes the inode's attribute map and attribute revision. The default is `true`, because a stat reads one path and a map is at most 64 KiB. */
+    /**
+     * Whether the response includes the inode's attribute map and attribute revision. The default
+     * is `true`, because a stat reads one path and a map is at most 64 KiB.
+     */
     include_attributes?: boolean;
     /** The snapshot whose captured path state to read. */
     snapshot_id?: LoonFS.PinId;
+    /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency=eventual`, how old the server's last confirmation of the head can be, in
+     * milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
 }

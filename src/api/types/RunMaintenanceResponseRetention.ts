@@ -8,6 +8,10 @@ import type * as LoonFS from "../index.js";
 export interface RunMaintenanceResponseRetention {
     /** The namespace whose retention floor was advanced. */
     namespace_id: LoonFS.NamespaceId;
-    /** The new retention floor, which is the minimum sequence for incremental replay. */
+    /**
+     * The retention floor that the advance reached, which is the minimum sequence for incremental
+     * replay. It's below the target when LoonFS reads a commit that's less than one hour old
+     * before it reaches the target.
+     */
     retention_floor_seq: LoonFS.ChangeSeq;
 }

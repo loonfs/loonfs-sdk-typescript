@@ -17,8 +17,10 @@ export interface CreateNamespaceRequest {
     /** The durable ID of the new namespace. */
     namespace_id: LoonFS.NamespaceId;
     /**
-     * How the namespace compares sibling names. The mode can't be changed after the namespace is
-     * created, and it defaults to `case_insensitive`.
+     * The namespace's retention window, in milliseconds, which must be positive. The reference
+     * server's maintenance sweep uses this window for the namespace. Without this field, the
+     * namespace's window is the server's `retention_window_ms` setting, if the server has that
+     * setting. A `retention_window` maintenance run can change or clear the window later.
      */
-    naming?: LoonFS.NamespaceNaming;
+    retention_window_ms?: number;
 }

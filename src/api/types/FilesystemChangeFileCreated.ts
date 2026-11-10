@@ -12,7 +12,7 @@ export interface FilesystemChangeFileCreated {
     content_ref: LoonFS.ContentRef;
     /** The display name of the new entry. */
     display_name: LoonFS.DisplayName;
-    /** The newly allocated inode, unique within the namespace. */
+    /** The new inode, unique within the namespace. */
     inode_id: LoonFS.InodeId;
     /** The directory that the new entry was bound under. */
     parent_inode_id: LoonFS.InodeId;

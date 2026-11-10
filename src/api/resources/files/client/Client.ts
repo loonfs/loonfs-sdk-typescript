@@ -23,13 +23,14 @@ export class FilesClient {
     }
 
     /**
-     * Returns the current file bytes, a retained revision, or the revision captured by a live snapshot.
+     * Returns the current file bytes, a retained revision, or the revision captured by an unexpired snapshot. A `Range` header asks for one byte range of the file instead.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.RangeNotSatisfiableError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -45,17 +46,28 @@ export class FilesClient {
         request: LoonFS.GetFileContentRequest,
         requestOptions?: FilesClient.RequestOptions,
     ): Promise<core.WithRawResponse<core.BinaryResponse>> {
-        const { namespace_id: namespaceId, path, revision_no: revisionNo, snapshot_id: snapshotId } = request;
+        const {
+            namespace_id: namespaceId,
+            path,
+            revision_no: revisionNo,
+            snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
+            Range: range,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             revision_no: revisionNo,
             snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
             mergeOnlyDefinedHeaders({
+                Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
                 "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
                 "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
@@ -105,6 +117,11 @@ export class FilesClient {
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 416:
+                    throw new LoonFS.RangeNotSatisfiableError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
@@ -241,7 +258,7 @@ export class FilesClient {
     }
 
     /**
-     * Lists a directory from the current state or a live snapshot.
+     * Lists a directory from the current state or an unexpired snapshot.
      *
      * @param {LoonFS.ListPathEntriesRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -275,14 +292,20 @@ export class FilesClient {
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    recursive,
                     snapshot_id: snapshotId,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
                     cursor,
                     include_attributes: includeAttributes,
+                    recursive,
                     snapshot_id: snapshotId,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -379,7 +402,7 @@ export class FilesClient {
     }
 
     /**
-     * Returns path metadata from the current state or a live snapshot.
+     * Returns path metadata from the current state or an unexpired snapshot.
      *
      * @param {LoonFS.GetPathEntryRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -415,11 +438,15 @@ export class FilesClient {
             path,
             include_attributes: includeAttributes,
             snapshot_id: snapshotId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
         } = request;
         const _queryParams: Record<string, unknown> = {
             path,
             include_attributes: includeAttributes,
             snapshot_id: snapshotId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -519,11 +546,20 @@ export class FilesClient {
             async (
                 request: LoonFS.ListFileRevisionsRequest,
             ): Promise<core.WithRawResponse<LoonFS.ListFileRevisionsResponse>> => {
-                const { namespace_id: namespaceId, path, limit, cursor } = request;
+                const {
+                    namespace_id: namespaceId,
+                    path,
+                    limit,
+                    cursor,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
+                } = request;
                 const _queryParams: Record<string, unknown> = {
                     path,
                     limit,
                     cursor,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -620,7 +656,7 @@ export class FilesClient {
     }
 
     /**
-     * Searches file content with a regular expression, using the namespace's grep index to narrow the candidates. The server checks each candidate against the full pattern and returns matches in ascending `(inode_id, byte_offset)` order. It scans every revision committed after the index watermark, unless `allow_stale` skips them. The deployment must serve grep, and the namespace must have a materialized, active grep index.
+     * Searches file content with a regular expression, using the namespace's grep index to narrow the candidates. The server checks each candidate against the full pattern and returns matches ordered by the content value of each file's revision, then by `inode_id`, and then by `byte_offset`. It scans every revision committed after the index watermark, unless `allow_stale` skips them. A first page reads the namespace at its head, and a later page reads at the first page's head. The deployment must serve grep, and the namespace must have a materialized, active grep index.
      *
      * @param {LoonFS.GrepRequest} request
      * @param {FilesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -628,6 +664,7 @@ export class FilesClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
@@ -639,7 +676,7 @@ export class FilesClient {
      *     await client.files.grep({
      *         namespace_id: "namespace_id",
      *         pattern: "pattern",
-     *         inode_id: "ino_123"
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw"
      *     })
      */
     public async grep(
@@ -717,6 +754,11 @@ export class FilesClient {
                             );
                         case 404:
                             throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 409:
+                            throw new LoonFS.ConflictError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );

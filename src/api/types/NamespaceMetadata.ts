@@ -13,6 +13,12 @@ export interface NamespaceMetadata {
     /** The actor that created the namespace, as the application supplied it. */
     created_by: LoonFS.ActorId;
     /**
+     * The namespace whose prefix stores the content of this namespace's fork family. For a
+     * namespace that wasn't created by a fork, this is the namespace itself. A fork has the same
+     * family root as its source.
+     */
+    family_root_id: LoonFS.NamespaceId;
+    /**
      * The namespace and sequence this namespace was forked from. Only a forked namespace has this
      * field.
      */
@@ -21,11 +27,15 @@ export interface NamespaceMetadata {
     head_seq: LoonFS.ChangeSeq;
     /** The namespace ID. */
     namespace_id: LoonFS.NamespaceId;
-    /** How the namespace compares sibling names. */
-    naming: LoonFS.NamespaceNaming;
     /**
      * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
      * or any later one, and the feed returns the changes committed after it.
      */
     retention_floor_seq: LoonFS.ChangeSeq;
+    /**
+     * The namespace's retention window, in milliseconds. Only a namespace with a window has this
+     * field. The reference server's maintenance sweep doesn't advance the floor of a namespace
+     * without a window.
+     */
+    retention_window_ms?: number | undefined;
 }
