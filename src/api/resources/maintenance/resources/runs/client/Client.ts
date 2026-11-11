@@ -23,7 +23,7 @@ export class RunsClient {
     }
 
     /**
-     * Runs one maintenance job for the namespace. The body's `kind` selects the job, which is one of `metadata`, `metadata_compaction`, `gc`, `grep_gc`, `retention`, or `recover_administrator`. The response includes the same `kind` and the job's result. A deleted namespace accepts only `gc` and `grep_gc`. A `grep_gc` job deletes aged, unreferenced grep index objects, and it requires `maintenance.grep.index`. A `gc` job reads the current manifest, lists the pins, and then sweeps every object family to the end. Each listing starts at the beginning, and the job doesn't keep a position to continue from. A `retention` job advances the retention floor to the folded manifest head, or to the one target that `to_seq` or `cutoff_at_ms` sets.
+     * Runs one maintenance job for the namespace. The body's `kind` selects the job, which is one of `metadata`, `gc`, `retention`, `retention_window`, or `recover_administrator`. The response includes the same `kind` and the job's result. A deleted namespace accepts only `gc`. A `metadata` job folds the WAL tail and compacts metadata until nothing is due, or until it publishes 16 compaction units. A compaction unit can take minutes, so the call can too. When the result's `outcome` is `due`, another `metadata` run continues the work. A `gc` job reads the current manifest, lists the pins, and then sweeps every object family under the namespace's prefix to the end, including the segments of extensions such as the grep index. The collection of the namespace's pool, which deletes content objects, upload records, and temporary objects, is a job of the pool. Each listing starts at the beginning, and the job doesn't keep a position to continue from. A `retention` job advances the retention floor to the folded manifest head, or to the one target that `to_seq` or `cutoff_at_ms` sets. A `retention_window` job sets the namespace's retention window to `retention_window_ms`, or clears it when the body doesn't include that field.
      *
      * @param {LoonFS.maintenance.CreateRunsRequest} request
      * @param {RunsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -33,7 +33,6 @@ export class RunsClient {
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
-     * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -110,11 +109,6 @@ export class RunsClient {
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 501:
-                    throw new LoonFS.NotImplementedError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );

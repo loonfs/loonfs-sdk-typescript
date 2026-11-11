@@ -22,7 +22,7 @@ export class TrashClient {
     }
 
     /**
-     * Returns the namespace's recoverable deletions, oldest first. Advancing the retention floor doesn't remove entries. Each entry includes the inode ID and deletion sequence that an undelete needs, and the deleted name when the delete recorded one.
+     * Returns the namespace's recoverable deletions, oldest first. A deletion leaves the list when it's undeleted, or when the namespace's retention floor reaches its `deletion_seq`. Each entry includes the inode ID and deletion sequence that an undelete needs, and the directory binding that the delete removed.
      *
      * @param {LoonFS.ListTrashRequest} request
      * @param {TrashClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -46,10 +46,18 @@ export class TrashClient {
     ): Promise<core.Page<LoonFS.TrashEntry, LoonFS.ListTrashResponse>> {
         const list = core.HttpResponsePromise.interceptFunction(
             async (request: LoonFS.ListTrashRequest): Promise<core.WithRawResponse<LoonFS.ListTrashResponse>> => {
-                const { namespace_id: namespaceId, limit, cursor } = request;
+                const {
+                    namespace_id: namespaceId,
+                    limit,
+                    cursor,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
+                } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(

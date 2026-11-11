@@ -3,13 +3,15 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The result of the WAL fold and one bounded compaction step.
+ * Whether metadata maintenance is caught up, and the compaction units that the job published.
  */
 export interface RunMaintenanceResponseMetadata {
-    /** What the bounded compaction step did. */
-    compaction: LoonFS.CompactionStepOutcome;
+    /** The compaction units that this run published. A unit compacts one family group's window. */
+    compaction_units: number;
     /** The namespace that this run maintained. */
     namespace_id: LoonFS.NamespaceId;
-    /** What the WAL fold did. */
-    wal_fold: LoonFS.WalFoldStepOutcome;
+    /** Whether work is still due when the run returns. */
+    outcome: LoonFS.MetadataMaintenanceOutcome;
+    /** The work that this run skipped at a limit, by reason. Empty when the run skipped nothing. */
+    skipped?: LoonFS.MetadataSkippedWork[] | undefined;
 }

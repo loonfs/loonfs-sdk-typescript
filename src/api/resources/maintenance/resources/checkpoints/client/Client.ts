@@ -4,7 +4,6 @@ import type { BaseClientOptions, BaseRequestOptions } from "../../../../../../Ba
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../../../BaseClient.js";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../../../core/headers.js";
 import * as core from "../../../../../../core/index.js";
-import { mergeAdditionalBodyParameters } from "../../../../../../core/requestBody.js";
 import { handleNonStatusCodeError } from "../../../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../../../errors/index.js";
 import * as LoonFS from "../../../../../index.js";
@@ -23,7 +22,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Lists existing pins in checkpoint ID order. An expired pin stays in the list until garbage collection deletes it, after its expiry plus the grace window. A cursor continues the listing against the current set of pins.
+     * Lists every pin, snapshots and fork pins, in checkpoint ID order. This is the inventory of what keeps manifests from garbage collection. An expired snapshot stays in the list until garbage collection deletes it, after its expiry plus the grace window. A cursor continues the listing against the current set of pins.
      *
      * @param {LoonFS.maintenance.ListCheckpointsRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -143,114 +142,7 @@ export class CheckpointsClient {
     }
 
     /**
-     * Creates a user checkpoint record that pins the current namespace view. The server first folds any WAL tail after the current manifest. Every call creates a new record with a new ID, and the name is a label, not a key. The record keeps its manifest until the record is deleted, either explicitly or by garbage collection after the record expires and its grace window passes. Because of that, routine maintenance should fold the WAL instead of creating checkpoints. This is a maintenance operation, not a file change.
-     *
-     * @param {LoonFS.maintenance.CreateCheckpointRequest} request
-     * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link LoonFS.BadRequestError}
-     * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.GoneError}
-     * @throws {@link LoonFS.ContentTooLargeError}
-     * @throws {@link LoonFS.ServiceUnavailableError}
-     * @throws {@link errors.LoonFSError}
-     * @throws {@link errors.LoonFSTimeoutError}
-     *
-     * @example
-     *     await client.maintenance.checkpoints.create({
-     *         namespace_id: "namespace_id",
-     *         name: "name"
-     *     })
-     */
-    public create(
-        request: LoonFS.maintenance.CreateCheckpointRequest,
-        requestOptions?: CheckpointsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.Checkpoint> {
-        return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
-    }
-
-    private async __create(
-        request: LoonFS.maintenance.CreateCheckpointRequest,
-        requestOptions?: CheckpointsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.Checkpoint>> {
-        const { namespace_id: namespaceId, ..._body } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            mergeOnlyDefinedHeaders({
-                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
-                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
-            }),
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints`,
-            ),
-            method: "POST",
-            headers: _headers,
-            contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: 0,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.Checkpoint, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 401:
-                    throw new LoonFS.UnauthorizedError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 413:
-                    throw new LoonFS.ContentTooLargeError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 503:
-                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "POST",
-            "/v0/maintenance/namespaces/{namespace_id}/checkpoints",
-        );
-    }
-
-    /**
-     * Returns one existing pin, as the checkpoint listing returns it, including an expired pin that garbage collection hasn't deleted. A missing ID returns `checkpoint_not_found`.
+     * Returns one existing pin, as the checkpoint listing returns it, including an expired snapshot that garbage collection hasn't deleted. A missing ID returns `snapshot_not_found`.
      *
      * @param {LoonFS.maintenance.GetCheckpointRequest} request
      * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -340,101 +232,6 @@ export class CheckpointsClient {
             _response.error,
             _response.rawResponse,
             "GET",
-            "/v0/maintenance/namespaces/{namespace_id}/checkpoints/{checkpoint_id}",
-        );
-    }
-
-    /**
-     * Deletes a user checkpoint pin. A missing ID returns `checkpoint_not_found`. Garbage collection can then reclaim the pin's unreferenced manifest and runs.
-     *
-     * @param {LoonFS.maintenance.DeleteCheckpointRequest} request
-     * @param {CheckpointsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link LoonFS.BadRequestError}
-     * @throws {@link LoonFS.UnauthorizedError}
-     * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.ServiceUnavailableError}
-     * @throws {@link errors.LoonFSError}
-     * @throws {@link errors.LoonFSTimeoutError}
-     *
-     * @example
-     *     await client.maintenance.checkpoints.delete({
-     *         namespace_id: "namespace_id",
-     *         checkpoint_id: "checkpoint_id"
-     *     })
-     */
-    public delete(
-        request: LoonFS.maintenance.DeleteCheckpointRequest,
-        requestOptions?: CheckpointsClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.DeleteCheckpointResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__delete(request, requestOptions));
-    }
-
-    private async __delete(
-        request: LoonFS.maintenance.DeleteCheckpointRequest,
-        requestOptions?: CheckpointsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.DeleteCheckpointResponse>> {
-        const { namespace_id: namespaceId, checkpoint_id: checkpointId } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            mergeOnlyDefinedHeaders({
-                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
-                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
-            }),
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)),
-                `v0/maintenance/namespaces/${core.url.encodePathParam(namespaceId)}/checkpoints/${core.url.encodePathParam(checkpointId)}`,
-            ),
-            method: "DELETE",
-            headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: 0,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as LoonFS.DeleteCheckpointResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 400:
-                    throw new LoonFS.BadRequestError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 401:
-                    throw new LoonFS.UnauthorizedError(
-                        _response.error.body as LoonFS.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 404:
-                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 503:
-                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
-                default:
-                    throw new errors.LoonFSError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "DELETE",
             "/v0/maintenance/namespaces/{namespace_id}/checkpoints/{checkpoint_id}",
         );
     }

@@ -6,8 +6,6 @@
 export interface DeletedCheckpointsByOwner {
     /** The fork pins that the pass deleted because their target namespaces no longer exist. */
     fork: number;
-    /** The snapshot pins that the pass deleted after they expired or their namespace was deleted. */
-    snapshot: number;
     /** The user pins that the pass deleted after they expired or their namespace was deleted. */
     user: number;
 }

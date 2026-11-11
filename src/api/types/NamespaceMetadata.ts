@@ -21,11 +21,20 @@ export interface NamespaceMetadata {
     head_seq: LoonFS.ChangeSeq;
     /** The namespace ID. */
     namespace_id: LoonFS.NamespaceId;
-    /** How the namespace compares sibling names. */
-    naming: LoonFS.NamespaceNaming;
+    /**
+     * The pool that stores the namespace's content objects and upload records. A fork has the
+     * same pool as its source.
+     */
+    pool_id: LoonFS.PoolId;
     /**
      * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
      * or any later one, and the feed returns the changes committed after it.
      */
     retention_floor_seq: LoonFS.ChangeSeq;
+    /**
+     * The namespace's retention window, in milliseconds. Only a namespace with a window has this
+     * field. The reference server's maintenance sweep doesn't advance the floor of a namespace
+     * without a window.
+     */
+    retention_window_ms?: number | undefined;
 }

@@ -3,8 +3,10 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A job that advances the retention floor to the folded manifest head, or to the target that
- * the request sets.
+ * A job that advances the retention floor toward the folded manifest head, or toward the
+ * target that the request sets.
+ *
+ * The floor doesn't pass a commit that's less than one hour old.
  */
 export interface RunMaintenanceRequestRetention {
     /**

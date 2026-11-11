@@ -3,9 +3,20 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A file received a new current revision from a put or revision restore.
+ * A file received a new current revision from a put, a copy, an append, or a revision
+ * restore.
  */
 export interface FilesystemChangeContentChanged {
+    /**
+     * The offset where the appended bytes begin, present when an append published the
+     * revision.
+     *
+     * It equals the base revision's `size_bytes`, so the new revision's bytes are the base
+     * revision's bytes followed by the bytes from this offset to `size_bytes`. It's
+     * present for every append, including one that starts a new content ID, and absent for
+     * a put, a copy, or a revision restore.
+     */
+    append_offset?: number | undefined;
     /** The immutable content that the revision published. */
     content_ref: LoonFS.ContentRef;
     /** The file inode whose history advanced. */

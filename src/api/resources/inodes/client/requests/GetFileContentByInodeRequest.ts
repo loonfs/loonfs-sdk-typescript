@@ -16,4 +16,18 @@ export interface GetFileContentByInodeRequest {
     inode_id: string;
     /** The snapshot whose captured file revision to read. */
     snapshot_id?: LoonFS.PinId;
+    /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency=eventual`, how old the server's last confirmation of the head can be, in
+     * milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
+    /** One byte range of the file to read instead of the whole file, as `bytes=start-end`, where `end` is the offset of the last byte, or as `bytes=start-`. An `end` past the last byte reads to the end of the file. Any other value, including a suffix range or several ranges, returns 400 `invalid_request`. */
+    Range?: string;
 }

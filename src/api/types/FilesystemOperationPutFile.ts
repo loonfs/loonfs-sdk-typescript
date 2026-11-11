@@ -10,10 +10,7 @@ import type * as LoonFS from "../index.js";
 export interface FilesystemOperationPutFile {
     /** Whether the operation adds a new revision to an existing file or fails with a conflict. */
     behavior?: LoonFS.DestinationBehavior | undefined;
-    /**
-     * The uploaded content, which a content token must cover. Set this field or
-     * `inline_content`, but not both.
-     */
+    /** The content reference. Set this field or `inline_content`, but not both. */
     content_ref?: LoonFS.ContentRef | undefined;
     /** The inode that the path must contain. It applies only with `replace` behavior. */
     expected_inode_id?: LoonFS.InodeId | undefined;

@@ -23,7 +23,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Lists live snapshots in snapshot ID order. The list leaves out deleted and expired snapshots.
+     * Lists snapshots in snapshot ID order. An expired snapshot stays in the list until garbage collection deletes it, after its expiry plus the grace window. The list leaves out fork pins, which the maintenance checkpoint inventory lists.
      *
      * @param {LoonFS.ListSnapshotsRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -140,7 +140,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Creates a snapshot of the current namespace state. Every accepted call creates a new snapshot.
+     * Creates a snapshot of the current namespace state. The server first folds any WAL tail after the current manifest. Every accepted call creates a new snapshot with a new ID, and the name is a label, not a key. A snapshot with `ttl_ms` expires that many milliseconds from the server's current time, and a snapshot without it doesn't expire. The snapshot keeps its manifest until it's deleted, either explicitly or by garbage collection after it expires and its grace window passes.
      *
      * @param {LoonFS.CreateSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -148,7 +148,6 @@ export class SnapshotsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -158,8 +157,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.create({
      *         namespace_id: "namespace_id",
-     *         name: "name",
-     *         ttl_ms: 1000000
+     *         name: "name"
      *     })
      */
     public create(
@@ -222,8 +220,6 @@ export class SnapshotsClient {
                     );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 409:
-                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
@@ -251,7 +247,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Returns one live snapshot, as the snapshot listing returns it. A missing ID, or the ID of a pin that isn't a snapshot, returns `snapshot_not_found`, and an expired snapshot returns `snapshot_gone`.
+     * Returns one snapshot, as the snapshot listing returns it, including an expired snapshot that garbage collection hasn't deleted. A missing ID, or the ID of a fork pin, returns `snapshot_not_found`.
      *
      * @param {LoonFS.GetSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -259,7 +255,6 @@ export class SnapshotsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
@@ -327,8 +322,6 @@ export class SnapshotsClient {
                     );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -349,7 +342,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Deletes a snapshot pin. A missing ID returns `snapshot_not_found`.
+     * Deletes a snapshot. Garbage collection can then reclaim its unreferenced manifest and runs. Deleting a missing snapshot succeeds, so repeating the request has the same result. The ID of a fork pin returns `snapshot_not_found`. Deletion stays available after the namespace is deleted.
      *
      * @param {LoonFS.DeleteSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -401,7 +394,7 @@ export class SnapshotsClient {
             headers: _headers,
             queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: 0,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
             fetchFn: this._options?.fetch,
             logging: this._options.logging,
@@ -444,7 +437,7 @@ export class SnapshotsClient {
     }
 
     /**
-     * Extends a live snapshot without passing its lifetime limit. Repeating the request has the same result.
+     * Moves an unexpired snapshot's expiry to `ttl_ms` from the server's current time. The expiry never moves earlier, so a snapshot without an expiry is returned unchanged. A missing or expired snapshot returns `snapshot_not_found`. Repeating the request has the same result.
      *
      * @param {LoonFS.ExtendSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -452,7 +445,6 @@ export class SnapshotsClient {
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
-     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -525,8 +517,6 @@ export class SnapshotsClient {
                     );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
-                case 410:
-                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
                         _response.error.body as LoonFS.ErrorResponse,

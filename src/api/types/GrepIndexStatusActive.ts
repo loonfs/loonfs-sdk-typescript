@@ -15,8 +15,6 @@ export interface GrepIndexStatusActive {
      * commit is indexed.
      */
     next_event_index: number;
-    /** The next run number that the index allocates. */
-    next_run_no: LoonFS.RunNo;
     /** Whether a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
 }
