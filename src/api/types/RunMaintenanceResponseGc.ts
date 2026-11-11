@@ -17,12 +17,10 @@ export interface RunMaintenanceResponseGc {
     listed_bytes: number;
     /** The namespace that the pass ran against. */
     namespace_id: LoonFS.NamespaceId;
-    /** The earliest future retirement deadline, pin deletion time, or upload cleanup time. */
+    /** The earliest future retirement deadline or pin deletion time. */
     next_reclamation_at_ms?: number | undefined;
     /** The deletion time of the current tombstone plus the configured retirement grace. */
     reclaimable_at_ms?: number | undefined;
     /** The candidates that the pass kept at deletion time, counted by reason. */
     retained: LoonFS.RetainedCandidates;
-    /** The work that this pass skipped at a limit, by reason. Empty when the pass skipped nothing. */
-    skipped?: LoonFS.GcSkippedWork[] | undefined;
 }

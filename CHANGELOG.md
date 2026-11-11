@@ -1,6 +1,6 @@
 # SDK 0.5.0
 
-Regenerated from LoonFS main e9ddb9567.
+Regenerated from LoonFS main a0e80edc0.
 
 Breaking changes on the wire:
 
@@ -96,10 +96,16 @@ Breaking changes on the wire:
   server confirmed last while that confirmation is younger than the maximum
   staleness, so it can miss a recent commit. Set `consistency` to `strong` to
   confirm the head before the read.
-- `ContentRef.owner_namespace_id` is removed. A fork family stores its
-  content under the family root's prefix, and the required
-  `NamespaceMetadata.family_root_id` names that root. A `content_token` is
+- `ContentRef.owner_namespace_id` is removed. A namespace and its forks
+  share one pool, which stores their content, and the required
+  `NamespaceMetadata.pool_id` identifies it. A pool ID (`PoolId`) is `pool_`
+  followed by 26 lowercase Crockford base 32 characters. A `content_token` is
   valid only in the namespace where its upload session was completed.
+- A namespace's `gc` report no longer covers content. The deleted counts
+  `content_objects`, `upload_sessions`, and `retired_content_objects` and the
+  retained counts `upload_session_window` and `upload_session_undecided` are
+  removed from `DeletedObjectCounts` and `RetainedCandidates`. A pool's `gc`
+  run reports content, upload sessions, and temporary objects.
 - `PathEntryFile.content_ref` is optional. Entry reads by path or by inode
   include it, and directory listings leave it out.
 - Inode, content, and upload IDs are the prefix `ino_`, `con_`, or `upl_`
@@ -153,8 +159,6 @@ Other changes:
   the floor to the folded manifest head.
 - The three download grant requests take an optional `start_offset`. A grant
   covers the revision from `start_offset` to its end.
-- GC reports count deleted temporary objects in the required
-  `DeletedObjectCounts.temporary_objects`.
 - `StoreProbeResponse.run_id` has the type `ProbeRunId`. A run ID is `probe_`
   followed by 26 lowercase Crockford base 32 characters.
 - The new error code `store_contention` (503) reports that a write to a
@@ -211,9 +215,20 @@ Other changes:
   `retention_window` maintenance kind sets or clears it.
 - `NamespaceForkBasis.source_pin_id` is required. A read can pass it as
   `snapshot_id` to read the source namespace at the fork point.
-- GC reports have the required `listed_bytes` and
-  `DeletedObjectCounts.extension_segments`, and the optional `skipped`, a
-  list of `GcSkippedWork` values.
+- A namespace's `gc` report has the required `listed_bytes` and
+  `DeletedObjectCounts.extension_segments`.
+- `run_pool_maintenance` (`maintenance.pools.runs.create`) runs one
+  maintenance job on a pool. The route is
+  `POST /v0/maintenance/pools/{pool_id}/runs`. The only kind is `gc`
+  (`RunPoolMaintenanceRequestGc`), which takes an optional `grace_window_ms`.
+  Its result, `RunPoolMaintenanceResponseGc`, reports the deleted content
+  objects, upload sessions, and temporary objects (`PoolDeletedObjectCounts`),
+  the retained candidates (`PoolRetainedCandidates`), `listed_bytes`, the
+  optional `next_reclamation_at_ms`, and the optional `skipped`, a list of
+  `GcSkippedWork` values (`content_sweep_pool_budget` or
+  `content_sweep_unreadable_member`).
+- The new error code `pool_not_found` (404) reports a pool that has no pool
+  record.
 - `delete_snapshot` is idempotent, and the client retries it.
 - The capability key `filesystem.merges` reports whether the deployment
   serves merges.

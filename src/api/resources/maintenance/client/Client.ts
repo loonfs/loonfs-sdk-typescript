@@ -5,6 +5,7 @@ import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } 
 import { CheckpointsClient } from "../resources/checkpoints/client/Client.js";
 import { DiagnosticsClient } from "../resources/diagnostics/client/Client.js";
 import { GrepIndexClient } from "../resources/grepIndex/client/Client.js";
+import { PoolsClient } from "../resources/pools/client/Client.js";
 import { RunsClient } from "../resources/runs/client/Client.js";
 import { StoreClient } from "../resources/store/client/Client.js";
 
@@ -19,6 +20,7 @@ export class MaintenanceClient {
     protected _grepIndex: GrepIndexClient | undefined;
     protected _runs: RunsClient | undefined;
     protected _store: StoreClient | undefined;
+    protected _pools: PoolsClient | undefined;
 
     constructor(options: MaintenanceClient.Options) {
         this._options = normalizeClientOptionsWithAuth(options);
@@ -42,5 +44,9 @@ export class MaintenanceClient {
 
     public get store(): StoreClient {
         return (this._store ??= new StoreClient(this._options));
+    }
+
+    public get pools(): PoolsClient {
+        return (this._pools ??= new PoolsClient(this._options));
     }
 }
