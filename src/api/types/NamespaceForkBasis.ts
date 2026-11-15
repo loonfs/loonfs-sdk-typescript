@@ -7,7 +7,17 @@ import type * as LoonFS from "../index.js";
  */
 export interface NamespaceForkBasis {
     /** The source namespace's sequence that the fork captured. */
-    source_head_seq: LoonFS.ChangeSeq;
+    fork_point_seq: LoonFS.CommitSeq;
+    /**
+     * The fork whose unmerged commits a rebase replays into this namespace. Only a namespace that
+     * a rebase created has this field.
+     */
+    rebased_from?: LoonFS.NamespaceRebasedFrom | undefined;
     /** The namespace that the fork was taken from. */
     source_namespace_id: LoonFS.NamespaceId;
+    /**
+     * The fork snapshot that keeps the source's state at `fork_point_seq` readable. A read of the
+     * source namespace accepts it as `snapshot_id`.
+     */
+    source_snapshot_id: LoonFS.SnapshotId;
 }

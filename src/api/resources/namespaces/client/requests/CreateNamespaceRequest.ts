@@ -4,9 +4,7 @@ import type * as LoonFS from "../../../../index.js";
 
 /**
  * @example
- *     {
- *         namespace_id: "demo"
- *     }
+ *     {}
  */
 export interface CreateNamespaceRequest {
     /**
@@ -14,11 +12,17 @@ export interface CreateNamespaceRequest {
      * default is unrestricted.
      */
     access?: LoonFS.NamespaceAccess;
-    /** The durable ID of the new namespace. */
-    namespace_id: LoonFS.NamespaceId;
     /**
-     * How the namespace compares sibling names. The mode can't be changed after the namespace is
-     * created, and it defaults to `case_insensitive`.
+     * The durable ID of the new namespace. Without this field, LoonFS generates an ID. The
+     * response's `namespace_id` is the new namespace's ID.
      */
-    naming?: LoonFS.NamespaceNaming;
+    namespace_id?: LoonFS.NamespaceId;
+    /**
+     * The namespace's retention window, in milliseconds, which must be at least the grace window
+     * (86400000, which is 24 hours). The reference server's maintenance sweep uses this window
+     * for the namespace. Without this field, the namespace's window is the server's
+     * `retention_window_ms` setting, if the server has that setting. A `retention_window`
+     * maintenance job can change or clear the window later.
+     */
+    retention_window_ms?: number;
 }

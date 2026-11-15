@@ -19,20 +19,22 @@ export interface ErrorDetails {
     active_writer_id?: LoonFS.WriterId | undefined;
     /** The access revision that is actually current for the inode. */
     actual_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
+    /** The fork sequence that the merge started after. */
+    actual_after_seq?: LoonFS.CommitSeq | undefined;
     /** The attribute revision that is actually current for the inode. */
     actual_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** The current binding token. */
     actual_binding_version?: LoonFS.BindingVersion | undefined;
     /** The deletion sequence that is actually active for the inode. */
-    actual_deletion_seq?: LoonFS.ChangeSeq | undefined;
+    actual_deletion_seq?: LoonFS.CommitSeq | undefined;
     /** The namespace's actual head sequence. */
-    actual_head_seq?: LoonFS.ChangeSeq | undefined;
+    actual_head_seq?: LoonFS.CommitSeq | undefined;
     /** The inode that the path actually contained. */
     actual_inode_id?: LoonFS.InodeId | undefined;
     /** The revision that is actually current. It's absent when the inode has no current revision. */
     actual_revision_no?: LoonFS.RevisionNo | undefined;
     /** The `after_seq` value from the change feed request. */
-    after_seq?: LoonFS.ChangeSeq | undefined;
+    after_seq?: LoonFS.CommitSeq | undefined;
     /** The idempotency key of the commit that the error is about. */
     commit_id?: LoonFS.CommitId | undefined;
     /**
@@ -44,25 +46,43 @@ export interface ErrorDetails {
      * The sequence that `commit_id` was already committed at. The server includes it when a
      * durable commit receipt records that commit.
      */
-    committed_seq?: LoonFS.ChangeSeq | undefined;
+    committed_seq?: LoonFS.CommitSeq | undefined;
+    /** The first inode whose change a refused merge can't apply. */
+    conflict?: LoonFS.MergeConflict | undefined;
+    /** The number of inodes whose change a refused merge can't apply. */
+    conflict_count?: number | undefined;
     /** The access revision that the request expected to be current. */
     expected_access_revision_no?: LoonFS.AccessRevisionNo | undefined;
+    /**
+     * The fork sequence that the merge had to start after: the end of the previous merge's range,
+     * or the fork point for the fork's first merge.
+     */
+    expected_after_seq?: LoonFS.CommitSeq | undefined;
     /** The attribute revision that the request expected to be current. */
     expected_attributes_revision_no?: LoonFS.AttributesRevisionNo | undefined;
     /** The opaque binding token that the request supplied. */
     expected_binding_version?: LoonFS.BindingVersion | undefined;
-    /** The deletion sequence that the undelete expected to be active. */
-    expected_deletion_seq?: LoonFS.ChangeSeq | undefined;
+    /** The deletion sequence that the restore expected to be active. */
+    expected_deletion_seq?: LoonFS.CommitSeq | undefined;
     /** The head sequence that the request required. */
-    expected_head_seq?: LoonFS.ChangeSeq | undefined;
+    expected_head_seq?: LoonFS.CommitSeq | undefined;
     /** The inode that the request expected the path to contain. */
     expected_inode_id?: LoonFS.InodeId | undefined;
     /** The revision that the request expected to be current. */
     expected_revision_no?: LoonFS.RevisionNo | undefined;
     /** The epoch of the failed writer session at the time another writer displaced it. */
     fenced_writer_epoch?: LoonFS.WriterEpoch | undefined;
+    /**
+     * The fork point of the fork whose commits a merge applies, which is the sequence of this
+     * namespace that the fork was made at.
+     */
+    fork_point_seq?: LoonFS.CommitSeq | undefined;
+    /** The `from_seq` value from the diff request. */
+    from_seq?: LoonFS.CommitSeq | undefined;
     /** The inode that the failed precondition or operation targeted. */
     inode_id?: LoonFS.InodeId | undefined;
+    /** The bound that a merge's size exceeded. */
+    merge_bound?: LoonFS.MergeBound | undefined;
     /** The deleted namespace that caused the operation to fail. */
     namespace_id?: LoonFS.NamespaceId | undefined;
     /** The index of the failed operation in the request. */
@@ -71,7 +91,28 @@ export interface ErrorDetails {
     precondition_index?: number | undefined;
     /**
      * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
-     * or any later one, and the feed returns the changes committed after it.
+     * or any later one, and the feed returns the changes committed after it. A diff request can
+     * set `from_seq` to this sequence or any later one.
      */
-    retention_floor_seq?: LoonFS.ChangeSeq | undefined;
+    retention_floor_seq?: LoonFS.CommitSeq | undefined;
+    /**
+     * For `range_not_satisfiable`, the size in bytes of the file that the range was requested
+     * from.
+     */
+    size_bytes?: number | undefined;
+    /**
+     * The fork sequence that a merge's range starts after, when that start is below the fork's
+     * own retention floor.
+     */
+    source_after_seq?: LoonFS.CommitSeq | undefined;
+    /**
+     * The fork of a refused merge: the fork whose range conflicts, or whose range starts below
+     * its own retention floor.
+     */
+    source_namespace_id?: LoonFS.NamespaceId | undefined;
+    /**
+     * The split hint of a merge that exceeded a bound: a fork sequence such that a merge of the
+     * fork's commits through it fits. It's absent when no shorter range fits.
+     */
+    split_at_seq?: LoonFS.CommitSeq | undefined;
 }

@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One page of the namespace's recoverable deletions.
+ * One page of the namespace's trash.
  */
 export interface ListTrashResponse {
-    /** The recoverable deletions, oldest first. */
+    /** The trash entries, oldest deletion first. */
     entries: LoonFS.TrashEntry[];
     /** The head sequence that this page was evaluated at. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** The cursor for the next page. It's present when another page follows. */

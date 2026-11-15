@@ -7,5 +7,5 @@ import type * as LoonFS from "../index.js";
  */
 export interface CommitPreconditionNamespaceHead {
     /** The head sequence that the caller observed when it read its inputs. */
-    expected_head_seq: LoonFS.ChangeSeq;
+    expected_head_seq: LoonFS.CommitSeq;
 }

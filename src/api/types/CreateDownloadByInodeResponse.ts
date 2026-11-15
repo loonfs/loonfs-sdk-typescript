@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * A short-lived capability to read one revision of an inode.
+ * The signed object ranges for one revision of an inode.
  */
 export interface CreateDownloadByInodeResponse {
     /** The content's identity, size, and checksum. */

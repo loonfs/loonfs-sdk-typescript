@@ -6,10 +6,10 @@ import type * as LoonFS from "../index.js";
  * One contiguous run of a revision's bytes, which the client reads from one object.
  */
 export interface DownloadRange {
-    /** A short-lived read capability for exactly this range's bytes. */
-    access: LoonFS.ObjectTransferAccess;
     /** The number of bytes in the run. */
     length: number;
     /** The offset of the run's first byte in the revision. */
     start_offset: number;
+    /** A short-lived presigned URL that reads exactly this range's bytes. */
+    transfer: LoonFS.ObjectTransfer;
 }

@@ -6,11 +6,6 @@ import type * as LoonFS from "../index.js";
  * A session that accepts content until its lease ends.
  */
 export interface UploadSessionStatusOpen {
-    /**
-     * The capability for the direct PUT. It's present for `direct_put` sessions, and the
-     * server creates a new one on every read.
-     */
-    access?: LoonFS.ObjectTransferAccess | undefined;
     /** The checksum algorithm that the store uses for content. */
     checksum_algorithm: LoonFS.ChecksumAlgorithm;
     /** The staged content. It's present after content is staged in a `service_proxied` session. */
@@ -26,6 +21,11 @@ export interface UploadSessionStatusOpen {
      * sessions.
      */
     part_size_bytes?: number | undefined;
+    /**
+     * The presigned URL for the direct PUT. It's present for `direct_put` sessions, and the
+     * server creates a new one on every read.
+     */
+    transfer?: LoonFS.ObjectTransfer | undefined;
     /** The upload session ID. */
     upload_id: LoonFS.UploadId;
 }

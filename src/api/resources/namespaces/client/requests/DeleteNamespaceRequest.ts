@@ -12,5 +12,5 @@ export interface DeleteNamespaceRequest {
     /** The namespace ID. */
     namespace_id: string;
     /** The head sequence that the namespace must still have for the delete to succeed. */
-    expected_head_seq?: LoonFS.ChangeSeq;
+    expected_head_seq?: LoonFS.CommitSeq;
 }

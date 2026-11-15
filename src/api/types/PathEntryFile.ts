@@ -25,8 +25,11 @@ export interface PathEntryFile {
      * namespace root.
      */
     binding_version?: LoonFS.BindingVersion | undefined;
-    /** The file's current content. */
-    content_ref: LoonFS.ContentRef;
+    /**
+     * The file's current content. It's present on entry reads (a stat by
+     * path or by inode) and absent from directory listings.
+     */
+    content_ref?: LoonFS.ContentRef | undefined;
     /** The time the inode was created, in Unix milliseconds. */
     created_at_ms: number;
     /** The actor that created this inode, as the application supplied it. */
@@ -34,7 +37,7 @@ export interface PathEntryFile {
     /** The stored display name of this path component. It's absent for the root, which has no name. */
     display_name?: LoonFS.DisplayName | undefined;
     /** The namespace head sequence that this response was read at. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The entry's stable inode ID. */
     inode_id: LoonFS.InodeId;
     /** The namespace that was read. */

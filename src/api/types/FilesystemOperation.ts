@@ -21,9 +21,9 @@ export type FilesystemOperation =
     | LoonFS.FilesystemOperation.MovePath
     | LoonFS.FilesystemOperation.PutFile
     | LoonFS.FilesystemOperation.PutFileRevisionByInode
+    | LoonFS.FilesystemOperation.RestoreDeleted
     | LoonFS.FilesystemOperation.RestoreRevision
     | LoonFS.FilesystemOperation.RestoreRevisionByInode
-    | LoonFS.FilesystemOperation.Undelete
     | LoonFS.FilesystemOperation.UpdateAccess
     | LoonFS.FilesystemOperation.UpdateAccessByInode
     | LoonFS.FilesystemOperation.UpdateAttributes
@@ -82,16 +82,16 @@ export namespace FilesystemOperation {
         kind: "put_file_revision_by_inode";
     }
 
+    export interface RestoreDeleted extends LoonFS.FilesystemOperationRestoreDeleted {
+        kind: "restore_deleted";
+    }
+
     export interface RestoreRevision extends LoonFS.FilesystemOperationRestoreRevision {
         kind: "restore_revision";
     }
 
     export interface RestoreRevisionByInode extends LoonFS.FilesystemOperationRestoreRevisionByInode {
         kind: "restore_revision_by_inode";
-    }
-
-    export interface Undelete extends LoonFS.FilesystemOperationUndelete {
-        kind: "undelete";
     }
 
     export interface UpdateAccess extends LoonFS.FilesystemOperationUpdateAccess {

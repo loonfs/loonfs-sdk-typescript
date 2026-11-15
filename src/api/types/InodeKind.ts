@@ -3,6 +3,6 @@
 /** The kind of a filesystem item, which is a file or a directory. */
 export const InodeKind = {
     File: "file",
-    Dir: "dir",
+    Directory: "directory",
 } as const;
 export type InodeKind = (typeof InodeKind)[keyof typeof InodeKind];

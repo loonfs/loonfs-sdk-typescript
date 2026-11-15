@@ -2,10 +2,11 @@
 
 import type { BaseClientOptions } from "../../../../BaseClient.js";
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
-import { CheckpointsClient } from "../resources/checkpoints/client/Client.js";
 import { DiagnosticsClient } from "../resources/diagnostics/client/Client.js";
 import { GrepIndexClient } from "../resources/grepIndex/client/Client.js";
-import { RunsClient } from "../resources/runs/client/Client.js";
+import { JobsClient } from "../resources/jobs/client/Client.js";
+import { PoolsClient } from "../resources/pools/client/Client.js";
+import { SnapshotsClient } from "../resources/snapshots/client/Client.js";
 import { StoreClient } from "../resources/store/client/Client.js";
 
 export declare namespace MaintenanceClient {
@@ -14,18 +15,15 @@ export declare namespace MaintenanceClient {
 
 export class MaintenanceClient {
     protected readonly _options: NormalizedClientOptionsWithAuth<MaintenanceClient.Options>;
-    protected _checkpoints: CheckpointsClient | undefined;
     protected _diagnostics: DiagnosticsClient | undefined;
     protected _grepIndex: GrepIndexClient | undefined;
-    protected _runs: RunsClient | undefined;
+    protected _jobs: JobsClient | undefined;
+    protected _snapshots: SnapshotsClient | undefined;
     protected _store: StoreClient | undefined;
+    protected _pools: PoolsClient | undefined;
 
     constructor(options: MaintenanceClient.Options) {
         this._options = normalizeClientOptionsWithAuth(options);
-    }
-
-    public get checkpoints(): CheckpointsClient {
-        return (this._checkpoints ??= new CheckpointsClient(this._options));
     }
 
     public get diagnostics(): DiagnosticsClient {
@@ -36,11 +34,19 @@ export class MaintenanceClient {
         return (this._grepIndex ??= new GrepIndexClient(this._options));
     }
 
-    public get runs(): RunsClient {
-        return (this._runs ??= new RunsClient(this._options));
+    public get jobs(): JobsClient {
+        return (this._jobs ??= new JobsClient(this._options));
+    }
+
+    public get snapshots(): SnapshotsClient {
+        return (this._snapshots ??= new SnapshotsClient(this._options));
     }
 
     public get store(): StoreClient {
         return (this._store ??= new StoreClient(this._options));
+    }
+
+    public get pools(): PoolsClient {
+        return (this._pools ??= new PoolsClient(this._options));
     }
 }

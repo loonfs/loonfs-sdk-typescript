@@ -16,7 +16,7 @@ export interface FileRevision {
     /** The actor responsible for this revision, as the application supplied it. */
     committed_by: LoonFS.ActorId;
     /** The namespace sequence of the commit that created this revision. */
-    committed_seq: LoonFS.ChangeSeq;
+    committed_seq: LoonFS.CommitSeq;
     /** The content stored for this revision. */
     content_ref: LoonFS.ContentRef;
     /** The file inode that this revision belongs to. */

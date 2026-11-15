@@ -7,16 +7,42 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         after_seq: 1000000,
- *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+ *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
  *     }
  */
 export interface ListChangesRequest {
     /** The namespace ID. */
     namespace_id: string;
-    /** The sequence after which to return committed changes. */
-    after_seq: LoonFS.ChangeSeq;
+    /**
+     * The sequence after which to return committed changes. With `event_index`, the commit at
+     * this sequence that the page resumes.
+     */
+    after_seq: LoonFS.CommitSeq;
+    /**
+     * Whether a page can end inside a commit that alone exceeds the page's budget. The default is
+     * `false`, which returns every commit whole.
+     */
+    split_commits?: boolean;
+    /**
+     * The `next_event_index` that the previous page returned, which resumes the commit at
+     * `after_seq` at that event. It requires `split_commits=true`. The default is 0, which starts
+     * after the commit at `after_seq`.
+     */
+    event_index?: number;
     /** The maximum page size. */
     limit?: number;
     /** A snapshot to read the feed from. The feed ends at the sequence that the snapshot captured. */
-    snapshot_id?: LoonFS.PinId;
+    snapshot_id?: LoonFS.SnapshotId;
+    /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency=eventual`, how old the server's last confirmation of the head can be, in
+     * milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
 }

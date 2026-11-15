@@ -10,11 +10,11 @@ import type * as LoonFS from "../index.js";
  * A newer server can return an inode kind that isn't listed here. Clients should read only the
  * fields that every entry includes.
  */
-export type PathEntry = LoonFS.PathEntry.Dir | LoonFS.PathEntry.File;
+export type PathEntry = LoonFS.PathEntry.Directory | LoonFS.PathEntry.File;
 
 export namespace PathEntry {
-    export interface Dir extends LoonFS.PathEntryDirectory {
-        inode_kind: "dir";
+    export interface Directory extends LoonFS.PathEntryDirectory {
+        inode_kind: "directory";
     }
 
     export interface File extends LoonFS.PathEntryFile {

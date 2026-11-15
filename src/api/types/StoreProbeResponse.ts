@@ -7,10 +7,10 @@ import type * as LoonFS from "../index.js";
  */
 export interface StoreProbeResponse {
     /** The check results, in the order that the checks ran. */
-    checks: LoonFS.StoreProbeCheckResult[];
+    checks: LoonFS.StoreProbeCheck[];
     /**
      * The ID of this probe run. The server generates the ID and writes the probe's temporary
      * objects under it.
      */
-    run_id: LoonFS.ProbeRunId;
+    probe_id: LoonFS.ProbeId;
 }

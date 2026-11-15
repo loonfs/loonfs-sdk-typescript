@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "ino_123",
+ *         inode_id: "ino_000000r0000013kje0d47gc8kw",
  *         revision_no: 1000000
  *     }
  */
@@ -18,7 +18,19 @@ export interface CreateRevisionDownloadByInodeRequest {
     /** The revision number. */
     revision_no: LoonFS.RevisionNo;
     /**
-     * The first byte that the grant reads. It defaults to 0 and must be less than the revision's
+     * How recently the read confirms the namespace head that it finds the revision in. `eventual`
+     * (the default, unless the server's `consistency` setting is `strong`) reads at the head that
+     * the server confirmed last while that confirmation is younger than the maximum staleness,
+     * and `strong` confirms the head before the read.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency` set to `eventual`, how old the server's last confirmation of the head can
+     * be, in milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
+    /**
+     * The first byte that the download reads. It defaults to 0 and must be less than the revision's
      * size. For a revision of zero bytes, it must be 0.
      */
     start_offset?: number;

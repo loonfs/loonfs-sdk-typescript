@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface ListFileRevisionsResponse {
     /** The namespace head sequence that the read used. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The file inode whose revisions were returned. */
     inode_id: LoonFS.InodeId;
     /** The namespace that was read. */

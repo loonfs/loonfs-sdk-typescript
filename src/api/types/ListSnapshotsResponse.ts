@@ -3,13 +3,13 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One page of live snapshots.
+ * One page of the snapshots that haven't expired or been deleted.
  */
 export interface ListSnapshotsResponse {
     /** The namespace that the snapshots belong to. */
     namespace_id: LoonFS.NamespaceId;
     /** An opaque cursor for the next page. */
     next_cursor?: string | undefined;
-    /** The live snapshot records, in ascending snapshot ID order. */
+    /** The snapshot records, in ascending snapshot ID order. */
     snapshots: LoonFS.Snapshot[];
 }

@@ -32,7 +32,7 @@ export interface PathEntryDirectory {
     /** The stored display name of this path component. It's absent for the root, which has no name. */
     display_name?: LoonFS.DisplayName | undefined;
     /** The namespace head sequence that this response was read at. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The entry's stable inode ID. */
     inode_id: LoonFS.InodeId;
     /** The namespace that was read. */

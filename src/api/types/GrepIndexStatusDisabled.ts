@@ -8,8 +8,6 @@ import type * as LoonFS from "../index.js";
 export interface GrepIndexStatusDisabled {
     /** The namespace that the status describes. */
     namespace_id: LoonFS.NamespaceId;
-    /** The next run number that the index allocates. */
-    next_run_no: LoonFS.RunNo;
     /** Whether a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
 }

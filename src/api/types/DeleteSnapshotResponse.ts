@@ -9,5 +9,5 @@ export interface DeleteSnapshotResponse {
     /** The namespace that the snapshot belonged to. */
     namespace_id: LoonFS.NamespaceId;
     /** The ID of the deleted snapshot record. */
-    snapshot_id: LoonFS.PinId;
+    snapshot_id: LoonFS.SnapshotId;
 }

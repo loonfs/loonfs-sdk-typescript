@@ -10,16 +10,26 @@ export interface ListChangesResponse {
      * The exclusive cursor that this page starts after. It's the cursor that the caller supplied,
      * or the endpoint's initial position.
      */
-    after_seq: LoonFS.ChangeSeq;
-    /** The logical commits after `after_seq`, in ascending namespace sequence order. */
+    after_seq: LoonFS.CommitSeq;
+    /**
+     * The logical commits after `after_seq`, in ascending namespace sequence order. A commit that
+     * the page returns in part lists only the page's events.
+     */
     changes: LoonFS.Commit[];
     /** The namespace head sequence that this page was read at. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The namespace whose change feed was read. */
     namespace_id: LoonFS.NamespaceId;
     /**
      * The cursor for the next page, when another page remains. It's absent on the page that
-     * reaches `head_seq`.
+     * reaches `head_seq`. When the page ends inside a commit, it's that commit's sequence.
      */
-    next_after_seq?: LoonFS.ChangeSeq | undefined;
+    next_after_seq?: LoonFS.CommitSeq | undefined;
+    /**
+     * The index of the first event of the commit at `next_after_seq` that the page didn't
+     * return, when the request set `split_commits` and the page ended inside that commit. The
+     * next request passes it as `event_index`. It's absent when the page ended at a commit
+     * boundary.
+     */
+    next_event_index?: number | undefined;
 }
