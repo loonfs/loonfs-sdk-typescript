@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One recoverable deletion and the directory binding that it removed.
+ * One trash entry: a deletion and the directory binding that it removed.
  */
 export interface TrashEntry {
     /** The time of the deletion, in Unix milliseconds. */
@@ -13,7 +13,7 @@ export interface TrashEntry {
     /** The actor responsible for the deletion. */
     deleted_by: LoonFS.ActorId;
     /** The commit sequence that identifies this deletion. */
-    deletion_seq: LoonFS.ChangeSeq;
+    deletion_seq: LoonFS.CommitSeq;
     /** The inode that the deletion hides. */
     inode_id: LoonFS.InodeId;
     /** Whether the deleted root is a file or a directory. A newer server can return another kind. */

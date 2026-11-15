@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface GrepIndexStatusActive {
     /** The sequence of the commit at the index cursor. */
-    built_through_seq: LoonFS.ChangeSeq;
+    built_through_seq: LoonFS.CommitSeq;
     /** The namespace that the status describes. */
     namespace_id: LoonFS.NamespaceId;
     /**
@@ -15,8 +15,6 @@ export interface GrepIndexStatusActive {
      * commit is indexed.
      */
     next_event_index: number;
-    /** The next run number that the index allocates. */
-    next_run_no: LoonFS.RunNo;
     /** Whether a partitioned segment reorganization is in progress. */
     reorganize_pending: boolean;
 }

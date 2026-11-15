@@ -6,12 +6,12 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         snapshot_id: "pin_00000000000000000001-0000000000000002"
+ *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
  *     }
  */
 export interface GetSnapshotRequest {
     /** The namespace ID. */
     namespace_id: string;
     /** The snapshot ID. */
-    snapshot_id: LoonFS.PinId;
+    snapshot_id: LoonFS.SnapshotId;
 }

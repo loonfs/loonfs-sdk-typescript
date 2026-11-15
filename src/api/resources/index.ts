@@ -3,6 +3,8 @@ export * from "./changes/client/requests/index.js";
 export * as changes from "./changes/index.js";
 export * from "./commits/client/requests/index.js";
 export * as commits from "./commits/index.js";
+export * from "./diff/client/requests/index.js";
+export * as diff from "./diff/index.js";
 export * from "./files/client/requests/index.js";
 export * as files from "./files/index.js";
 export * from "./inodes/client/requests/index.js";

@@ -8,10 +8,7 @@ import type * as LoonFS from "../index.js";
  * The operation requires exactly one of `content_ref` and `inline_content`.
  */
 export interface FilesystemOperationCreateFileByInode {
-    /**
-     * The uploaded content, which a content token must cover. Set this field or
-     * `inline_content`, but not both.
-     */
+    /** The content reference. Set this field or `inline_content`, but not both. */
     content_ref?: LoonFS.ContentRef | undefined;
     /** The name of the new file. */
     display_name: LoonFS.DisplayName;

@@ -1,6 +1,6 @@
 # Releasing
 
-`@loonfs/sdk` exposes the client, proxy, and server SDKs as subpath exports. A
+`@loonfs/sdk` exposes the server and proxy SDKs as subpath exports. A
 v0.4.x SDK targets LoonFS API v0.4.x.
 
 Build and inspect the package before every release:

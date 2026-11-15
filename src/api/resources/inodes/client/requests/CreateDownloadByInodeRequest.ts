@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         inode_id: "ino_123"
+ *         inode_id: "ino_000000r0000013kje0d47gc8kw"
  *     }
  */
 export interface CreateDownloadByInodeRequest {
@@ -15,12 +15,24 @@ export interface CreateDownloadByInodeRequest {
     /** The file's inode ID. */
     inode_id: string;
     /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency` set to `eventual`, how old the server's last confirmation of the head can
+     * be, in milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
+    /**
      * A snapshot to read the file from. The download reads the revision that the snapshot
      * captured.
      */
-    snapshot_id?: LoonFS.PinId;
+    snapshot_id?: LoonFS.SnapshotId;
     /**
-     * The first byte that the grant reads. It defaults to 0 and must be less than the file's size.
+     * The first byte that the download reads. It defaults to 0 and must be less than the file's size.
      * For a file of zero bytes, it must be 0.
      */
     start_offset?: number;

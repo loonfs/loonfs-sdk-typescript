@@ -14,6 +14,6 @@ export interface CreateDownloadResponse {
     path: LoonFS.AbsolutePath;
     /** The ranges that cover the revision's bytes from the requested offset, in order. */
     ranges: LoonFS.DownloadRange[];
-    /** The revision that the capability reads, as resolved from the request. */
+    /** The revision that the download reads, as resolved from the request. */
     revision_no: LoonFS.RevisionNo;
 }

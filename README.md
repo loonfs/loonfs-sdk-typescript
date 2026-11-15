@@ -1,7 +1,7 @@
 # LoonFS TypeScript SDK
 
-Install with `npm install @loonfs/sdk`. Use `@loonfs/sdk/server` in a backend
-and `@loonfs/sdk/client` in a browser. Both export `LoonFSClient`.
+Install with `npm install @loonfs/sdk`, and import `LoonFSClient` from
+`@loonfs/sdk/server`. The same client works in a backend and in a browser.
 
 ```ts
 import { LoonFSClient } from "@loonfs/sdk/server";
@@ -14,17 +14,18 @@ await client.files.upload({
     namespace_id: "demo",
     path: "/notes.txt",
     content: new TextEncoder().encode("first line\n"),
-    commit_id: "c_0123456789abcdef0123456789abcdef",
+    commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
 });
 ```
 
-Server clients accept an optional `actorId`. Browser clients use the application
-proxy's `baseUrl` and address `namespace_alias` instead of `namespace_id`.
-Keep the server token in the backend.
+Server clients accept an optional `actorId`. In a browser, set `baseUrl` to the
+application's proxy (see [Proxy](#proxy)) and `token` to the credential that the
+proxy's `authorize` hook checks. The proxy replaces that credential with the
+server token, so the server token stays in the backend.
 
 ## Transfer helpers
 
-Both clients expose the same `files` helpers:
+The client exposes these `files` helpers:
 
 | Helper | Behavior |
 | --- | --- |
@@ -82,20 +83,20 @@ already consumed are unverified until EOF succeeds. The request's abort signal
 and timeout cover metadata and body reads. The default deadline is 60 seconds;
 `uploadStream` keeps that deadline through publication.
 
-Direct grants contain ordered `ranges`. Each range has a revision `start_offset`,
-`length`, and signed `access`. Helpers validate the range list before any object
-request and read the ranges in order. They keep up to four range responses
+A download response contains ordered `ranges`. Each range has a revision
+`start_offset`, a `length`, and a presigned URL (`transfer`). Helpers validate
+the range list before any object request and read the ranges in order. They keep up to four range responses
 open: the one being read and up to three requested after it. They check each
 range's length and verify the complete file at the end.
 They send the signed headers unchanged. The object Range header can differ from
 the revision offset. An empty file needs no object request. Successful EOF checks
 the total length, then the checksum of the complete file.
 
-The download helpers read complete files. To resume through the generated grant
-API, pin `revision_no`, retain the bytes already read, and request a new grant
+The download helpers read complete files. To resume through the generated download
+API, pin `revision_no`, retain the bytes already read, and request a new download
 with `start_offset` equal to that prefix's length. Verify prefix plus suffix
 against the content reference. Checking only the suffix cannot verify the file.
-A complete local file needs no new grant.
+A complete local file needs no new download.
 
 Direct requests carry only signed headers and never follow redirects. Proxied
 reads use API authorization and are pinned to the selected revision.
@@ -103,10 +104,16 @@ reads use API authorization and are pinned to the selected revision.
 ## Proxy
 
 Import `createProxyHandler` from `@loonfs/sdk/proxy`. Configure `serverBaseUrl`,
-`token`, `namespaceAliases`, and the required `authorize` hook. The hook receives
-the request and the resolved namespace context. Return a `Response` to refuse
-access, or an authorization object to forward as the approved identity.
-Returning `{}` forwards as the token holder.
+`token`, and the required `authorize` hook. The proxy forwards
+`/v0/capabilities` and the namespace routes for files, uploads, snapshots,
+changes, and grep with the path unchanged, and returns 404 for every other
+route.
+
+The hook receives the request and the route context, which includes the decoded
+`namespaceId`. Any namespace ID in the path reaches LoonFS, so the hook checks
+that the caller may use that namespace. Return a `Response` to refuse access, or
+an authorization object to forward as the approved identity. Returning `{}`
+forwards as the token holder.
 
 The proxy forwards bodies without rewriting JSON. It strips browser credentials,
 cookies, `Host`, actor and subject headers, and hop-by-hop headers. It supplies
@@ -120,7 +127,7 @@ Payload requests are never retried. Set `maxRetries` to control generated retrie
 
 ## Generated API
 
-Clients are generated from the LoonFS OpenAPI documents. Report issues in the
+The client is generated from the LoonFS OpenAPI document. Report issues in the
 [LoonFS repository](https://github.com/loonfs/loonfs).
 
 Apache-2.0.

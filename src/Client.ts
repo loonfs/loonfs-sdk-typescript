@@ -3,6 +3,7 @@
 import { CapabilitiesClient } from "./api/resources/capabilities/client/Client.js";
 import { ChangesClient } from "./api/resources/changes/client/Client.js";
 import { CommitsClient } from "./api/resources/commits/client/Client.js";
+import { DiffClient } from "./api/resources/diff/client/Client.js";
 import { FilesClient } from "./api/resources/files/client/Client.js";
 import { InodesClient } from "./api/resources/inodes/client/Client.js";
 import { MaintenanceClient } from "./api/resources/maintenance/client/Client.js";
@@ -26,6 +27,7 @@ export class LoonFSClient {
     protected _namespaces: NamespacesClient | undefined;
     protected _changes: ChangesClient | undefined;
     protected _commits: CommitsClient | undefined;
+    protected _diff: DiffClient | undefined;
     protected _files: FilesClient | undefined;
     protected _trash: TrashClient | undefined;
     protected _inodes: InodesClient | undefined;
@@ -51,6 +53,10 @@ export class LoonFSClient {
 
     public get commits(): CommitsClient {
         return (this._commits ??= new CommitsClient(this._options));
+    }
+
+    public get diff(): DiffClient {
+        return (this._diff ??= new DiffClient(this._options));
     }
 
     public get files(): FilesClient {

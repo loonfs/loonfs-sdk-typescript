@@ -16,9 +16,14 @@ export interface Commit {
     /** The actor responsible for the commit, as the application supplied it. */
     committed_by: LoonFS.ActorId;
     /** The sequence at which the commit became visible. */
-    committed_seq: LoonFS.ChangeSeq;
+    committed_seq: LoonFS.CommitSeq;
     /** The semantic filesystem changes that the commit applied, in request order. */
-    events: LoonFS.FilesystemChange[];
+    events: LoonFS.FilesystemEvent[];
+    /**
+     * The fork and the range of its commits that the commit applied, when the commit is a merge.
+     * It's absent for every other commit.
+     */
+    merge?: LoonFS.Merge | undefined;
     /** The caller's optional annotation for the commit. */
     message?: string | undefined;
     /** The namespace that changed. */

@@ -26,7 +26,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Creates a new empty namespace.
+     * Creates a new empty namespace. Without `namespace_id` in the request, LoonFS generates an ID. The response's `namespace_id` is the new namespace's ID.
      *
      * @param {LoonFS.CreateNamespaceRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -41,19 +41,17 @@ export class NamespacesClient {
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
-     *     await client.namespaces.create({
-     *         namespace_id: "demo"
-     *     })
+     *     await client.namespaces.create()
      */
     public create(
-        request: LoonFS.CreateNamespaceRequest,
+        request: LoonFS.CreateNamespaceRequest = {},
         requestOptions?: NamespacesClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.NamespaceMetadata> {
         return core.HttpResponsePromise.fromPromise(this.__create(request, requestOptions));
     }
 
     private async __create(
-        request: LoonFS.CreateNamespaceRequest,
+        request: LoonFS.CreateNamespaceRequest = {},
         requestOptions?: NamespacesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
@@ -325,7 +323,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Creates a new namespace from the source namespace's current head or from a live snapshot.
+     * Creates a new namespace from the source namespace's current head or from an unexpired snapshot. Without `new_namespace_id` in the request, LoonFS generates an ID. The response's `namespace_id` is the new namespace's ID.
      *
      * @param {LoonFS.ForkNamespaceRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -342,8 +340,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.fork({
-     *         namespace_id: "namespace_id",
-     *         new_namespace_id: "demo"
+     *         namespace_id: "namespace_id"
      *     })
      */
     public fork(
@@ -431,6 +428,491 @@ export class NamespacesClient {
             _response.rawResponse,
             "POST",
             "/v0/namespaces/{namespace_id}/forks",
+        );
+    }
+
+    /**
+     * Returns where the fork's next merge into the namespace starts, without planning the merge: the fork's newest merge into the namespace, the fork sequence that the next merge starts after, the fork point, and the fork's head. When the namespace is a rebase's new fork for the fork, the range continues the new fork's replay commits. When a retention floor would refuse the merge with `below_retention_floor`, the response's `outcome` says which floor instead of failing.
+     *
+     * @param {LoonFS.GetNextMergeRangeRequest} request
+     * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.namespaces.nextMergeRange({
+     *         namespace_id: "namespace_id",
+     *         source: "demo"
+     *     })
+     */
+    public nextMergeRange(
+        request: LoonFS.GetNextMergeRangeRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.NextMergeRangeResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__nextMergeRange(request, requestOptions));
+    }
+
+    private async __nextMergeRange(
+        request: LoonFS.GetNextMergeRangeRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.NextMergeRangeResponse>> {
+        const { namespace_id: namespaceId, source } = request;
+        const _queryParams: Record<string, unknown> = {
+            source,
+        };
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/merges`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.NextMergeRangeResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "GET",
+            "/v0/namespaces/{namespace_id}/merges",
+        );
+    }
+
+    /**
+     * Merges a fork's commits into the namespace as one commit. The merge applies the fork's net change since its previous merge, or since the fork point, through `through_seq` or the fork's head. A change that conflicts with the namespace returns `merge_conflict`, and nothing is committed. The commit ID makes retries idempotent. The merge's WAL object counts toward the namespace's fold triggers like any commit.
+     *
+     * @param {LoonFS.MergeForkRequest} request
+     * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.namespaces.merge({
+     *         namespace_id: "namespace_id",
+     *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
+     *         source_namespace_id: "demo"
+     *     })
+     */
+    public merge(
+        request: LoonFS.MergeForkRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.Commit> {
+        return core.HttpResponsePromise.fromPromise(this.__merge(request, requestOptions));
+    }
+
+    private async __merge(
+        request: LoonFS.MergeForkRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.Commit>> {
+        const { namespace_id: namespaceId, ..._body } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/merges`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.Commit, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespaces/{namespace_id}/merges",
+        );
+    }
+
+    /**
+     * Creates a rebase's new fork from the namespace's head, for a fork of the namespace whose unmerged commits the replay route then replays into the new fork. Without `new_namespace_id` in the request, LoonFS generates an ID. The response's `namespace_id` is the new fork's ID, and its `fork_basis.rebased_from` identifies the fork. A request whose new fork already exists returns `namespace_exists`.
+     *
+     * @param {LoonFS.ForkNamespaceForRebaseRequest} request
+     * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.namespaces.forkForRebase({
+     *         namespace_id: "namespace_id",
+     *         source_namespace_id: "demo"
+     *     })
+     */
+    public forkForRebase(
+        request: LoonFS.ForkNamespaceForRebaseRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.NamespaceMetadata> {
+        return core.HttpResponsePromise.fromPromise(this.__forkForRebase(request, requestOptions));
+    }
+
+    private async __forkForRebase(
+        request: LoonFS.ForkNamespaceForRebaseRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
+        const { namespace_id: namespaceId, ..._body } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/rebases`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: 0,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.NamespaceMetadata, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespaces/{namespace_id}/rebases",
+        );
+    }
+
+    /**
+     * Replays a fork's unmerged commits into the namespace, a rebase's new fork for the fork, as one replay commit, which applies the changes that don't conflict with the new fork and reports the ones that do. Each request continues after the new fork's previous replay commit. The commit ID makes retries idempotent, and a retry of a committed replay commit returns the new fork without the conflict report.
+     *
+     * @param {LoonFS.ReplayForkRequest} request
+     * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.ContentTooLargeError}
+     * @throws {@link LoonFS.NotImplementedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.namespaces.replay({
+     *         namespace_id: "namespace_id",
+     *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
+     *         source_namespace_id: "demo"
+     *     })
+     */
+    public replay(
+        request: LoonFS.ReplayForkRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): core.HttpResponsePromise<LoonFS.ReplayForkResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__replay(request, requestOptions));
+    }
+
+    private async __replay(
+        request: LoonFS.ReplayForkRequest,
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): Promise<core.WithRawResponse<LoonFS.ReplayForkResponse>> {
+        const { namespace_id: namespaceId, ..._body } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
+                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
+                "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v0/namespaces/${core.url.encodePathParam(namespaceId)}/replays`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as LoonFS.ReplayForkResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new LoonFS.BadRequestError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new LoonFS.ContentTooLargeError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.LoonFSError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v0/namespaces/{namespace_id}/replays",
         );
     }
 }

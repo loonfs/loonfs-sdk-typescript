@@ -12,6 +12,18 @@ import type * as LoonFS from "../../../../index.js";
 export interface CreateDownloadRequest {
     /** The namespace ID. */
     namespace_id: string;
+    /**
+     * How recently the read confirms the namespace head. `eventual` (the default, unless the
+     * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
+     * while that confirmation is younger than the maximum staleness, and `strong` confirms the
+     * head before the read. It can't be combined with `snapshot_id`.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency` set to `eventual`, how old the server's last confirmation of the head can
+     * be, in milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
     /** The absolute path of the file to read. */
     path: LoonFS.AbsolutePath;
     /**
@@ -23,10 +35,10 @@ export interface CreateDownloadRequest {
      * A snapshot to read the file from. The download reads the revision that the snapshot
      * captured. It can't be combined with `revision_no`.
      */
-    snapshot_id?: LoonFS.PinId;
+    snapshot_id?: LoonFS.SnapshotId;
     /**
-     * The first byte that the grant reads. The grant covers the revision's bytes from
-     * `start_offset` up to `size_bytes`, so a client that resumes a download asks for a new grant
+     * The first byte that the download reads. The download covers the revision's bytes from
+     * `start_offset` up to `size_bytes`, so a client that resumes a download asks for a new download
      * that starts after the bytes it already has. The offset must be less than the revision's
      * size. For a revision of zero bytes, it must be 0.
      */

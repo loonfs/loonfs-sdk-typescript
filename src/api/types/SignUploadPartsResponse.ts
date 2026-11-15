@@ -3,7 +3,7 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * One capability for each requested part.
+ * One presigned URL for each requested part.
  */
 export interface SignUploadPartsResponse {
     /** The namespace that the upload session belongs to. */

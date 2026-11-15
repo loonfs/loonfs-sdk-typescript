@@ -18,12 +18,7 @@ export interface NamespaceDiagnostics {
      */
     fork_basis?: LoonFS.NamespaceForkBasis | undefined;
     /** The sequence of the namespace's newest visible commit. */
-    head_seq: LoonFS.ChangeSeq;
-    /**
-     * The number of user checkpoints, including expired records that garbage collection hasn't
-     * deleted yet.
-     */
-    live_checkpoints: number;
+    head_seq: LoonFS.CommitSeq;
     /** The number of snapshots that hadn't expired when the diagnostics read began. */
     live_snapshots: number;
     /** The namespace ID. */
@@ -32,7 +27,7 @@ export interface NamespaceDiagnostics {
      * The namespace's retention floor. A change feed request can set `after_seq` to this sequence
      * or any later one, and the feed returns the changes committed after it.
      */
-    retention_floor_seq: LoonFS.ChangeSeq;
+    retention_floor_seq: LoonFS.CommitSeq;
     /** The number of visible WAL objects after the current manifest. */
     wal_tail_objects: number;
 }

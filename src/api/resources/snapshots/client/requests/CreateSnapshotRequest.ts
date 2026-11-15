@@ -3,16 +3,20 @@
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
- *         name: "name",
- *         ttl_ms: 1000000
+ *         namespace_id: "namespace_id"
  *     }
  */
 export interface CreateSnapshotRequest {
     /** The namespace ID. */
     namespace_id: string;
-    /** The snapshot's label, which doesn't need to be unique. */
-    name: string;
-    /** The snapshot's lifetime in milliseconds, counted from the server's current time. */
-    ttl_ms: number;
+    /**
+     * The snapshot's label, which doesn't need to be unique. Omit the field for a snapshot with no
+     * label.
+     */
+    name?: string;
+    /**
+     * The snapshot's lifetime in milliseconds, counted from the server's current time. Omit it to
+     * keep the snapshot until it's deleted.
+     */
+    ttl_ms?: number;
 }

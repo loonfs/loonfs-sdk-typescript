@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         snapshot_id: "pin_00000000000000000001-0000000000000002",
+ *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002",
  *         ttl_ms: 1000000
  *     }
  */
@@ -14,7 +14,7 @@ export interface ExtendSnapshotRequest {
     /** The namespace ID. */
     namespace_id: string;
     /** The snapshot ID. */
-    snapshot_id: LoonFS.PinId;
+    snapshot_id: LoonFS.SnapshotId;
     /** The new lifetime in milliseconds, counted from the server's current time. */
     ttl_ms: number;
 }

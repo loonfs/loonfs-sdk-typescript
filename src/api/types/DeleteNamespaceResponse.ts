@@ -7,7 +7,7 @@ import type * as LoonFS from "../index.js";
  */
 export interface DeleteNamespaceResponse {
     /** The last committed sequence before the namespace was deleted. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The deleted namespace. */
     namespace_id: LoonFS.NamespaceId;
 }

@@ -1,7 +1,7 @@
 {
   "name": "@loonfs/sdk",
   "version": "0.5.0",
-  "description": "TypeScript SDK for LoonFS client, proxy, and server applications",
+  "description": "TypeScript SDK for LoonFS applications and proxies",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -16,10 +16,6 @@
   },
   "type": "module",
   "exports": {
-    "./client": {
-      "types": "./dist/client/index.d.ts",
-      "default": "./dist/client/index.js"
-    },
     "./proxy": {
       "types": "./dist/proxy/proxy.d.ts",
       "default": "./dist/proxy/proxy.js"
@@ -37,9 +33,8 @@
   },
   "scripts": {
     "clean": "node scripts/clean.mjs",
-    "build": "npm run clean && npm run build:server && npm run build:client && npm run build:proxy",
+    "build": "npm run clean && npm run build:server && npm run build:proxy",
     "build:server": "tsc",
-    "build:client": "tsc --project client/tsconfig.json",
     "build:proxy": "tsc --project proxy/tsconfig.json",
     "prepare": "npm run build",
     "prepack": "npm run build"

@@ -9,7 +9,7 @@ export interface ListPathEntriesResponse {
     /** The directory entries, in canonical name key order. */
     entries: LoonFS.PathEntry[];
     /** The namespace head sequence that this listing was read at. */
-    head_seq: LoonFS.ChangeSeq;
+    head_seq: LoonFS.CommitSeq;
     /** The namespace that was read. */
     namespace_id: LoonFS.NamespaceId;
     /** The cursor for the next page, if more entries remain. */
