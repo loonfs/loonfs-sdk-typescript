@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         snapshot_id: "snp_00000000000000000001-1m55n87n588gnafy68ekkbj6bx",
+ *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx",
  *         ttl_ms: 1000000
  *     }
  */

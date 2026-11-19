@@ -27,7 +27,8 @@ export interface PathEntryFile {
     binding_version?: LoonFS.BindingVersion | undefined;
     /**
      * The file's current content. It's present on entry reads (a stat by
-     * path or by inode) and absent from directory listings.
+     * path or by inode) and on directory listings, and a listing leaves
+     * it out for a file that the subject can't read.
      */
     content_ref?: LoonFS.ContentRef | undefined;
     /** The time the inode was created, in Unix milliseconds. */

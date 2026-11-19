@@ -1,6 +1,6 @@
 # SDK 0.6.0
 
-Regenerated from LoonFS ee0de0ae1, which sets the API version to 0.6.0. This
+Regenerated from LoonFS da8a28cba, which sets the API version to 0.6.0. This
 release follows SDK 0.4.0, and no SDK 0.5.0 was published.
 
 Breaking changes on the wire:
@@ -103,8 +103,8 @@ Breaking changes on the wire:
   retained counts `upload_session_window` and `upload_session_undecided` are
   removed from `DeletedObjectCounts` and `RetainedCandidates`. A pool's `gc`
   job reports content, upload sessions, and temporary objects.
-- `PathEntryFile.content_ref` is optional. Entry reads by path or by inode
-  include it, and directory listings leave it out.
+- `PathEntryFile.content_ref` is optional. A directory listing leaves it out
+  for a file that the caller can't read.
 - Inode, content, and upload IDs are the prefix `ino_`, `con_`, or `upl_`
   followed by 26 lowercase Crockford base 32 characters. Inode IDs were
   decimal numbers, and content and upload IDs were 32 hex digits.
@@ -135,8 +135,8 @@ Breaking changes on the wire:
 - `StoreProbeResponse.run_id` is `probe_id`, with the type `ProbeId`, which
   replaces `ProbeRunId`. A probe ID is `probe_` followed by 26 lowercase
   Crockford base 32 characters.
-- `PinId` is `SnapshotId`. A snapshot ID is `snp_` followed by 20 digits, a
-  hyphen, and 26 lowercase Crockford base 32 characters.
+- `PinId` is `SnapshotId`. A snapshot ID is `snp_` followed by 26 lowercase
+  Crockford base 32 characters.
 - `NamespaceForkBasis.source_head_seq` is `fork_point_seq`.
 - The maintenance checkpoint inventory is the snapshot record inventory.
   `list_snapshot_records` (`maintenance.snapshots.list`) and

@@ -3,6 +3,8 @@
 /**
  * The durable ID of one snapshot.
  *
- * The manifest number in the ID determines which namespace manifest the snapshot protects.
+ * A snapshot ID uses the spelling of every generated ID: `snp_` and the 26-character
+ * body. The high 64 bits of the body's 128 bits are the number of the manifest that the
+ * snapshot keeps, and the low 64 bits are random.
  */
 export type SnapshotId = string;

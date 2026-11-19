@@ -7,7 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw",
- *         snapshot_id: "snp_00000000000000000001-1m55n87n588gnafy68ekkbj6bx"
+ *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
  *     }
  */
 export interface GetInodeRequest {
