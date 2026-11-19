@@ -35,6 +35,11 @@ export interface ErrorDetails {
     actual_revision_no?: LoonFS.RevisionNo | undefined;
     /** The `after_seq` value from the change feed request. */
     after_seq?: LoonFS.CommitSeq | undefined;
+    /**
+     * Which of the causes that share the error's code and remedy occurred, for a code whose row
+     * in the details table lists causes.
+     */
+    cause?: LoonFS.ErrorCause | undefined;
     /** The idempotency key of the commit that the error is about. */
     commit_id?: LoonFS.CommitId | undefined;
     /**

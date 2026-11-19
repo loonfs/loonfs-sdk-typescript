@@ -8,13 +8,10 @@ import type * as LoonFS from "../index.js";
 export interface ContentRef {
     /** The required checksum of the referenced bytes. */
     checksum: LoonFS.Checksum;
-    /**
-     * The immutable identity of the content. The content ID and the reading namespace's pool
-     * together determine the object key.
-     */
+    /** The ID of the content chain in the reading namespace's pool. */
     content_id: LoonFS.ContentId;
     /** The kind of content reference. The format defines one kind, `blob_v1`. */
     kind: LoonFS.ContentRefKind;
-    /** The length of the referenced bytes, which are a prefix of the content object. */
+    /** The length of the referenced prefix of the chain, in bytes. */
     size_bytes: number;
 }

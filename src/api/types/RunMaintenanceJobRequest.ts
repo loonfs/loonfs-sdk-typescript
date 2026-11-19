@@ -8,7 +8,6 @@ import type * as LoonFS from "../index.js";
 export type RunMaintenanceJobRequest =
     | LoonFS.RunMaintenanceJobRequest.Gc
     | LoonFS.RunMaintenanceJobRequest.Metadata
-    | LoonFS.RunMaintenanceJobRequest.RecoverAdministrator
     | LoonFS.RunMaintenanceJobRequest.Retention
     | LoonFS.RunMaintenanceJobRequest.RetentionWindow;
 
@@ -19,10 +18,6 @@ export namespace RunMaintenanceJobRequest {
 
     export interface Metadata extends LoonFS.RunMaintenanceJobRequestMetadata {
         kind: "metadata";
-    }
-
-    export interface RecoverAdministrator extends LoonFS.RunMaintenanceJobRequestRecoverAdministrator {
-        kind: "recover_administrator";
     }
 
     export interface Retention extends LoonFS.RunMaintenanceJobRequestRetention {

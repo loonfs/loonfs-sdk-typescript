@@ -40,7 +40,7 @@ export class ChangesClient {
      *     await client.changes.list({
      *         namespace_id: "namespace_id",
      *         after_seq: 1000000,
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_00000000000000000001-1m55n87n588gnafy68ekkbj6bx"
      *     })
      */
     public list(
@@ -79,9 +79,8 @@ export class ChangesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );

@@ -7,7 +7,7 @@ import type * as LoonFS from "../../../../index.js";
  *     {
  *         namespace_id: "namespace_id",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw",
- *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+ *         snapshot_id: "snp_00000000000000000001-1m55n87n588gnafy68ekkbj6bx"
  *     }
  */
 export interface GetInodeRequest {
@@ -17,7 +17,7 @@ export interface GetInodeRequest {
     inode_id: string;
     /**
      * Whether the response includes the inode's attribute map and attribute revision. The default
-     * is `true`, because a stat reads one path and a map is at most 64 KiB.
+     * is `false`, as on every route that takes this parameter.
      */
     include_attributes?: boolean;
     /** The snapshot whose captured path state to read. */

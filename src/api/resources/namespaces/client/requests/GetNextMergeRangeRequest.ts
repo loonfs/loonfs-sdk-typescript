@@ -6,7 +6,7 @@ import type * as LoonFS from "../../../../index.js";
  * @example
  *     {
  *         namespace_id: "namespace_id",
- *         source: "demo"
+ *         source_namespace_id: "demo"
  *     }
  */
 export interface GetNextMergeRangeRequest {
@@ -16,5 +16,17 @@ export interface GetNextMergeRangeRequest {
      * The fork whose next merge into the namespace the query reads. It has to be a fork of the
      * namespace, or the fork that a rebase replays into the namespace.
      */
-    source: LoonFS.NamespaceId;
+    source_namespace_id: LoonFS.NamespaceId;
+    /**
+     * How recently the read confirms the heads of the namespace and the fork. `eventual` (the
+     * default, unless the server's `consistency` setting is `strong`) reads at the heads that the
+     * server confirmed last while those confirmations are younger than the maximum staleness, and
+     * `strong` confirms both heads before the read.
+     */
+    consistency?: LoonFS.ReadConsistency;
+    /**
+     * With `consistency=eventual`, how old the server's last confirmation of a head can be, in
+     * milliseconds. The default is the server's `max_staleness_ms`.
+     */
+    max_staleness_ms?: number;
 }

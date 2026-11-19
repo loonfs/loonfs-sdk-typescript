@@ -23,7 +23,7 @@ export class JobsClient {
     }
 
     /**
-     * Runs one maintenance job for the namespace. The body's `kind` selects the job, which is one of `metadata`, `gc`, `retention`, `retention_window`, or `recover_administrator`. The response includes the same `kind` and the job's result. A deleted namespace accepts only `gc`. A `metadata` job folds the WAL tail and compacts metadata until nothing is due, or until it publishes 16 compaction units. A compaction unit can take minutes, so the call can too. When the result's `outcome` is `due`, another `metadata` run continues the work. A `gc` job reads the current manifest, lists the snapshots, and then sweeps every object family under the namespace's prefix to the end, including the segments of extensions such as the grep index. The collection of the namespace's pool, which deletes content objects, upload records, and temporary objects, is a job of the pool. Each listing starts at the beginning, and the job doesn't keep a position to continue from. A `retention` job advances the retention floor to the folded manifest head, or to the one target that `to_seq` or `cutoff_at_ms` sets. A `retention_window` job sets the namespace's retention window to `retention_window_ms`, or clears it when the body doesn't include that field.
+     * Runs one maintenance job for the namespace. The body's `kind` selects the job, which is one of `metadata`, `gc`, `retention`, or `retention_window`. The response includes the same `kind` and the job's result. A deleted namespace accepts only `gc`. A `metadata` job folds the WAL tail and compacts metadata until nothing is due, or until it publishes 16 compaction units. A compaction unit can take minutes, so the call can too. When the result's `outcome` is `due`, another `metadata` run continues the work. A `gc` job reads the current manifest, lists the snapshots, and then sweeps every object family under the namespace's prefix to the end, including the segments of extensions such as the grep index. The collection of the namespace's pool, which deletes content objects, upload records, and temporary objects, is a job of the pool. Each listing starts at the beginning, and the job doesn't keep a position to continue from. A `retention` job advances the retention floor to the folded manifest head, or to the one target that `to_seq` or `cutoff_at_ms` sets. A `retention_window` job sets the namespace's retention window to `retention_window_ms`, or clears it when the body doesn't include that field.
      *
      * @param {LoonFS.maintenance.CreateJobsRequest} request
      * @param {JobsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -63,9 +63,8 @@ export class JobsClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );

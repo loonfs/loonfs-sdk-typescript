@@ -60,9 +60,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -153,16 +152,19 @@ export class NamespacesClient {
         request: LoonFS.GetNamespaceRequest,
         requestOptions?: NamespacesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.NamespaceMetadata>> {
-        const { namespace_id: namespaceId } = request;
+        const { namespace_id: namespaceId, consistency, max_staleness_ms: maxStalenessMs } = request;
+        const _queryParams: Record<string, unknown> = {
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
+        };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -174,7 +176,11 @@ export class NamespacesClient {
             ),
             method: "GET",
             headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -256,9 +262,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -361,9 +366,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -450,7 +454,7 @@ export class NamespacesClient {
      * @example
      *     await client.namespaces.nextMergeRange({
      *         namespace_id: "namespace_id",
-     *         source: "demo"
+     *         source_namespace_id: "demo"
      *     })
      */
     public nextMergeRange(
@@ -464,9 +468,16 @@ export class NamespacesClient {
         request: LoonFS.GetNextMergeRangeRequest,
         requestOptions?: NamespacesClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.NextMergeRangeResponse>> {
-        const { namespace_id: namespaceId, source } = request;
+        const {
+            namespace_id: namespaceId,
+            source_namespace_id: sourceNamespaceId,
+            consistency,
+            max_staleness_ms: maxStalenessMs,
+        } = request;
         const _queryParams: Record<string, unknown> = {
-            source,
+            source_namespace_id: sourceNamespaceId,
+            consistency: consistency != null ? consistency : undefined,
+            max_staleness_ms: maxStalenessMs,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -474,9 +485,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -591,9 +601,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -713,9 +722,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -794,7 +802,7 @@ export class NamespacesClient {
     }
 
     /**
-     * Replays a fork's unmerged commits into the namespace, a rebase's new fork for the fork, as one replay commit, which applies the changes that don't conflict with the new fork and reports the ones that do. Each request continues after the new fork's previous replay commit. The commit ID makes retries idempotent, and a retry of a committed replay commit returns the new fork without the conflict report.
+     * Replays a fork's unmerged commits into the namespace, a rebase's new fork for the fork, as one replay commit, which applies the changes that don't conflict with the new fork and reports the ones that do. Each request continues after the new fork's previous replay commit. The commit ID makes retries idempotent, and a retry of a committed replay commit returns the new fork with the same conflict report. The report counts toward the replay commit's size, so a report that doesn't fit returns `merge_too_large` with a split hint.
      *
      * @param {LoonFS.ReplayForkRequest} request
      * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -836,9 +844,8 @@ export class NamespacesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
