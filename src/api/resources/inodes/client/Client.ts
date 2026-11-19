@@ -43,7 +43,7 @@ export class InodesClient {
      *     await client.inodes.retrieve({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public retrieve(
@@ -77,9 +77,8 @@ export class InodesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -160,7 +159,7 @@ export class InodesClient {
      *     await client.inodes.listChildren({
      *         namespace_id: "namespace_id",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public async listChildren(
@@ -197,9 +196,8 @@ export class InodesClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );
@@ -335,9 +333,8 @@ export class InodesClient {
             mergeOnlyDefinedHeaders({
                 Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -453,9 +450,8 @@ export class InodesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -577,9 +573,8 @@ export class InodesClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );
@@ -716,9 +711,8 @@ export class InodesClient {
             mergeOnlyDefinedHeaders({
                 Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -794,7 +788,7 @@ export class InodesClient {
     }
 
     /**
-     * Authorizes a direct read of one retained inode revision. The presigned URLs read exactly `[start_offset, size_bytes)`, as on the path route. The response doesn't include a path.
+     * Authorizes a direct read of one retained inode revision. With `snapshot_id`, the server finds the revision in the snapshot instead of at the live head. The presigned URLs read exactly `[start_offset, size_bytes)`, as on the path route. The response doesn't include a path.
      *
      * @param {LoonFS.CreateRevisionDownloadByInodeRequest} request
      * @param {InodesClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -835,9 +829,8 @@ export class InodesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );

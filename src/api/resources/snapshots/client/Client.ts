@@ -60,9 +60,8 @@ export class SnapshotsClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );
@@ -183,9 +182,8 @@ export class SnapshotsClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -268,7 +266,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.retrieve({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public retrieve(
@@ -289,9 +287,8 @@ export class SnapshotsClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -365,7 +362,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.delete({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public delete(
@@ -386,9 +383,8 @@ export class SnapshotsClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -461,7 +457,7 @@ export class SnapshotsClient {
      * @example
      *     await client.snapshots.extend({
      *         namespace_id: "namespace_id",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002",
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx",
      *         ttl_ms: 1000000
      *     })
      */
@@ -483,9 +479,8 @@ export class SnapshotsClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );

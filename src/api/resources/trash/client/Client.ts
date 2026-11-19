@@ -65,9 +65,8 @@ export class TrashClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );

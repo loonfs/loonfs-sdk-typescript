@@ -6,8 +6,6 @@ import type * as LoonFS from "../index.js";
  * The current state of one namespace.
  */
 export interface NamespaceMetadata {
-    /** The namespace's access mode. */
-    access: LoonFS.NamespaceAccessMode;
     /** The time the namespace was created, in Unix milliseconds. */
     created_at_ms: number;
     /** The actor that created the namespace, as the application supplied it. */

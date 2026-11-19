@@ -69,9 +69,8 @@ export class FilesClient {
             mergeOnlyDefinedHeaders({
                 Range: range,
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -184,9 +183,8 @@ export class FilesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -275,7 +273,7 @@ export class FilesClient {
      *     await client.files.list({
      *         namespace_id: "namespace_id",
      *         path: "path",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public async list(
@@ -313,9 +311,8 @@ export class FilesClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );
@@ -419,7 +416,7 @@ export class FilesClient {
      *     await client.files.retrieve({
      *         namespace_id: "namespace_id",
      *         path: "path",
-     *         snapshot_id: "snp_00000000000000000001-00000000000000000000000002"
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public retrieve(
@@ -454,9 +451,8 @@ export class FilesClient {
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                 "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
             }),
             requestOptions?.headers,
         );
@@ -567,9 +563,8 @@ export class FilesClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );
@@ -689,22 +684,26 @@ export class FilesClient {
                     namespace_id: namespaceId,
                     pattern,
                     case_insensitive: caseInsensitive,
-                    path_prefix: pathPrefix,
+                    path,
                     inode_id: inodeId,
                     allow_scan: allowScan,
                     allow_stale: allowStale,
                     limit,
                     cursor,
+                    consistency,
+                    max_staleness_ms: maxStalenessMs,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     pattern,
                     case_insensitive: caseInsensitive,
-                    path_prefix: pathPrefix,
+                    path,
                     inode_id: inodeId,
                     allow_scan: allowScan,
                     allow_stale: allowStale,
                     limit,
                     cursor,
+                    consistency: consistency != null ? consistency : undefined,
+                    max_staleness_ms: maxStalenessMs,
                 };
                 const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
                 const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -712,9 +711,8 @@ export class FilesClient {
                     this._options?.headers,
                     mergeOnlyDefinedHeaders({
                         "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
-                        "Loonfs-Subject": requestOptions?.subjectId ?? this._options?.subjectId,
-                        "Loonfs-Principal-Scope": requestOptions?.principalScope ?? this._options?.principalScope,
                         "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
                     }),
                     requestOptions?.headers,
                 );

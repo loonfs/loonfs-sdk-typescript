@@ -1,6 +1,7 @@
-# SDK 0.5.0
+# SDK 0.6.0
 
-Regenerated from LoonFS main d8fae8607.
+Regenerated from LoonFS da8a28cba, which sets the API version to 0.6.0. This
+release follows SDK 0.4.0, and no SDK 0.5.0 was published.
 
 Breaking changes on the wire:
 
@@ -13,11 +14,10 @@ Breaking changes on the wire:
   read of the current revision of a visible file inode, or of the revision a
   live snapshot captured when the request includes `snapshot_id`. The new
   `create_revision_download_by_inode` authorizes a read of one retained
-  revision. Both take their options in a JSON body: `snapshot_id` and
-  `start_offset` for the first, and `start_offset` for the second. The inode
-  and revision stay in the path. A request with options in the query string or
-  no body returns 400. The client methods are `inodes.createDownload` and
-  `inodes.createRevisionDownload`.
+  revision. Both take their options, `snapshot_id` and `start_offset`, in a
+  JSON body. The inode and revision stay in the path. A request with options
+  in the query string or no body returns 400. The client methods are
+  `inodes.createDownload` and `inodes.createRevisionDownload`.
 - `inodes.content` no longer takes `revision_no`. It calls the new
   `get_file_content_by_inode`, which reads the current revision of a visible
   file inode, or the revision a live snapshot captured when the request
@@ -61,8 +61,8 @@ Breaking changes on the wire:
   `wal_tail_objects`. GC reports rename the deleted object count
   `wal_segments` to `wal_objects`.
 - The `Namespace` type is `NamespaceMetadata`.
-- `ErrorDetails` no longer has `max_writer_sessions`. The server has no
-  writer session limit.
+- `ErrorDetails` no longer has `max_writer_sessions`. The server has no writer
+  session limit. The `writer_capacity_exceeded` error code is removed.
 - The grep index status types are `GrepIndexStatusActive`,
   `GrepIndexStatusBackfilling`, and `GrepIndexStatusDisabled`. They replace
   the three `GrepIndexLifecycle` types.
@@ -103,8 +103,8 @@ Breaking changes on the wire:
   retained counts `upload_session_window` and `upload_session_undecided` are
   removed from `DeletedObjectCounts` and `RetainedCandidates`. A pool's `gc`
   job reports content, upload sessions, and temporary objects.
-- `PathEntryFile.content_ref` is optional. Entry reads by path or by inode
-  include it, and directory listings leave it out.
+- `PathEntryFile.content_ref` is optional. A directory listing leaves it out
+  for a file that the caller can't read.
 - Inode, content, and upload IDs are the prefix `ino_`, `con_`, or `upl_`
   followed by 26 lowercase Crockford base 32 characters. Inode IDs were
   decimal numbers, and content and upload IDs were 32 hex digits.
@@ -135,8 +135,8 @@ Breaking changes on the wire:
 - `StoreProbeResponse.run_id` is `probe_id`, with the type `ProbeId`, which
   replaces `ProbeRunId`. A probe ID is `probe_` followed by 26 lowercase
   Crockford base 32 characters.
-- `PinId` is `SnapshotId`. A snapshot ID is `snp_` followed by 20 digits, a
-  hyphen, and 26 lowercase Crockford base 32 characters.
+- `PinId` is `SnapshotId`. A snapshot ID is `snp_` followed by 26 lowercase
+  Crockford base 32 characters.
 - `NamespaceForkBasis.source_head_seq` is `fork_point_seq`.
 - The maintenance checkpoint inventory is the snapshot record inventory.
   `list_snapshot_records` (`maintenance.snapshots.list`) and
@@ -161,6 +161,45 @@ Breaking changes on the wire:
   collection uses one grace window of 24 hours.
 - `Snapshot.name` and `CreateSnapshotRequest.name` are optional, and a merge
   plan's snapshot has no name.
+- A namespace no longer has an access mode. Every request that reads or
+  changes a namespace's contents sends exactly one of `Loonfs-Principals`,
+  which lists the principals that the request acts for, and
+  `Loonfs-Context: service`, which acts in the service context, where the
+  server checks no rights. A request with neither or both returns
+  `invalid_request`. Set `principals` or `loonfsContext` in the client
+  options.
+- `CreateNamespaceRequest.access` and `NamespaceMetadata.access` are removed,
+  together with the `NamespaceAccess` and `NamespaceAccessMode` types,
+  `PrincipalId`, and `PrincipalScope`. A new namespace has no access rows.
+  Grant its first administrators with a commit whose one operation is
+  `update_access` on `/`, sent in the service context.
+- The `Loonfs-Subject` and `Loonfs-Principal-Scope` headers are removed,
+  together with the client options `subjectId` and `principalScope`.
+  `Loonfs-Actor` alone identifies who made a request.
+- Every upload operation requires `Loonfs-Actor`. Set `actorId` on a client
+  that uploads. An upload session belongs to the actor that opened it, and a
+  request from another actor returns `upload_not_found`.
+- The `recover_administrator` maintenance job is removed, together with its
+  request and response types.
+- Each error code has one remedy, and the optional `ErrorDetails.cause`
+  (`ErrorCause`) reports which condition occurred when two conditions share a
+  code. These codes changed:
+  - `below_retention_floor` replaces `rebootstrap_required`.
+  - `outcome_unknown` replaces `commit_outcome_unknown` and
+    `deadline_exceeded`. Its cause is `unconfirmed` or `deadline`.
+  - `checkpoint_unavailable` and `namespace_unrestricted` are removed. A
+    snapshot whose manifest is gone returns `snapshot_not_found` with the
+    cause `manifest_missing`.
+  - `wrong_kind` (409) reports a directory where the operation needs a file,
+    or a file where the operation needs a directory.
+  - `commit_too_large` (413) reports a commit that is larger than one WAL
+    object.
+  - `store_contention` with the cause `publication_budget` reports a metadata
+    publication that stopped at its time budget. `maintenance_required` now
+    reports a namespace at its write stop and no other condition.
+- `grep`'s `path_prefix` parameter is `path`.
+- `include_attributes` defaults to `false` on `get_path_entry` and
+  `get_inode`. It defaulted to `true`.
 - `@loonfs/sdk/client` is removed, together with its `LoonFSClient` export
   and the `namespace_alias` addressing of the `/v0/namespace-aliases/`
   routes. Import `LoonFSClient` from `@loonfs/sdk/server`. The same client
@@ -197,7 +236,7 @@ Other changes:
   optional `destination_parent_inode_id` and `destination_display_name`
   instead of `destination_path`.
 - `grep` takes an `inode_id` scope that limits matches to the inode's
-  descendants. It cannot be combined with `path_prefix`.
+  descendants. It cannot be combined with `path`.
 - `RunMaintenanceJobRequestRetention` takes an optional target, `to_seq` or
   `cutoff_at_ms`, but not both. Without a target, a `retention` job advances
   the floor to the folded manifest head.
@@ -238,11 +277,12 @@ Other changes:
   `source_after_seq`, `expected_after_seq`, `actual_after_seq`, and
   `size_bytes`. The client throws `LoonFS.ForbiddenError` for 403 and
   `LoonFS.RangeNotSatisfiableError` for 416.
-- `grep` returns `rebootstrap_required` (409) when a later page's read
+- `grep` returns `below_retention_floor` (409) when a later page's read
   position is below the retention floor.
 - Live reads take an optional `consistency` (`ReadConsistency`, `eventual` or
   `strong`) and `max_staleness_ms`, which is at most 1200000 (20 minutes). The
-  three download grant requests take the same fields in their bodies.
+  three download grant requests take the same fields in their bodies. `grep`,
+  `get_namespace`, and `get_next_merge_range` take them as query parameters.
 - The three content reads take an optional `Range`, sent as the `Range`
   header, and return one byte range of the file as 206 with `Content-Range`. A
   range that starts at or past the end of the file returns
@@ -258,9 +298,12 @@ Other changes:
 - A namespace can have a retention window. `CreateNamespaceRequest` and
   `NamespaceMetadata` have the optional `retention_window_ms`, and the
   `retention_window` maintenance job sets or clears it. The window must be at
-  least the grace window (86400000, which is 24 hours).
-- `NamespaceForkBasis.source_snapshot_id` is required. A read can pass it as
-  `snapshot_id` to read the source namespace at the fork point.
+  least the grace window (86400000, which is 24 hours). The capability key
+  `namespace.default_retention_window_ms` reports the window that a namespace
+  created without one receives, and a deployment without a default window
+  leaves the key out.
+- `NamespaceForkBasis.fork_point_snapshot_id` is required. A read of the fork
+  can pass it as `snapshot_id` to read the source's state at the fork point.
 - A namespace's `gc` report has the required `listed_bytes` and
   `DeletedObjectCounts.extension_segments`.
 - `run_pool_maintenance_job` (`maintenance.pools.jobs.create`) runs one
@@ -293,6 +336,10 @@ Other changes:
   size.
 - `get_snapshot` and `list_snapshots` return `namespace_deleted` (410) for a
   deleted namespace. The client throws `LoonFS.GoneError`.
+- Reads and `grep` no longer return `stale_head`. When garbage collection
+  removes the segments that a read started from, the server runs the read
+  again from the current manifest, and it returns `store_contention` after 8
+  attempts.
 - Documentation strings follow the current specification wording.
 
 Handwritten layers:
@@ -322,6 +369,13 @@ Handwritten layers:
   that the caller may use that namespace.
 - A proxied download whose entry read has no `content_ref` throws instead of
   reading.
+- The proxy's `authorize` hook returns an authorization object with
+  `principals`, to act for a user, or with `service: true`, to act in the
+  service context. The object no longer has `subjectId` or `principalScope`.
+  An authorization with neither choice no longer forwards as the token holder,
+  and LoonFS rejects the forwarded request with `invalid_request`. The proxy
+  removes the browser's `Loonfs-Actor`, `Loonfs-Principals`, and
+  `Loonfs-Context` headers.
 
 # SDK 0.4.0
 

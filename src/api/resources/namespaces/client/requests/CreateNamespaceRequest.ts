@@ -8,11 +8,6 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface CreateNamespaceRequest {
     /**
-     * The namespace's access mode, which can't be changed after the namespace is created. The
-     * default is unrestricted.
-     */
-    access?: LoonFS.NamespaceAccess;
-    /**
      * The durable ID of the new namespace. Without this field, LoonFS generates an ID. The
      * response's `namespace_id` is the new namespace's ID.
      */
@@ -20,9 +15,10 @@ export interface CreateNamespaceRequest {
     /**
      * The namespace's retention window, in milliseconds, which must be at least the grace window
      * (86400000, which is 24 hours). The reference server's maintenance sweep uses this window
-     * for the namespace. Without this field, the namespace's window is the server's
-     * `retention_window_ms` setting, if the server has that setting. A `retention_window`
-     * maintenance job can change or clear the window later.
+     * for the namespace. Without this field, the namespace's window is the server's default
+     * window, if the server has one, which the capability document reports as
+     * `namespace.default_retention_window_ms`. A `retention_window` maintenance job can change
+     * or clear the window later.
      */
     retention_window_ms?: number;
 }

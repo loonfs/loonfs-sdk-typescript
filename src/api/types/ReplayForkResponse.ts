@@ -8,11 +8,11 @@ import type * as LoonFS from "../index.js";
 export interface ReplayForkResponse {
     /**
      * The replay commit's conflict report, with one entry for each inode whose change the replay
-     * commit didn't apply. It's absent when the request's commit ID identifies a replay commit
-     * that an earlier request committed, because only the response that committed the replay
-     * commit has its report.
+     * commit didn't apply. It's empty when the replay commit left nothing out. The replay
+     * commit's merge record stores the report, so a retry with the same commit ID returns the
+     * same report.
      */
-    conflicts?: LoonFS.MergeConflict[] | undefined;
+    conflicts: LoonFS.MergeConflict[];
     /** The new fork after the replay commit. */
     namespace: LoonFS.NamespaceMetadata;
 }

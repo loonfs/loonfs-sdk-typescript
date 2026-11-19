@@ -21,7 +21,7 @@ export interface CreateRevisionDownloadByInodeRequest {
      * How recently the read confirms the namespace head that it finds the revision in. `eventual`
      * (the default, unless the server's `consistency` setting is `strong`) reads at the head that
      * the server confirmed last while that confirmation is younger than the maximum staleness,
-     * and `strong` confirms the head before the read.
+     * and `strong` confirms the head before the read. It can't be combined with `snapshot_id`.
      */
     consistency?: LoonFS.ReadConsistency;
     /**
@@ -29,6 +29,12 @@ export interface CreateRevisionDownloadByInodeRequest {
      * be, in milliseconds. The default is the server's `max_staleness_ms`.
      */
     max_staleness_ms?: number;
+    /**
+     * A snapshot to find the revision in instead of the live head. The snapshot keeps the
+     * revision readable after the namespace's retention floor passes it, and a revision committed
+     * after the snapshot returns `revision_not_found`.
+     */
+    snapshot_id?: LoonFS.SnapshotId;
     /**
      * The first byte that the download reads. It defaults to 0 and must be less than the revision's
      * size. For a revision of zero bytes, it must be 0.
