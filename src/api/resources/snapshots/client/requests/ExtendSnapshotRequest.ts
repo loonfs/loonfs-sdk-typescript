@@ -5,14 +5,14 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx",
  *         ttl_ms: 1000000
  *     }
  */
 export interface ExtendSnapshotRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The snapshot ID. */
     snapshot_id: LoonFS.SnapshotId;
     /** The new lifetime in milliseconds, counted from the server's current time. */

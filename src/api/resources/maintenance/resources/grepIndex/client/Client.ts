@@ -29,6 +29,8 @@ export class GrepIndexClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -37,7 +39,7 @@ export class GrepIndexClient {
      *
      * @example
      *     await client.maintenance.grepIndex.retrieve({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public retrieve(
@@ -94,6 +96,10 @@ export class GrepIndexClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 404:
+                    throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
                         _response.error.body as LoonFS.ErrorResponse,
@@ -133,6 +139,7 @@ export class GrepIndexClient {
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -141,7 +148,7 @@ export class GrepIndexClient {
      *
      * @example
      *     await client.maintenance.grepIndex.disable({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public disable(
@@ -202,6 +209,8 @@ export class GrepIndexClient {
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
                         _response.error.body as LoonFS.ErrorResponse,
@@ -241,6 +250,7 @@ export class GrepIndexClient {
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
+     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.InternalServerError}
      * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -249,7 +259,7 @@ export class GrepIndexClient {
      *
      * @example
      *     await client.maintenance.grepIndex.enable({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public enable(
@@ -310,6 +320,8 @@ export class GrepIndexClient {
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
                     throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 500:
                     throw new LoonFS.InternalServerError(
                         _response.error.body as LoonFS.ErrorResponse,

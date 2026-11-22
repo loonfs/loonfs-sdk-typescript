@@ -5,7 +5,7 @@ import type * as LoonFS from "../index.js";
 /**
  * The results of one store contract probe, in order.
  */
-export interface StoreProbeResponse {
+export interface ProbeStoreResponse {
     /** The check results, in the order that the checks ran. */
     checks: LoonFS.StoreProbeCheck[];
     /**

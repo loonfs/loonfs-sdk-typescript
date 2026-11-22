@@ -5,24 +5,30 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
- *         inode_id: "ino_000000r0000013kje0d47gc8kw"
+ *         namespace_id: "demo",
+ *         inode_id: "ino_000000r0000013kje0d47gc8kw",
+ *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
  *     }
  */
 export interface ListFileRevisionsByInodeRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The file's inode ID. */
-    inode_id: string;
+    inode_id: LoonFS.InodeId;
     /** The maximum page size. */
     limit?: number;
     /** The opaque cursor that the previous page returned. */
     cursor?: string;
     /**
+     * The snapshot whose state to list the file's revisions in. The listing starts at the
+     * revision that the snapshot captured.
+     */
+    snapshot_id?: LoonFS.SnapshotId;
+    /**
      * How recently the read confirms the namespace head. `eventual` (the default, unless the
      * server's `consistency` setting is `strong`) reads at the head that the server confirmed last
      * while that confirmation is younger than the maximum staleness, and `strong` confirms the
-     * head before the read.
+     * head before the read. It can't be combined with `snapshot_id`.
      */
     consistency?: LoonFS.ReadConsistency;
     /**

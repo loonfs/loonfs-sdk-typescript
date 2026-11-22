@@ -33,6 +33,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -41,7 +42,7 @@ export class InodesClient {
      *
      * @example
      *     await client.inodes.retrieve({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
@@ -117,6 +118,11 @@ export class InodesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
@@ -148,6 +154,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -157,7 +164,7 @@ export class InodesClient {
      *
      * @example
      *     await client.inodes.listChildren({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
@@ -238,6 +245,11 @@ export class InodesClient {
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 404:
                             throw new LoonFS.NotFoundError(
                                 _response.error.body as LoonFS.ErrorResponse,
@@ -293,6 +305,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -374,6 +387,11 @@ export class InodesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
@@ -417,6 +435,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -428,7 +447,7 @@ export class InodesClient {
      *
      * @example
      *     await client.inodes.createDownload({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw"
      *     })
      */
@@ -489,6 +508,11 @@ export class InodesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
@@ -532,6 +556,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -541,8 +566,9 @@ export class InodesClient {
      *
      * @example
      *     await client.inodes.listRevisions({
-     *         namespace_id: "namespace_id",
-     *         inode_id: "ino_000000r0000013kje0d47gc8kw"
+     *         namespace_id: "demo",
+     *         inode_id: "ino_000000r0000013kje0d47gc8kw",
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public async listRevisions(
@@ -558,12 +584,14 @@ export class InodesClient {
                     inode_id: inodeId,
                     limit,
                     cursor,
+                    snapshot_id: snapshotId,
                     consistency,
                     max_staleness_ms: maxStalenessMs,
                 } = request;
                 const _queryParams: Record<string, unknown> = {
                     limit,
                     cursor,
+                    snapshot_id: snapshotId,
                     consistency: consistency != null ? consistency : undefined,
                     max_staleness_ms: maxStalenessMs,
                 };
@@ -612,6 +640,11 @@ export class InodesClient {
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
@@ -670,6 +703,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -752,6 +786,11 @@ export class InodesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
@@ -795,6 +834,7 @@ export class InodesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -806,7 +846,7 @@ export class InodesClient {
      *
      * @example
      *     await client.inodes.createRevisionDownload({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw",
      *         revision_no: 1000000
      *     })
@@ -865,6 +905,11 @@ export class InodesClient {
                     );
                 case 401:
                     throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );

@@ -5,16 +5,16 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw",
  *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
  *     }
  */
 export interface ListInodeChildrenRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The directory's inode ID. */
-    inode_id: string;
+    inode_id: LoonFS.InodeId;
     /** The maximum page size. */
     limit?: number;
     /** The opaque cursor that the previous page returned. */

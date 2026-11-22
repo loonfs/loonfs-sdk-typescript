@@ -5,12 +5,12 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id"
+ *         namespace_id: "demo"
  *     }
  */
 export interface ListTrashRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The maximum page size. */
     limit?: number;
     /** The opaque cursor that the previous page returned. */

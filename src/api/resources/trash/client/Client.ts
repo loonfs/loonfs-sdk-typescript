@@ -29,6 +29,7 @@ export class TrashClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -37,7 +38,7 @@ export class TrashClient {
      *
      * @example
      *     await client.trash.list({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public async list(
@@ -101,6 +102,11 @@ export class TrashClient {
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );

@@ -30,6 +30,7 @@ export class SnapshotsClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -38,7 +39,7 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.snapshots.list({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public async list(
@@ -99,6 +100,11 @@ export class SnapshotsClient {
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 404:
                             throw new LoonFS.NotFoundError(
                                 _response.error.body as LoonFS.ErrorResponse,
@@ -152,6 +158,7 @@ export class SnapshotsClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
@@ -161,7 +168,7 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.snapshots.create({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public create(
@@ -221,6 +228,11 @@ export class SnapshotsClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
@@ -257,6 +269,7 @@ export class SnapshotsClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
@@ -265,7 +278,7 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.snapshots.retrieve({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
@@ -323,6 +336,11 @@ export class SnapshotsClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
@@ -347,21 +365,23 @@ export class SnapshotsClient {
     }
 
     /**
-     * Deletes a snapshot by recording the server's current time as its delete time. From then on, the snapshot can't be read, forked, extended, or retrieved, and the snapshot listing leaves it out. Garbage collection can then reclaim its unreferenced manifest and runs after the grace window. Deleting a missing or deleted snapshot succeeds without a write, so repeating the request has the same result. The ID of a fork snapshot returns `snapshot_not_found`. Deletion stays available after the namespace is deleted.
+     * Deletes a snapshot by recording the server's current time as its delete time. From then on, the snapshot can't be read, forked, extended, or retrieved, and the snapshot listing leaves it out. Garbage collection can then reclaim its unreferenced manifest and runs after the grace window. Deleting a missing or deleted snapshot succeeds without a write, so repeating the request has the same result. The ID of a fork snapshot returns `snapshot_not_found`. Deletion stays available after the namespace is deleted, except to a request with principals, which returns `namespace_deleted`.
      *
      * @param {LoonFS.DeleteSnapshotRequest} request
      * @param {SnapshotsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
      *     await client.snapshots.delete({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
@@ -419,8 +439,15 @@ export class SnapshotsClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -448,7 +475,9 @@ export class SnapshotsClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -456,7 +485,7 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.snapshots.extend({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx",
      *         ttl_ms: 1000000
      *     })
@@ -518,8 +547,15 @@ export class SnapshotsClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 410:
+                    throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
                     throw new LoonFS.ContentTooLargeError(
                         _response.error.body as LoonFS.ErrorResponse,

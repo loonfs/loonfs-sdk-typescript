@@ -5,12 +5,12 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id"
+ *         namespace_id: "demo"
  *     }
  */
 export interface GetNamespaceRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * How recently the read confirms the namespace head. `eventual` (the default, unless the
      * server's `consistency` setting is `strong`) reads at the head that the server confirmed last

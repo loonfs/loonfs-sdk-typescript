@@ -36,7 +36,7 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.maintenance.snapshots.list({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public async list(
@@ -155,8 +155,8 @@ export class SnapshotsClient {
      *
      * @example
      *     await client.maintenance.snapshots.retrieve({
-     *         namespace_id: "namespace_id",
-     *         snapshot_id: "snapshot_id"
+     *         namespace_id: "demo",
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public retrieve(

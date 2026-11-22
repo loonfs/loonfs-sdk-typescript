@@ -5,15 +5,15 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw"
  *     }
  */
 export interface CreateDownloadByInodeRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The file's inode ID. */
-    inode_id: string;
+    inode_id: LoonFS.InodeId;
     /**
      * How recently the read confirms the namespace head. `eventual` (the default, unless the
      * server's `consistency` setting is `strong`) reads at the head that the server confirmed last

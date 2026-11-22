@@ -5,13 +5,13 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         source_namespace_id: "demo"
  *     }
  */
 export interface GetNextMergeRangeRequest {
     /** The namespace that the fork merges into. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The fork whose next merge into the namespace the query reads. It has to be a fork of the
      * namespace, or the fork that a rebase replays into the namespace.

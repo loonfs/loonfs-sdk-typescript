@@ -29,6 +29,7 @@ export class DiffClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -38,21 +39,21 @@ export class DiffClient {
      *
      * @example
      *     await client.diff.list({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         from_seq: 1000000
      *     })
      */
     public list(
         request: LoonFS.ListDiffRequest,
         requestOptions?: DiffClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.DiffResponse> {
+    ): core.HttpResponsePromise<LoonFS.ListDiffResponse> {
         return core.HttpResponsePromise.fromPromise(this.__list(request, requestOptions));
     }
 
     private async __list(
         request: LoonFS.ListDiffRequest,
         requestOptions?: DiffClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.DiffResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.ListDiffResponse>> {
         const {
             namespace_id: namespaceId,
             from_seq: fromSeq,
@@ -107,7 +108,7 @@ export class DiffClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.DiffResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.ListDiffResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -119,6 +120,11 @@ export class DiffClient {
                     );
                 case 401:
                     throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );

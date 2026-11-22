@@ -5,7 +5,7 @@ import type * as LoonFS from "../../../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         body: {
  *             kind: "gc"
  *         }
@@ -13,6 +13,6 @@ import type * as LoonFS from "../../../../../../index.js";
  */
 export interface CreateJobsRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     body: LoonFS.RunMaintenanceJobRequest;
 }

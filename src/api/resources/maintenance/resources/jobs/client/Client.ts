@@ -39,7 +39,7 @@ export class JobsClient {
      *
      * @example
      *     await client.maintenance.jobs.create({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         body: {
      *             kind: "gc"
      *         }

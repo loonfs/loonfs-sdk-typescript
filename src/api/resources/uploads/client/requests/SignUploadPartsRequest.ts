@@ -5,8 +5,8 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
- *         upload_id: "upload_id",
+ *         namespace_id: "demo",
+ *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c",
  *         parts: [{
  *                 checksum: {
  *                     algorithm: "crc64nvme",
@@ -18,9 +18,9 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface SignUploadPartsRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The upload session ID. */
-    upload_id: string;
+    upload_id: LoonFS.UploadId;
     /** The parts to authorize. A repeated part number replaces the earlier upload of that part. */
     parts: LoonFS.UploadPartChecksumClaim[];
 }

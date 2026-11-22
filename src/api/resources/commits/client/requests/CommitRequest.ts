@@ -5,7 +5,7 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
  *         operations: [{
  *                 kind: "append_file",
@@ -16,7 +16,7 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface CommitRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The caller's idempotency key for the whole request. */
     commit_id: LoonFS.CommitId;
     /** One content token for each uploaded `content_ref` that the request uses. */

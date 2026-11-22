@@ -5,8 +5,8 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
- *         upload_id: "upload_id",
+ *         namespace_id: "demo",
+ *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c",
  *         body: {
  *             mode: "direct_multipart",
  *             content: {
@@ -29,8 +29,8 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface CompleteUploadRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The upload session ID. */
-    upload_id: string;
+    upload_id: LoonFS.UploadId;
     body: LoonFS.CompleteUploadBody;
 }

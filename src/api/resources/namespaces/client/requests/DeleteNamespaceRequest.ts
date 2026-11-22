@@ -5,12 +5,12 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id"
+ *         namespace_id: "demo"
  *     }
  */
 export interface DeleteNamespaceRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The head sequence that the namespace must still have for the delete to succeed. */
     expected_head_seq?: LoonFS.CommitSeq;
 }

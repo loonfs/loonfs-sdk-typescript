@@ -5,7 +5,7 @@ import type * as LoonFS from "../../../../../../../../index.js";
 /**
  * @example
  *     {
- *         pool_id: "pool_id",
+ *         pool_id: "pool_3s0drmj8em84yb4mnetqkz2j0x",
  *         body: {
  *             kind: "gc"
  *         }
@@ -13,6 +13,6 @@ import type * as LoonFS from "../../../../../../../../index.js";
  */
 export interface CreateJobsRequest {
     /** The pool ID. */
-    pool_id: string;
+    pool_id: LoonFS.PoolId;
     body: LoonFS.RunPoolMaintenanceJobRequest;
 }

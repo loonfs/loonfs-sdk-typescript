@@ -29,6 +29,7 @@ export class ChangesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -38,7 +39,7 @@ export class ChangesClient {
      *
      * @example
      *     await client.changes.list({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         after_seq: 1000000,
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
@@ -116,6 +117,11 @@ export class ChangesClient {
                     );
                 case 401:
                     throw new LoonFS.UnauthorizedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );

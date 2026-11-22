@@ -9,7 +9,7 @@ import type * as LoonFS from "../index.js";
  * A page reads the commits after `after_seq` in sequence order, and reports each inode at the
  * last commit in the range that changed it, so an inode appears on one page only.
  */
-export interface DiffResponse {
+export interface ListDiffResponse {
     /**
      * The sequence that this page's scan starts after. It's the request's `after_seq`, or
      * `from_seq` when the request leaves `after_seq` out.
