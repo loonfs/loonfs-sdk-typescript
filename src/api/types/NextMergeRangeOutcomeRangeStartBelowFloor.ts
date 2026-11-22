@@ -18,10 +18,14 @@ export interface NextMergeRangeOutcomeRangeStartBelowFloor {
      * fork's first merge.
      */
     merge?: LoonFS.Merge | undefined;
+    /** The namespace that the fork merges into (or, for a rebase, the rebase's new fork). */
+    namespace_id: LoonFS.NamespaceId;
     /** The fork sequence that the next merge would start after, as for `open`. */
     next_after_seq: LoonFS.CommitSeq;
     /** The fork's retention floor, which is above `next_after_seq`. */
     retention_floor_seq: LoonFS.CommitSeq;
     /** The fork's head sequence when the server read it. */
     source_head_seq: LoonFS.CommitSeq;
+    /** The fork whose next merge range was queried. */
+    source_namespace_id: LoonFS.NamespaceId;
 }

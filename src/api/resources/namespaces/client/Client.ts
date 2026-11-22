@@ -26,6 +26,112 @@ export class NamespacesClient {
     }
 
     /**
+     * Lists the store's namespaces in object-key order (namespace ID order, except that an ID sorts after the longer IDs that extend it with `-` or `.`), and returns for each one the object that `GET /v0/namespaces/{namespace_id}` returns. The list leaves out deleted namespaces and namespaces whose creation hasn't finished, so a page can have fewer namespaces than `limit`, even none, and still include `next_cursor`. Without `limit`, a page lists up to 100 namespaces.
+     *
+     * @param {LoonFS.ListNamespacesRequest} request
+     * @param {NamespacesClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link LoonFS.BadRequestError}
+     * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ServiceUnavailableError}
+     * @throws {@link errors.LoonFSError}
+     * @throws {@link errors.LoonFSTimeoutError}
+     *
+     * @example
+     *     await client.namespaces.list()
+     */
+    public async list(
+        request: LoonFS.ListNamespacesRequest = {},
+        requestOptions?: NamespacesClient.RequestOptions,
+    ): Promise<core.Page<LoonFS.NamespaceMetadata, LoonFS.ListNamespacesResponse>> {
+        const list = core.HttpResponsePromise.interceptFunction(
+            async (
+                request: LoonFS.ListNamespacesRequest,
+            ): Promise<core.WithRawResponse<LoonFS.ListNamespacesResponse>> => {
+                const { limit, cursor } = request;
+                const _queryParams: Record<string, unknown> = {
+                    limit,
+                    cursor,
+                };
+                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+                    _authRequest.headers,
+                    this._options?.headers,
+                    mergeOnlyDefinedHeaders({
+                        "Loonfs-Actor": requestOptions?.actorId ?? this._options?.actorId,
+                        "Loonfs-Principals": requestOptions?.principals ?? this._options?.principals,
+                        "Loonfs-Context": requestOptions?.loonfsContext ?? this._options?.loonfsContext,
+                    }),
+                    requestOptions?.headers,
+                );
+                const _response = await core.fetcher({
+                    url: core.url.join(
+                        (await core.Supplier.get(this._options.baseUrl)) ??
+                            (await core.Supplier.get(this._options.environment)),
+                        "v0/namespaces",
+                    ),
+                    method: "GET",
+                    headers: _headers,
+                    queryString: core.url
+                        .queryBuilder()
+                        .addMany(_queryParams)
+                        .mergeAdditional(requestOptions?.queryParams)
+                        .build(),
+                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+                    abortSignal: requestOptions?.abortSignal,
+                    fetchFn: this._options?.fetch,
+                    logging: this._options.logging,
+                });
+                if (_response.ok) {
+                    return {
+                        data: _response.body as LoonFS.ListNamespacesResponse,
+                        rawResponse: _response.rawResponse,
+                    };
+                }
+                if (_response.error.reason === "status-code") {
+                    switch (_response.error.statusCode) {
+                        case 400:
+                            throw new LoonFS.BadRequestError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 401:
+                            throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 503:
+                            throw new LoonFS.ServiceUnavailableError(
+                                _response.error.body as unknown,
+                                _response.rawResponse,
+                            );
+                        default:
+                            throw new errors.LoonFSError({
+                                statusCode: _response.error.statusCode,
+                                body: _response.error.body,
+                                rawResponse: _response.rawResponse,
+                            });
+                    }
+                }
+                return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/v0/namespaces");
+            },
+        );
+        const dataWithRawResponse = await list(request).withRawResponse();
+        return new core.Page<LoonFS.NamespaceMetadata, LoonFS.ListNamespacesResponse>({
+            response: dataWithRawResponse.data,
+            rawResponse: dataWithRawResponse.rawResponse,
+            hasNextPage: (response) =>
+                response?.next_cursor != null &&
+                !(typeof response?.next_cursor === "string" && response?.next_cursor === ""),
+            getItems: (response) => response?.namespaces ?? [],
+            loadPage: (response) => {
+                return list(core.setObjectProperty(request, "cursor", response?.next_cursor));
+            },
+        });
+    }
+
+    /**
      * Creates a new empty namespace. Without `namespace_id` in the request, LoonFS generates an ID. The response's `namespace_id` is the new namespace's ID.
      *
      * @param {LoonFS.CreateNamespaceRequest} request
@@ -138,7 +244,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.retrieve({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public retrieve(
@@ -229,6 +335,7 @@ export class NamespacesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -238,7 +345,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.delete({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public delete(
@@ -302,6 +409,11 @@ export class NamespacesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
@@ -335,6 +447,7 @@ export class NamespacesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -345,7 +458,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.fork({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public fork(
@@ -405,6 +518,11 @@ export class NamespacesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 409:
@@ -453,7 +571,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.nextMergeRange({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         source_namespace_id: "demo"
      *     })
      */
@@ -578,7 +696,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.merge({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
      *         source_namespace_id: "demo"
      *     })
@@ -700,7 +818,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.forkForRebase({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         source_namespace_id: "demo"
      *     })
      */
@@ -821,7 +939,7 @@ export class NamespacesClient {
      *
      * @example
      *     await client.namespaces.replay({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
      *         source_namespace_id: "demo"
      *     })

@@ -3,4 +3,4 @@
 /**
  * A request for one run of the store contract probe, with an empty body.
  */
-export type StoreProbeRequest = Record<string, unknown>;
+export type ProbeStoreRequest = Record<string, unknown>;

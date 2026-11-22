@@ -5,12 +5,12 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id"
+ *         namespace_id: "demo"
  *     }
  */
 export interface ForkNamespaceRequest {
     /** The source namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The durable ID of the new namespace that the fork creates. Without this field, LoonFS
      * generates an ID. The response's `namespace_id` is the new namespace's ID.

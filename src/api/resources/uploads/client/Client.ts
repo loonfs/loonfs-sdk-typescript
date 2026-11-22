@@ -43,7 +43,7 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.create({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         body: {
      *             mode: "direct_multipart"
      *         }
@@ -149,14 +149,15 @@ export class UploadsClient {
      * @throws {@link LoonFS.UnauthorizedError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.GoneError}
+     * @throws {@link LoonFS.NotImplementedError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
      * @throws {@link errors.LoonFSTimeoutError}
      *
      * @example
      *     await client.uploads.retrieve({
-     *         namespace_id: "namespace_id",
-     *         upload_id: "upload_id"
+     *         namespace_id: "demo",
+     *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c"
      *     })
      */
     public retrieve(
@@ -217,6 +218,11 @@ export class UploadsClient {
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 501:
+                    throw new LoonFS.NotImplementedError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 503:
                     throw new LoonFS.ServiceUnavailableError(_response.error.body as unknown, _response.rawResponse);
                 default:
@@ -253,8 +259,8 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.abort({
-     *         namespace_id: "namespace_id",
-     *         upload_id: "upload_id"
+     *         namespace_id: "demo",
+     *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c"
      *     })
      */
     public abort(
@@ -354,8 +360,8 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.complete({
-     *         namespace_id: "namespace_id",
-     *         upload_id: "upload_id",
+     *         namespace_id: "demo",
+     *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c",
      *         body: {
      *             mode: "direct_multipart",
      *             content: {
@@ -467,8 +473,8 @@ export class UploadsClient {
      * Uploads bytes into a service-proxied upload session and returns the open session with the staged content reference.
      *
      * @param {core.file.Uploadable} uploadable
-     * @param {string} namespace_id
-     * @param {string} upload_id
+     * @param {LoonFS.NamespaceId} namespace_id
+     * @param {LoonFS.UploadId} upload_id
      * @param {UploadsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -483,8 +489,8 @@ export class UploadsClient {
      */
     public putContent(
         uploadable: core.file.Uploadable,
-        namespace_id: string,
-        upload_id: string,
+        namespace_id: LoonFS.NamespaceId,
+        upload_id: LoonFS.UploadId,
         requestOptions?: UploadsClient.RequestOptions,
     ): core.HttpResponsePromise<LoonFS.UploadSession> {
         return core.HttpResponsePromise.fromPromise(
@@ -494,8 +500,8 @@ export class UploadsClient {
 
     private async __putContent(
         uploadable: core.file.Uploadable,
-        namespace_id: string,
-        upload_id: string,
+        namespace_id: LoonFS.NamespaceId,
+        upload_id: LoonFS.UploadId,
         requestOptions?: UploadsClient.RequestOptions,
     ): Promise<core.WithRawResponse<LoonFS.UploadSession>> {
         const _binaryUploadRequest = await core.file.toBinaryUploadRequest(uploadable);
@@ -595,8 +601,8 @@ export class UploadsClient {
      *
      * @example
      *     await client.uploads.signParts({
-     *         namespace_id: "namespace_id",
-     *         upload_id: "upload_id",
+     *         namespace_id: "demo",
+     *         upload_id: "upl_2dhwp939xk9r7srv8t5cz5yw4c",
      *         parts: [{
      *                 checksum: {
      *                     algorithm: "crc64nvme",

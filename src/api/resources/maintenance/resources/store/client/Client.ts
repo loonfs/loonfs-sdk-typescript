@@ -25,7 +25,7 @@ export class StoreClient {
     /**
      * Checks that the configured object store supports the create-if-absent, compare-and-swap, visibility, listing, and ranged-read behavior that LoonFS depends on, and reports the result of each check. The probe runs only when a client calls this route, because it writes and deletes objects. It writes them all under a scratch prefix that isn't a durable object family, and its last check deletes them and confirms that the prefix is empty. If the store fails a check, the response is still 200, and it reports that check as `failed`. If the store declares that it doesn't support an optional capability, the response reports that check as `unsupported`, which isn't a failure. The probe doesn't control whether the deployment can serve presigned direct uploads. The endpoint allowlist controls that, because the probe tests only the server's own requests and never a presigned capability issued to a client.
      *
-     * @param {LoonFS.StoreProbeRequest} request
+     * @param {LoonFS.ProbeStoreRequest} request
      * @param {StoreClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link LoonFS.BadRequestError}
@@ -41,16 +41,16 @@ export class StoreClient {
      *     })
      */
     public probe(
-        request: LoonFS.StoreProbeRequest,
+        request: LoonFS.ProbeStoreRequest,
         requestOptions?: StoreClient.RequestOptions,
-    ): core.HttpResponsePromise<LoonFS.StoreProbeResponse> {
+    ): core.HttpResponsePromise<LoonFS.ProbeStoreResponse> {
         return core.HttpResponsePromise.fromPromise(this.__probe(request, requestOptions));
     }
 
     private async __probe(
-        request: LoonFS.StoreProbeRequest,
+        request: LoonFS.ProbeStoreRequest,
         requestOptions?: StoreClient.RequestOptions,
-    ): Promise<core.WithRawResponse<LoonFS.StoreProbeResponse>> {
+    ): Promise<core.WithRawResponse<LoonFS.ProbeStoreResponse>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -81,7 +81,7 @@ export class StoreClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as LoonFS.StoreProbeResponse, rawResponse: _response.rawResponse };
+            return { data: _response.body as LoonFS.ProbeStoreResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

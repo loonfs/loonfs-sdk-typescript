@@ -5,16 +5,16 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw",
  *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
  *     }
  */
 export interface GetInodeRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The inode ID. */
-    inode_id: string;
+    inode_id: LoonFS.InodeId;
     /**
      * Whether the response includes the inode's attribute map and attribute revision. The default
      * is `false`, as on every route that takes this parameter.

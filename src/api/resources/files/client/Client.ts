@@ -27,7 +27,9 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.RangeNotSatisfiableError}
@@ -110,8 +112,15 @@ export class FilesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
@@ -151,7 +160,9 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ContentTooLargeError}
      * @throws {@link LoonFS.NotImplementedError}
@@ -161,7 +172,7 @@ export class FilesClient {
      *
      * @example
      *     await client.files.createDownload({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         path: "/docs/report.txt"
      *     })
      */
@@ -222,8 +233,15 @@ export class FilesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 413:
@@ -263,7 +281,9 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -271,7 +291,7 @@ export class FilesClient {
      *
      * @example
      *     await client.files.list({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         path: "path",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
@@ -353,8 +373,18 @@ export class FilesClient {
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 404:
                             throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 409:
+                            throw new LoonFS.ConflictError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
@@ -406,7 +436,9 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -414,7 +446,7 @@ export class FilesClient {
      *
      * @example
      *     await client.files.retrieve({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         path: "path",
      *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
@@ -491,8 +523,15 @@ export class FilesClient {
                         _response.error.body as LoonFS.ErrorResponse,
                         _response.rawResponse,
                     );
+                case 403:
+                    throw new LoonFS.ForbiddenError(
+                        _response.error.body as LoonFS.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new LoonFS.NotFoundError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new LoonFS.ConflictError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 410:
                     throw new LoonFS.GoneError(_response.error.body as LoonFS.ErrorResponse, _response.rawResponse);
                 case 503:
@@ -522,7 +561,9 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
+     * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
      * @throws {@link LoonFS.ServiceUnavailableError}
      * @throws {@link errors.LoonFSError}
@@ -530,8 +571,9 @@ export class FilesClient {
      *
      * @example
      *     await client.files.listRevisions({
-     *         namespace_id: "namespace_id",
-     *         path: "path"
+     *         namespace_id: "demo",
+     *         path: "path",
+     *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
      *     })
      */
     public async listRevisions(
@@ -547,6 +589,7 @@ export class FilesClient {
                     path,
                     limit,
                     cursor,
+                    snapshot_id: snapshotId,
                     consistency,
                     max_staleness_ms: maxStalenessMs,
                 } = request;
@@ -554,6 +597,7 @@ export class FilesClient {
                     path,
                     limit,
                     cursor,
+                    snapshot_id: snapshotId,
                     consistency: consistency != null ? consistency : undefined,
                     max_staleness_ms: maxStalenessMs,
                 };
@@ -605,8 +649,18 @@ export class FilesClient {
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
                         case 404:
                             throw new LoonFS.NotFoundError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 409:
+                            throw new LoonFS.ConflictError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );
@@ -658,6 +712,7 @@ export class FilesClient {
      *
      * @throws {@link LoonFS.BadRequestError}
      * @throws {@link LoonFS.UnauthorizedError}
+     * @throws {@link LoonFS.ForbiddenError}
      * @throws {@link LoonFS.NotFoundError}
      * @throws {@link LoonFS.ConflictError}
      * @throws {@link LoonFS.GoneError}
@@ -669,7 +724,7 @@ export class FilesClient {
      *
      * @example
      *     await client.files.grep({
-     *         namespace_id: "namespace_id",
+     *         namespace_id: "demo",
      *         pattern: "pattern",
      *         inode_id: "ino_000000r0000013kje0d47gc8kw"
      *     })
@@ -747,6 +802,11 @@ export class FilesClient {
                             );
                         case 401:
                             throw new LoonFS.UnauthorizedError(
+                                _response.error.body as LoonFS.ErrorResponse,
+                                _response.rawResponse,
+                            );
+                        case 403:
+                            throw new LoonFS.ForbiddenError(
                                 _response.error.body as LoonFS.ErrorResponse,
                                 _response.rawResponse,
                             );

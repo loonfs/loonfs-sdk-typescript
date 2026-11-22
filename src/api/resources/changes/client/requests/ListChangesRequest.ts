@@ -5,14 +5,14 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         after_seq: 1000000,
  *         snapshot_id: "snp_0000000000000tfy68ekkbj6bx"
  *     }
  */
 export interface ListChangesRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The sequence after which to return committed changes. With `event_index`, the commit at
      * this sequence that the page resumes.

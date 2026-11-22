@@ -4,5 +4,6 @@ export type { ForkNamespaceForRebaseRequest } from "./ForkNamespaceForRebaseRequ
 export type { ForkNamespaceRequest } from "./ForkNamespaceRequest.js";
 export type { GetNamespaceRequest } from "./GetNamespaceRequest.js";
 export type { GetNextMergeRangeRequest } from "./GetNextMergeRangeRequest.js";
+export type { ListNamespacesRequest } from "./ListNamespacesRequest.js";
 export type { MergeForkRequest } from "./MergeForkRequest.js";
 export type { ReplayForkRequest } from "./ReplayForkRequest.js";

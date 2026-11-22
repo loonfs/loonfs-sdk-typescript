@@ -17,6 +17,8 @@ export interface NextMergeRangeOutcomeOpen {
      * replay commit, never a merge that the new fork inherited.
      */
     merge?: LoonFS.Merge | undefined;
+    /** The namespace that the fork merges into (or, for a rebase, the rebase's new fork). */
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The fork sequence that the next merge starts after: the newest merge's
      * `source_through_seq`, or the fork point before the fork's first merge. In a rebase's
@@ -25,4 +27,6 @@ export interface NextMergeRangeOutcomeOpen {
     next_after_seq: LoonFS.CommitSeq;
     /** The fork's head sequence when the server read it. */
     source_head_seq: LoonFS.CommitSeq;
+    /** The fork whose next merge range was queried. */
+    source_namespace_id: LoonFS.NamespaceId;
 }

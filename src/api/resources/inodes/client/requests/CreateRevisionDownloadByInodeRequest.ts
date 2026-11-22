@@ -5,16 +5,16 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw",
  *         revision_no: 1000000
  *     }
  */
 export interface CreateRevisionDownloadByInodeRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The file's inode ID. */
-    inode_id: string;
+    inode_id: LoonFS.InodeId;
     /** The revision number. */
     revision_no: LoonFS.RevisionNo;
     /**

@@ -11,7 +11,7 @@ import type * as LoonFS from "../../../../index.js";
  */
 export interface GetFileContentRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The absolute path of the file to read. */
     path: string;
     /** An earlier revision to read. It can't be combined with `snapshot_id`. */

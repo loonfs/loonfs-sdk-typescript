@@ -37,7 +37,7 @@ export class DiagnosticsClient {
      *
      * @example
      *     await client.maintenance.diagnostics.retrieve({
-     *         namespace_id: "namespace_id"
+     *         namespace_id: "demo"
      *     })
      */
     public retrieve(

@@ -5,14 +5,14 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         pattern: "pattern",
  *         inode_id: "ino_000000r0000013kje0d47gc8kw"
  *     }
  */
 export interface GrepRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The search pattern, in the Rust `regex` crate's syntax. Its UTF-8 encoding must be at most
      * 1024 bytes.

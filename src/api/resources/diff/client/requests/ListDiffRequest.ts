@@ -5,13 +5,13 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         from_seq: 1000000
  *     }
  */
 export interface ListDiffRequest {
     /** The namespace ID. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The sequence that the diff starts after. Each entry compares an inode's state at this
      * sequence with its state at `to_seq`. It can't be below the namespace's retention floor.

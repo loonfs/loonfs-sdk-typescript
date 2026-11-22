@@ -5,14 +5,14 @@ import type * as LoonFS from "../../../../index.js";
 /**
  * @example
  *     {
- *         namespace_id: "namespace_id",
+ *         namespace_id: "demo",
  *         commit_id: "cmt_7kn71d9dq885x91hejz3gvf9p0",
  *         source_namespace_id: "demo"
  *     }
  */
 export interface MergeForkRequest {
     /** The namespace that the merge commits into. */
-    namespace_id: string;
+    namespace_id: LoonFS.NamespaceId;
     /** The caller's idempotency key for the merge. */
     commit_id: LoonFS.CommitId;
     /** An annotation from the caller. The message is part of the merge's identity. */

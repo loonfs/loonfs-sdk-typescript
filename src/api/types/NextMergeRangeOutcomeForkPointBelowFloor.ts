@@ -13,6 +13,8 @@ export interface NextMergeRangeOutcomeForkPointBelowFloor {
      * the namespace that the rebase forked.
      */
     fork_point_seq: LoonFS.CommitSeq;
+    /** The namespace that the fork merges into (or, for a rebase, the rebase's new fork). */
+    namespace_id: LoonFS.NamespaceId;
     /**
      * The namespace's retention floor, which is above the fork point (for a rebase's new
      * fork, above the new fork's own fork point).
@@ -20,4 +22,6 @@ export interface NextMergeRangeOutcomeForkPointBelowFloor {
     retention_floor_seq: LoonFS.CommitSeq;
     /** The fork's head sequence when the server read it. */
     source_head_seq: LoonFS.CommitSeq;
+    /** The fork whose next merge range was queried. */
+    source_namespace_id: LoonFS.NamespaceId;
 }

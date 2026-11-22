@@ -3,9 +3,15 @@
 import type * as LoonFS from "../index.js";
 
 /**
- * The result of a replay commit: the new fork, and the changes that the replay commit left out.
+ * The result of a replay commit: the new fork, the replay commit, and the
+ * changes that the replay commit left out.
  */
 export interface ReplayForkResponse {
+    /**
+     * The replay commit applied to the new fork. A retry with the same commit
+     * ID returns the same commit.
+     */
+    commit: LoonFS.Commit;
     /**
      * The replay commit's conflict report, with one entry for each inode whose change the replay
      * commit didn't apply. It's empty when the replay commit left nothing out. The replay

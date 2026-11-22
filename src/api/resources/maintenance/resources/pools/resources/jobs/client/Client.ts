@@ -41,7 +41,7 @@ export class JobsClient {
      *
      * @example
      *     await client.maintenance.pools.jobs.create({
-     *         pool_id: "pool_id",
+     *         pool_id: "pool_3s0drmj8em84yb4mnetqkz2j0x",
      *         body: {
      *             kind: "gc"
      *         }
